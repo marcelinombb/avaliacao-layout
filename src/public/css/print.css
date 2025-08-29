@@ -1,0 +1,22 @@
+@media print {
+  
+
+  .toggle-layout {
+    display: none;
+  }
+
+  @-moz-document url-prefix() {
+    .page {
+      page-break-after: auto;
+
+      break-after: avoid-page;
+    }
+  }
+}
+
+.toggle-layout {
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
+  z-index: 100;
+}

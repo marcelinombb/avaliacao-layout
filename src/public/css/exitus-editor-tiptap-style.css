@@ -1,0 +1,214 @@
+:root {
+  --active-blue: hsl(218, 81.8%, 56.9%);
+  --border-gray: #ccced1;
+  --spacing-sm: calc(0.6em * 0.3);
+  --spacing-md: calc(0.6em * 0.5);
+  --spacing-mdd: calc(0.6em * 0.8);
+  --spacing-lg: calc(0.6em * 1);
+  --color-success: #008a00;
+  --color-cancel: #db3700;
+  --color-base-text: #333;
+  --color-focused-background: rgba(158, 201, 250, 0.3);
+  --ex-font-size-base: 13px;
+  --ex-line-height-base: 1.84615;
+  --ex-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+  --ex-font-size-tiny: 0.7em;
+  --ex-font-size-small: 0.75em;
+  --ex-font-size-normal: 1em;
+  --ex-font-size-big: 1.4em;
+  --ex-font-size-large: 1.8em;
+  --ex-focus-ring: 1px solid var(--active-blue);
+  --ex-inner-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1) inset;
+}
+
+.ProseMirror {
+  flex: 1;
+  padding: 1cm 1cm 1cm;
+  background: #fff;
+  text-align: left;
+}
+
+.ProseMirror:focus {
+  outline: none;
+  border: var(--ex-focus-ring);
+  box-shadow: var(--ex-inner-shadow), 0 0;
+}
+
+.adaptive-block-avalicao-visualize {
+  word-wrap: break-word;
+  white-space: normal !important;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
+}
+
+.tiptap-paper {
+  font-size: 12px;
+}
+
+.ex-reset-all {
+  border-collapse: collapse;
+  color: var(--color-base-text);
+  cursor: auto;
+  float: none;
+  font: normal normal normal var(--ex-font-size-base) /
+    var(--ex-line-height-base) var(--ex-font-face);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.adaptive-block-avalicao-visualize {
+  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  color: #333 !important;
+/*   font-size: 12px; */
+  line-height: 1.3em;
+}
+
+.adaptive-block-avalicao-visualize blockquote {
+  border-left: 3px solid rgba(13, 13, 13, 0.1);
+  padding-left: 1rem;
+}
+
+.adaptive-block-avalicao-visualize p {
+  margin: 0 0 9px;
+}
+
+.adaptive-block-avalicao-visualize table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  height: 100%;
+  border-spacing: 0;
+  height: 100%;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px double hsl(0, 0%, 70%);
+}
+
+.adaptive-block-avalicao-visualize td,
+.adaptive-block-avalicao-visualize th {
+  min-width: 1em;
+  border: 2px solid #ced4da;
+  padding: 3px 5px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  cursor: text;
+}
+
+.adaptive-block-avalicao-visualize th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f1f3f5;
+}
+
+p {
+  margin: 0;
+}
+
+.table, .tableWrapper {
+  overflow-x: auto;
+  margin: 0.9em auto;
+  display: table;
+}
+
+.image, .ex-image-wrapper {
+  clear: both;
+  display: table;
+  padding: 0.08em;
+  max-width: 100%;
+}
+
+.icon-arrow {
+  width: 12px !important;
+}
+
+.image img, .ex-image-wrapper img {
+  width: 100%;
+}
+
+.ex-image-wrapper {
+  clear: both;
+  display: table;
+  padding: 0.08em;
+  max-width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+figure, figcaption {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+.ex-image-wrapper > figcaption {
+    background-color: var(--image-caption-background);
+    caption-side: bottom;
+    color: var(--color-base-text);
+    display: table-caption;
+    font-size: .75em;
+    outline-offset: -1px;
+    padding: .6em;
+    word-break: break-word;
+}
+
+.figcaption-is-empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.ex-image-block-middle {
+  margin: 0.9em auto;
+}
+
+.ex-image-block-align-right {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.ex-image-block-align-left {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.ex-image-block-align-center {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.math-tex {
+  display: inline;
+}
+
+.ex-margin-direita {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.ex-margin-esquerda {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.ex-margin-meio {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.ex-image-float-left {
+  float: left;
+  margin-right: 0.9em;
+}
+
+.ex-image-float-right {
+  float: right;
+  margin-left: 0.9em;
+}

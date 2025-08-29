@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Multi-Page Layout</title>
+  <link rel="stylesheet" href="css/exitus-questao-style.css">
+  <link rel="stylesheet" href="css/exitus-editor-tiptap-style.css">
+  <link rel="stylesheet" href="css/linhas-resposta.css">
+  <link rel="stylesheet" href="css/side-menu.css">
+  <link rel="stylesheet" href="css/preview.css">
+  <!-- <link rel="stylesheet" href="css/layout-avaliacao.css"> -->
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div id="pages-container"></div>
+
+  <button class="floating-button" id="configButton">⚙️</button>
+
+  <!-- Menu lateral -->
+  <div class="side-menu" id="sideMenu">
+    <h3>Configurações</h3>
+    <label for="fontSize">Tamanho da Fonte</label>
+    <input type="number" id="fontSize" value="14">
+
+    <label for="columns">Colunas</label>
+    <select id="columns">
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+
+    <label for="identification">Identificação</label>
+    <input type="text" id="identification" value="christus">
+    
+    <label for="identification">Marca d'Água</label>
+    <div class="checkbox-container">
+      <input type="checkbox" id="draftWatermark" checked>
+      <label for="draftWatermark">Rascunho</label>
+    </div>
+    
+    <div class="checkbox-container">
+      <input type="checkbox" id="institutionWatermark" checked>
+      <label for="institutionWatermark">Instituição</label>
+    </div>
+
+    <label for="draftPages">Páginas de Rascunho</label>
+    <input type="number" id="draftPages" value="2">
+
+    <button id="applyConfig">Visualizar</button>
+  </div>
+
+  <script src="prova-modelo.js"></script>
+  <script src="../../dist/index.umd.js"></script>
+  <script>
+    console.log(MyLib);
+    
+  </script>
+  <script type="module">
+
+    /* import { LayoutAvaliacaoBuilder, LayoutRenderer } from "./avaliacao-layout/index.js";
+
+    import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
+
+    replacePlaceholders(provaModelo2); */
+
+    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo2.prova.layout;
+
+    const listaProvaQuestao = [...provaModelo2.listaProvaQuestao];
+
+    window.removeEventListener("resize", resizer, false);
+    window.addEventListener("resize", resizer, false);
+
+    //const listaQuestoes = listaQuestao
+
+    // onde a avaliação será renderizada
+    const pagesContainer = document.getElementById('pages-container');
+
+    function sideMenu() {
+      const configButton = document.getElementById('configButton');
+      const sideMenu = document.getElementById('sideMenu');
+      const applyConfigButton = document.getElementById('applyConfig');
+
+      // Abrir/fechar o menu lateral
+      configButton.addEventListener('click', () => {
+        sideMenu.classList.toggle('open');
+      });
+
+      // Aplicar configurações e renderizar o layout
+      applyConfigButton.addEventListener('click', () => {
+
+        pagesContainer.innerHTML = "";
+
+        const fontSize = parseInt(document.getElementById('fontSize').value, 10);
+        const columns = parseInt(document.getElementById('columns').value, 10);
+        const identification = document.getElementById('identification').value;
+        const draftPages = parseInt(document.getElementById('draftPages').value, 10);
+        const addDraftWatermark = document.getElementById('draftWatermark').checked;
+        const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
+
+        // Atualizar o layout com as configurações do menu
+        const layoutBuilder = new MyLib.LayoutAvaliacaoBuilder()
+          .pageHeader(cabecalhoPagina)
+          .fonteTamanho(fontSize)
+          .folhaDeRosto({
+            header: cabecalho,
+            content: folhaRosto,
+            footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`
+          })
+          .pageFooter(rodape)
+          .colunas(columns)
+          .identificacao(identification)
+          .rascunho(draftPages)
+          .paginacao()
+
+
+          if (addDraftWatermark) {
+            layoutBuilder.marcaDaquaRascunho("assets/marcadagua/marcadagua_semfundo.png");
+          }
+
+          if (addInstitutionWatermark) {
+            layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+          }
+
+        const layoutResult = layoutBuilder.build(provaModelo2);
+
+        MyLib.LayoutRenderer.render(layoutResult, pagesContainer)
+          .then(() => {
+            resizer();
+          });
+
+        // Fechar o menu após aplicar as configurações
+        sideMenu.classList.remove('open');
+      });
+    }
+
+    sideMenu();
+
+
+    function resizer() {
+      let pages = document.querySelector(".pagedjs_pages");
+
+      if (pages) {
+        let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
+        if (scale < 1) {
+          pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2
+            }px, 0)`;
+        } else {
+          pages.style.transform = "none";
+        }
+      }
+    }
+
+  </script>
+</body>
+
+</html>

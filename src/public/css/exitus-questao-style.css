@@ -1,0 +1,333 @@
+@charset "utf-8";
+
+html,
+body {
+  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  color: #333 !important;
+  font-size: 14px;
+  line-height: 1.3em;
+}
+
+.centro {
+  text-align: center;
+}
+
+.align-left + div:after,
+.align-left + div > p:after {
+  content: "";
+  display: table;
+}
+
+.align-left:before, .align-left+div:before, .align-left:after, .align-left+div:after, .align-left, .align-left+div {
+  display: inline !important;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.coluna-sm-6 {
+  width: 45% !important;
+  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+  float: left;
+}
+
+.coluna-sm-12 {
+  box-sizing: border-box;
+  width: 100% !important;
+  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.duas-colunas:after {
+  content: " ";
+  display: table;
+  clear: both;
+}
+
+.duas-colunas > div:after {
+  content: " ";
+  display: table;
+  clear: both;
+}
+
+.duas-colunas > div {
+  box-sizing: border-box;
+  width: 50% !important;
+  padding-left: 12px;
+  float: left;
+}
+
+.media-wrapper {
+  padding-top: 10px;
+}
+
+.linha-alternativa {
+  display: flex !important;
+  flex-direction: row;
+  padding-top: 10px;
+}
+
+.item_enem {
+  border-radius: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  line-height: 18px !important;
+  background: black !important;
+  color: white !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+div:has(> span.media-esq) {
+  display: flex !important;
+  flex-direction: row;
+  padding-top: 10px;
+  word-break: break-word;
+}
+
+.media-esq {
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.media-dir {
+  padding-left: 10px;
+}
+
+.media-esq,
+.media-dir,
+.media-corpo {
+  width: auto;
+  display: inline-flex;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-inline-block {
+  display: inline-block;
+  margin-right: -4px;
+  padding: 3px 0px 2px 0px;
+}
+
+span.display-block {
+  display: inline-block;
+}
+
+.class-table {
+  width: 100%;
+  -webkit-border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+.class-table > header:after,
+.class-table > div:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.class-table .table-column {
+  float: left;
+  padding: 3px 0px 2px 0px;
+}
+
+.class-table > div > .table-column:first-child {
+  padding-left: 7px;
+}
+
+.class-table td,
+.class-table > div {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.class-table tr:first-child td {
+ /*  border-top: 1px solid black; */
+}
+
+.class-table td {
+  padding: 3px 7px 2px 7px;
+}
+
+.class-table > div ~ div {
+  margin-top: -1px;
+}
+
+.class-table caption,
+.class-table > header {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  background-color: #a9a9a9;
+  text-align: center;
+}
+
+table.class-table caption {
+  padding: 3px 7px 2px 7px;
+}
+
+.table-quadro {
+  border-bottom: 1px solid black;
+}
+
+.linha-quadro {
+  border-top: none !important;
+  border-bottom: none !important;
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+
+.linha {
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+
+.w100 {
+  width: 100%;
+}
+
+div.adaptive-block {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.adaptive-block-avalicao-visualize p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  word-break: break-word;
+}
+
+.adaptive-margin-bottom {
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.fonte-questao-width {
+  max-width: 100%;
+  width: inherit !important;
+  float: left;
+  margin-right: 1%;
+}
+
+.referencia-style {
+  border: 1px solid black;
+  padding: 1px 3px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+img {
+  max-width: 700px;
+  max-height: 890px;
+}
+
+table {
+ /*  max-width: 700px; */
+  max-height: 890px;
+}
+
+.colunas * img {
+  max-width: 350px !important;
+  max-height: 890px;
+}
+
+.colunas * table {
+  max-width: 350px !important;
+}
+
+.marcadagua {
+  position: absolute;
+  align-content: center;
+  background-size: 100%;
+  z-index: 10;
+}
+
+.marcadagua > img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+#logo_prova {
+  width: auto;
+  height: auto;
+}
+
+sup,
+sub {
+  font-size: 0.75em !important;
+}
+
+figure.image {
+  display: table;
+  clear: both;
+  text-align: center;
+  margin: 0.9em auto;
+  min-width: 50px;
+}
+
+.logo-cabecalho{
+	max-height:75px;
+	border:0px solid black;
+	float:left;
+	margin:0px;
+}
+
+.logo-cabecalho-pagina{
+	max-height:40px;
+	border:0px solid black;
+	margin:0px;
+	width:auto;
+}
+
+.referencia-container {
+  margin-bottom: 15px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-wrap{
+/* font-weight: bold; */
+flex-wrap:wrap;
+width:100%;
+}
+
+.container {
+	max-width: auto;
+	margin: 0 auto;
+}
+
+#table1{	
+	width:100%;
+	border:none;
+  margin: auto;
+  height: 100%;
+  display: table;
+}
+	
+#table1 td{
+	height:2px;
+  vertical-align: middle;
+}
+	
+#table1 tr td{
+	border:none;
+}

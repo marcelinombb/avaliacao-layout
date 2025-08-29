@@ -1,0 +1,134 @@
+* {
+  box-sizing: border-box;
+}
+
+.column-element {
+  overflow: hidden;
+ }
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.page {
+  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  color: #333 !important;
+  font-size: 12px;
+  line-height: 1.3em;
+}
+
+.marcadagua 
+.marcadagua-rascunho{
+  position: relative;
+}
+
+.marcadagua::before {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+  opacity: 0.7;
+  width: 90%;
+  height: 90%;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-size: cover;
+  z-index: 1000;
+}
+
+.marcadagua-rascunho::after {
+  position: absolute;
+  content: "";
+  pointer-events: none; /* Para não interferir nos cliques */
+  opacity: 0.7;
+  width: 90%;
+  height: 90%;
+  background: url("../assets/marcadagua/marcadagua_semfundo.png") no-repeat center;
+  background-size: cover;
+}
+
+.page {
+  position: relative;
+  width: 794px;
+  height: 1123px;
+  aspect-ratio: 794 / 1123;
+  margin: 5mm auto;
+  padding: 10mm;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  page-break-after: always;
+  word-wrap: break-word;
+}
+
+.page-stage {
+  visibility: hidden;
+  width: 794px;
+  height: auto;
+  margin: 5mm auto;
+  padding: 10mm;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  page-break-after: always;
+  word-wrap: break-word;
+}
+
+.page:last-child {
+  page-break-after: auto;
+}
+
+.content-container {
+  display: flex;
+  height: 100%;
+}
+
+.page-header:has(> *) {
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.page-footer {
+  box-sizing: border-box;
+}
+
+.two-column {
+  width: calc(50%);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.one-column {
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.two-column img {
+  max-width: 100% !important;
+}
+
+.two-column table:not(.answer-table) {
+  max-width: 100% !important;
+}
+
+.two-column:first-child {
+  padding-right: 10px;
+}
+
+.two-column:last-child {
+  border-left: solid 1px rgb(66, 65, 65);
+  padding-left: 10px;
+}

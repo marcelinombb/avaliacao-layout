@@ -1,0 +1,91 @@
+
+@page {
+    size: A4 portrait;
+    margin: 10mm;
+
+    @bottom-right {
+        content: counter(page) "/" counter(pages);
+    }
+
+    @bottom-left {
+        content: var(--layout-identificacao, none);
+    }
+}
+
+#idAvaliacao {
+    position: running(idAvaliacao);
+}
+
+.pagedjs_page_content {
+    font-size: var(--layout-font-size, 14px);
+}
+
+.dontsplit {
+    break-inside: avoid;
+    /* page-break-inside: avoid; */
+}
+
+@page folhaDeRosto {
+    
+}
+
+#folha-rosto {
+    page: folhaDeRosto;
+}
+
+@page duasColunas {
+    .pagedjs_page_content {
+        column-count: 2!important;
+        column-width: auto !important;
+        column-gap: 20px !important;
+        column-fill: auto;
+        column-rule: solid 1px;
+    }
+}
+
+#duas-colunas {
+    page: duasColunas;
+}
+
+@page rascunho {
+    @top-center {
+        content: "Rascunho";
+    }
+}
+
+#rascunho {
+    page: rascunho;
+}
+
+.pagedjs_headernote_area {
+    margin-bottom: 10px;
+}
+
+.pagedjs_pagebox > .pagedjs_area > .pagedjs_page_content {
+    width: 100%;
+    height: calc(100% - var(--pagedjs-footer-height, 0px) - var(--pagedjs-header-height, 0px));
+    position: relative;
+    column-fill: auto;
+}
+
+.rascunho {
+    break-before: page;
+    break-after: page;
+    page: rascunho;
+}
+
+.watermark {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%!important;
+    background-image: var(--layout-watermark-rascunho, none), var(--layout-watermark-instituicao, none);
+    /* background-image: var(--layout-watermark-instituicao, none); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 0;
+}
+
