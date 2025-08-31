@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "rollup -c"
+    "build": "tsc -p tsconfig.types.json && rollup -c"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,12 @@
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "rollup": "^4.49.0"
+    "rollup": "^4.49.0",
+    "rollup-plugin-dts": "^6.2.3",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
+    "entities": "^6.0.1",
     "katex": "^0.16.22",
     "pagedjs": "^0.4.3"
   }
