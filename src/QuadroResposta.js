@@ -1,10 +1,8 @@
 export class QuadroResposta {
   linhasTabelaNumeradas(numberOfLines, withHeader = true) {
-    const header = `
-          <tr>
-          <td class="side-number-header" colspan="2">Resposta</td>
-          </tr>
-          `;
+    const header = `<tr>
+                      <td class="side-number-header" colspan="2">Resposta</td>
+                    </tr>`;
 
             let rows = Array.from(
               { length: numberOfLines },

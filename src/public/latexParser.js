@@ -1,9 +1,5 @@
-/* const katex = require("katex");
-const Entities = require("entities") */;
-
-import katex from "../node_modules/katex/dist/katex.mjs";
-
-import { decodeHTML } from "../node_modules/entities/dist/esm/index.js";
+import katex from "katex"
+import { decodeHTML } from "entities";
 
 const delimiters = [
   { left: "$$", right: "$$", display: false },
@@ -45,7 +41,7 @@ function renderWithDelimiters(latexString, delimiters) {
 
     htmlString += latexString.slice(position, matchStart);
     let latex = latexString.slice(matchStart + match.left.length, matchEnd);
-    //console.log(latex);
+
     let renderedHTML = katex.renderToString(latex, {
       throwOnError: false,
       displayMode: isDisplay,
@@ -85,7 +81,5 @@ function parserLatex(text) {
 
   return dataModified;
 }
-
-///module.exports = parserLatex;
 
 export default parserLatex

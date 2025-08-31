@@ -1,4 +1,4 @@
-import { Previewer, registeredHandlers } from 'pagedjs';
+import { Previewer, registeredHandlers } from "pagedjs"
 
 export class LayoutRenderer {
   static async render(result, pagesContainer) {
@@ -44,9 +44,7 @@ function registerHandlersWithConfig(...handlersWithConfig) {
 
     ConfiguredHandler.__originalHandler = MyHandler;
 
-    // Check only by original handler
     const alreadyRegistered = registeredHandlers.some(
-      // @ts-ignore
       (h) => h.__originalHandler === MyHandler
     );
 

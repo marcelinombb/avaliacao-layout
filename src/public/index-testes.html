@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="css/linhas-resposta.css">
   <link rel="stylesheet" href="css/side-menu.css">
   <link rel="stylesheet" href="css/preview.css">
-  <!-- <link rel="stylesheet" href="css/layout-avaliacao.css"> -->
   <style>
 
   </style>
@@ -55,23 +54,16 @@
 
   <script src="prova-modelo.js"></script>
   <script src="../../dist/index.umd.js"></script>
-  <script>
-    console.log(MyLib);
-    
-  </script>
   <script type="module">
-
-    /* import { LayoutAvaliacaoBuilder, LayoutRenderer } from "./avaliacao-layout/index.js";
 
     import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
 
-    replacePlaceholders(provaModelo2); */
+    replacePlaceholders(provaModelo2);
 
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo2.prova.layout;
 
     const listaProvaQuestao = [...provaModelo2.listaProvaQuestao];
 
-    window.removeEventListener("resize", resizer, false);
     window.addEventListener("resize", resizer, false);
 
     //const listaQuestoes = listaQuestao
@@ -83,6 +75,14 @@
       const configButton = document.getElementById('configButton');
       const sideMenu = document.getElementById('sideMenu');
       const applyConfigButton = document.getElementById('applyConfig');
+
+      document.addEventListener("click", function (event) {
+        if(configButton.contains(event.target)) return;
+
+        if (!sideMenu.contains(event.target)) {
+          sideMenu.classList.toggle('open');
+        }
+      });
 
       // Abrir/fechar o menu lateral
       configButton.addEventListener('click', () => {
@@ -102,7 +102,7 @@
         const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
 
         // Atualizar o layout com as configurações do menu
-        const layoutBuilder = new MyLib.LayoutAvaliacaoBuilder()
+        const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
           .pageHeader(cabecalhoPagina)
           .fonteTamanho(fontSize)
           .folhaDeRosto({
@@ -127,18 +127,17 @@
 
         const layoutResult = layoutBuilder.build(provaModelo2);
 
-        MyLib.LayoutRenderer.render(layoutResult, pagesContainer)
+        AvaliacaoLayout.LayoutRenderer.render(layoutResult, pagesContainer)
           .then(() => {
             resizer();
           });
 
         // Fechar o menu após aplicar as configurações
-        sideMenu.classList.remove('open');
+        //sideMenu.classList.remove('open');
       });
     }
 
     sideMenu();
-
 
     function resizer() {
       let pages = document.querySelector(".pagedjs_pages");
