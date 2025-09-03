@@ -55,7 +55,7 @@ declare class LayoutAvaliacaoBuilder {
     colunas(quantidade: any): this;
     identificacao(identificacao?: string): this;
     paginacao(): this;
-    build(provaModelo: any, contentContainer: any, pagesContainer: any): Readonly<{
+    build(provaModelo: any): Readonly<{
         layoutHtml: string;
         cssVars: {
             "--layout-font-size": string;
