@@ -24,6 +24,11 @@
     box-shadow: 0 0 0 1px var(--color-mbox);
   }
 
+  .pages_pages_one_page .pagedjs_pages {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .pagedjs_pages {
     width: calc((var(--pagedjs-width) * 2) + (var(--margin) * 4));
     display: flex;
@@ -38,33 +43,5 @@
     margin: 20px 0;
     text-align: center;
     display: block;
-  }
-}
-
-@media screen {
-  .debug .pagedjs_margin-top .pagedjs_margin-top-left-corner,
-  .debug .pagedjs_margin-top .pagedjs_margin-top-right-corner {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
-  }
-
-  .debug .pagedjs_margin-top > div {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
-  }
-
-  .debug .pagedjs_margin-right > div {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
-  }
-
-  .debug .pagedjs_margin-bottom .pagedjs_margin-bottom-left-corner,
-  .debug .pagedjs_margin-bottom .pagedjs_margin-bottom-right-corner {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
-  }
-
-  .debug .pagedjs_margin-bottom > div {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
-  }
-
-  .debug .pagedjs_margin-left > div {
-    box-shadow: 0 0 0 1px inset var(--color-mbox);
   }
 }
