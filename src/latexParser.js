@@ -1,5 +1,5 @@
-import katex from "katex"
-import { decodeHTML } from "entities";
+import katex from "../node_modules/katex/dist/katex.mjs";
+import { decodeHTML } from "../node_modules/entities/dist/esm/index.js";
 
 const delimiters = [
   { left: "$$", right: "$$", display: false },
@@ -55,7 +55,7 @@ function renderWithDelimiters(latexString, delimiters) {
 }
 
 function parserLatex(text) {
- 
+  
   const regex = /<span class=\\*"math-tex\\*">([.\s\S]*?)<\/span>/g;
 
   let match;
@@ -65,6 +65,7 @@ function parserLatex(text) {
   while ((match = regex.exec(text)) !== null) {
     let renderFormula;
     try {
+      
       renderFormula = renderWithDelimiters(
         decodeHTML(match[1]).replace(/\u00A0/g, " "),
         delimiters
