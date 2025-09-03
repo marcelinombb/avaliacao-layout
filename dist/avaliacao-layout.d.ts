@@ -108,7 +108,7 @@ declare class HeaderFooterHandler {
 }
 
 declare class LayoutRenderer {
-    static render(result: any, pagesContainer: any): Promise<any>;
+    static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
 }
 
 export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer };

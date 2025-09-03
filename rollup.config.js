@@ -8,7 +8,7 @@ export default [
   {
     input: "src/index.js", // ponto de entrada da sua lib
     output: {
-      file: "dist/index.esm.js",
+      file: "dist/avaliacao-layout.esm.js",
       format: "esm", // gera um bundle ESM
     },
     plugins: [resolve(), commonjs(), json(), terser()],
@@ -17,7 +17,7 @@ export default [
   {
     input: "src/index.js",
     output: {
-      file: "dist/index.cjs",
+      file: "dist/avaliacao-layout.cjs",
       format: "cjs", // CommonJS
       exports: "auto",
     },
@@ -28,7 +28,7 @@ export default [
   {
     input: "src/index.js",
     output: {
-      file: "dist/index.umd.js",
+      file: "dist/avaliacao-layout.umd.js",
       format: "umd", // ou "iife"
       name: "AvaliacaoLayout", // nome global no browser
     },
@@ -37,7 +37,7 @@ export default [
   {
     input: "types/index.d.ts", // gerado pelo tsc
     output: {
-      file: "dist/index.d.ts",
+      file: "dist/avaliacao-layout.d.ts",
       format: "es",
     },
     plugins: [dts()],
