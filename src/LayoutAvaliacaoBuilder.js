@@ -110,7 +110,7 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  build(provaModelo, contentContainer, pagesContainer) {
+  build(provaModelo) {
     const layoutAvaliacao = new LayoutAvaliacao(provaModelo, {
       fontSize: this.fontSize,
       folhaDeRosto: this._folhaDeRosto.content,

@@ -20,6 +20,11 @@
     font-size: var(--layout-font-size, 14px);
 }
 
+.math-tex {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
 .dontsplit {
     break-inside: avoid;
     /* page-break-inside: avoid; */

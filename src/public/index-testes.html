@@ -5,14 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
   <title>Multi-Page Layout</title>
+  <link rel="stylesheet" href="../../node_modules/katex/dist/katex.min.css">
   <link rel="stylesheet" href="css/exitus-questao-style.css">
   <link rel="stylesheet" href="css/exitus-editor-tiptap-style.css">
   <link rel="stylesheet" href="css/linhas-resposta.css">
   <link rel="stylesheet" href="css/side-menu.css">
   <link rel="stylesheet" href="css/preview.css">
-  <style>
-
-  </style>
 </head>
 
 <body>
@@ -25,6 +23,11 @@
     <h3>Configurações</h3>
     <label for="fontSize">Tamanho da Fonte</label>
     <input type="number" id="fontSize" value="14">
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="estender" checked>
+      <label for="draftWatermark">Estender Paginas</label>
+    </div>
 
     <label for="columns">Colunas</label>
     <select id="columns">
@@ -53,10 +56,12 @@
   </div>
 
   <script src="prova-modelo.js"></script>
-  <script src="../../dist/index.umd.js"></script>
+  <script src="../../dist/avaliacao-layout.umd.js"></script>
   <script type="module">
 
     import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
+
+    import parserLatex from "../latexParser.js"
 
     replacePlaceholders(provaModelo2);
 
@@ -100,6 +105,9 @@
         const draftPages = parseInt(document.getElementById('draftPages').value, 10);
         const addDraftWatermark = document.getElementById('draftWatermark').checked;
         const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
+        const onepage = document.getElementById('estender').checked;
+        
+        pagesContainer.classList.toggle("pages_pages_one_page", !onepage)
 
         // Atualizar o layout com as configurações do menu
         const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
@@ -125,9 +133,11 @@
             layoutBuilder.marcaDaguaInstituicao(marcaDagua);
           }
 
-        const layoutResult = layoutBuilder.build(provaModelo2);
+        let layoutResult = layoutBuilder.build(provaModelo2);
 
-        AvaliacaoLayout.LayoutRenderer.render(layoutResult, pagesContainer)
+        const layoutHtml = parserLatex(layoutResult.layoutHtml);
+
+        AvaliacaoLayout.LayoutRenderer.render({...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
           .then(() => {
             resizer();
           });

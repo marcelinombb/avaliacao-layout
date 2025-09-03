@@ -1,7 +1,7 @@
 import { Previewer, registeredHandlers } from "pagedjs"
 
 export class LayoutRenderer {
-  static async render(result, pagesContainer) {
+  static async render(result, stylesheets = null, pagesContainer) {
 
     if(!result || pagesContainer === undefined) {
       throw new Error("Parâmetros inválidos para renderização do layout de avaliação.");
@@ -24,7 +24,7 @@ export class LayoutRenderer {
 
     return paged.preview(
       contentContainer,
-      ["css/layout-avaliacao.css"],
+      stylesheets,
       pagesContainer
     ).then(chunker => {
       chunker.pages.forEach(page => page.removeListeners());
