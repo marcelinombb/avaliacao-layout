@@ -98,7 +98,11 @@ declare class HeaderFooterHandler {
     polisher: any;
     caller: any;
     config: any;
+    originalWidth: number;
+    originalHeight: number;
     beforePageLayout(page: any): void;
+    afterRendered(pages: any): void;
+    createColumnsElement(): HTMLDivElement;
     createFooterArea(page: any, content: any): void;
     createHeaderArea(page: any, content: any): void;
     calculateRealHeight(element: any): any;

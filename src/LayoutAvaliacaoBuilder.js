@@ -1,7 +1,7 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
 import { Handler } from "pagedjs";
 
-const FOLHA_DE_ROSTO = "folhaDeRosto"
+const FOLHA_DE_ROSTO = "folhaDeRosto";
 
 export class LayoutAvaliacaoBuilder {
   constructor() {
@@ -22,7 +22,7 @@ export class LayoutAvaliacaoBuilder {
     this._marcaDaguaInstituicao = null;
     this.quantidadeColunas = 1;
     this.paginacaoAtiva = false;
-    this._identificacao = '';
+    this._identificacao = "";
     this._gabarito = false;
   }
 
@@ -100,7 +100,7 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  identificacao(identificacao = '') {
+  identificacao(identificacao = "") {
     this._identificacao = identificacao;
     return this;
   }
@@ -144,9 +144,15 @@ export class LayoutAvaliacaoBuilder {
       layoutHtml: layoutAvaliacao.avalicaoHtml(),
       cssVars: {
         "--layout-font-size": this.fontSize + "px",
-        "--layout-watermark-rascunho": this._marcaDaquaRascunho ? `url("${this._marcaDaquaRascunho}")` : "none",
-        "--layout-watermark-instituicao": this._marcaDaguaInstituicao ? `url("${this._marcaDaguaInstituicao}")` : "none",
-        "--layout-identificacao": this._identificacao ? `"${this._identificacao}"` : 'none',
+        "--layout-watermark-rascunho": this._marcaDaquaRascunho
+          ? `url("${this._marcaDaquaRascunho}")`
+          : "none",
+        "--layout-watermark-instituicao": this._marcaDaguaInstituicao
+          ? `url("${this._marcaDaguaInstituicao}")`
+          : "none",
+        "--layout-identificacao": this._identificacao
+          ? `"${this._identificacao}"`
+          : "none",
       },
       handlers: defaultHandlers,
     });
@@ -176,6 +182,8 @@ class HeaderFooterHandler extends Handler {
     this.polisher = polisher;
     this.caller = caller;
     this.config = config;
+    this.originalWidth = 0;
+    this.originalHeight = 0;
   }
 
   beforePageLayout(page) {
@@ -185,8 +193,76 @@ class HeaderFooterHandler extends Handler {
       return;
     }
 
+    const { width } = page.area.getBoundingClientRect();
+
+    this.originalWidth = width;
+
+    page.area.style.width = width / 2 - 10 + "px";
+
     this.createHeaderArea(page, this.config.cabecalhoPagina);
     this.createFooterArea(page, this.config.footer);
+
+    page.area.classList.add("adaptive-block-avalicao-visualize");
+  }
+
+  afterRendered(pages) {
+    let lastPage = null;
+
+    pages.forEach((page) => {
+      const isSpecial =
+        page.element.classList.contains(`pagedjs_${FOLHA_DE_ROSTO}_page`) ||
+        page.element.classList.contains(`pagedjs_rascunho_page`);
+
+      if (isSpecial) return;
+
+      if (!lastPage) {
+        lastPage = page;
+        return;
+      }
+
+      let currentColumns = lastPage.area.querySelector(".colunas-duas");
+
+      if (!currentColumns) {
+        currentColumns = this.createColumnsElement();
+        currentColumns.append(
+          ...lastPage.area.childNodes,
+          ...page.area.childNodes
+        );
+        currentColumns.style.height = page.area.getBoundingClientRect().height + "px"
+        lastPage.area.appendChild(currentColumns);
+      } else {
+        currentColumns.append(...page.area.childNodes);
+      }
+
+      Object.assign(lastPage.area.style, {
+        width: this.originalWidth + "px",
+      });
+
+      if (currentColumns.childElementCount >= 2) {
+        lastPage = page;
+      }
+    });
+
+    // cleanup pass → remove empty pages
+    pages.forEach((page) => {
+      const isSpecial =
+        page.element.classList.contains(`pagedjs_${FOLHA_DE_ROSTO}_page`) ||
+        page.element.classList.contains(`pagedjs_rascunho_page`);
+
+      if (!isSpecial && page.area.childElementCount === 0) {
+        page.element.remove();
+      }
+    });
+  }
+
+  createColumnsElement() {
+    const el = document.createElement("div");
+    el.classList.add("colunas-duas");
+    el.style.columnCount = 2;
+    el.style.columnGap = "20px";
+    el.style.height = this.originalHeight + "px";
+    el.classList.add("adaptive-block-avalicao-visualize");
+    return el;
   }
 
   createFooterArea(page, content) {
@@ -274,7 +350,3 @@ class HeaderFooterHandler extends Handler {
     return borders;
   }
 }
-
-
-
-
