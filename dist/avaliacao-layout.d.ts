@@ -81,6 +81,15 @@ declare class LayoutAvaliacaoBuilder {
                 footerFolhaDeRosto: string;
                 comMarcaDaguaRascunho?: undefined;
             };
+        } | {
+            MyHandler: typeof TwoColumsHandler;
+            config: {
+                comMarcaDaguaRascunho?: undefined;
+                cabecalhoPagina?: undefined;
+                cabecalhoFolhaDeRosto?: undefined;
+                footer?: undefined;
+                footerFolhaDeRosto?: undefined;
+            };
         })[];
     }>;
 }
@@ -101,14 +110,25 @@ declare class HeaderFooterHandler {
     originalWidth: number;
     originalHeight: number;
     beforePageLayout(page: any): void;
-    afterRendered(pages: any): void;
-    createColumnsElement(): HTMLDivElement;
     createFooterArea(page: any, content: any): void;
     createHeaderArea(page: any, content: any): void;
     calculateRealHeight(element: any): any;
     marginsHeight(element: any, total?: boolean): number;
     paddingHeight(element: any, total?: boolean): number;
     borderHeight(element: any, total?: boolean): number;
+}
+declare class TwoColumsHandler {
+    constructor(chunker: any, polisher: any, caller: any, config: any);
+    chunker: any;
+    polisher: any;
+    caller: any;
+    config: any;
+    originalWidth: number;
+    originalHeight: number;
+    beforePageLayout(page: any): void;
+    afterRendered(pages: any): void;
+    isNotTwoColumn(page: any): boolean;
+    createColumnsElement(): HTMLDivElement;
 }
 
 declare class LayoutRenderer {

@@ -35119,6 +35119,10 @@ class LayoutAvaliacaoBuilder {
             : "",
         },
       },
+      {
+        MyHandler: TwoColumsHandler,
+        config: {}
+      }
     ];
 
     return Object.freeze({
@@ -35156,6 +35160,90 @@ class WatermarkHandler extends Handler {
   }
 }
 
+class TwoColumsHandler extends Handler {
+  constructor(chunker, polisher, caller, config) {
+    super(chunker, polisher, caller);
+    this.chunker = chunker;
+    this.polisher = polisher;
+    this.caller = caller;
+    this.config = config;
+    this.originalWidth = 0;
+    this.originalHeight = 0;
+  }
+
+  beforePageLayout(page) {
+
+    if(this.isNotTwoColumn(page)) return
+
+    const { width } = page.area.getBoundingClientRect();
+
+    this.originalWidth = width;
+
+    page.area.style.width = width / 2 - 10 + "px";
+  }
+
+  afterRendered(pages) {
+    let lastPage = null;
+
+    pages.forEach((page) => {
+
+      if (this.isNotTwoColumn(page)) return;
+
+      if (!lastPage) {
+        lastPage = page;
+        return;
+      }
+
+      let currentColumns = lastPage.area.querySelector(".two-column");
+
+      if (!currentColumns) {
+        currentColumns = this.createColumnsElement();
+
+        currentColumns.append(
+          ...lastPage.area.childNodes,
+          ...page.area.childNodes
+        );
+        lastPage.area.appendChild(currentColumns);
+      } else {
+        
+        if (currentColumns.childElementCount >= 2) {
+          lastPage = page;
+          return
+        }
+        
+        currentColumns.append(...page.area.childNodes);
+      }
+
+      currentColumns.childNodes.forEach(child => child.classList.add("column"));
+
+      Object.assign(lastPage.area.style, {
+        width: this.originalWidth + "px",
+      });
+
+    });
+
+    // cleanup pass → remove empty pages
+    pages.forEach((page) => {
+      if (!this.isNotTwoColumn(page) && page.area.childElementCount === 0) {
+        page.element.remove();
+      }
+    });    
+  }
+
+  isNotTwoColumn(page) {
+    return !page.element.classList.contains(`pagedjs_duasColunas_page`)
+  }
+
+  createColumnsElement() {
+    const el = document.createElement("div");
+    el.classList.add("two-column");
+    el.classList.add("adaptive-block-avalicao-visualize");
+    el.setAttribute("style", `display: flex; flex-direction: row;`);
+    return el;
+  }
+
+}
+
 class HeaderFooterHandler extends Handler {
   constructor(chunker, polisher, caller, config) {
     super(chunker, polisher, caller);
@@ -35174,76 +35262,10 @@ class HeaderFooterHandler extends Handler {
       return;
     }
 
-    const { width } = page.area.getBoundingClientRect();
-
-    this.originalWidth = width;
-
-    page.area.style.width = width / 2 - 10 + "px";
-
     this.createHeaderArea(page, this.config.cabecalhoPagina);
     this.createFooterArea(page, this.config.footer);
 
     page.area.classList.add("adaptive-block-avalicao-visualize");
-  }
-
-  afterRendered(pages) {
-    let lastPage = null;
-
-    pages.forEach((page) => {
-      const isSpecial =
-        page.element.classList.contains(`pagedjs_${FOLHA_DE_ROSTO}_page`) ||
-        page.element.classList.contains(`pagedjs_rascunho_page`);
-
-      if (isSpecial) return;
-
-      if (!lastPage) {
-        lastPage = page;
-        return;
-      }
-
-      let currentColumns = lastPage.area.querySelector(".colunas-duas");
-
-      if (!currentColumns) {
-        currentColumns = this.createColumnsElement();
-        currentColumns.append(
-          ...lastPage.area.childNodes,
-          ...page.area.childNodes
-        );
-        currentColumns.style.height = page.area.getBoundingClientRect().height + "px";
-        lastPage.area.appendChild(currentColumns);
-      } else {
-        currentColumns.append(...page.area.childNodes);
-      }
-
-      Object.assign(lastPage.area.style, {
-        width: this.originalWidth + "px",
-      });
-
-      if (currentColumns.childElementCount >= 2) {
-        lastPage = page;
-      }
-    });
-
-    // cleanup pass → remove empty pages
-    pages.forEach((page) => {
-      const isSpecial =
-        page.element.classList.contains(`pagedjs_${FOLHA_DE_ROSTO}_page`) ||
-        page.element.classList.contains(`pagedjs_rascunho_page`);
-
-      if (!isSpecial && page.area.childElementCount === 0) {
-        page.element.remove();
-      }
-    });
-  }
-
-  createColumnsElement() {
-    const el = document.createElement("div");
-    el.classList.add("colunas-duas");
-    el.style.columnCount = 2;
-    el.style.columnGap = "20px";
-    el.style.height = this.originalHeight + "px";
-    el.classList.add("adaptive-block-avalicao-visualize");
-    return el;
   }
 
   createFooterArea(page, content) {

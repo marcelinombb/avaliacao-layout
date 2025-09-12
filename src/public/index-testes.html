@@ -26,7 +26,12 @@
 
     <div class="checkbox-container">
       <input type="checkbox" id="estender" checked>
-      <label for="draftWatermark">Estender Paginas</label>
+      <label for="estender">Estender Paginas</label>
+    </div>
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="quebraquestao" checked>
+      <label for="quebraquestao">Quebra questão</label>
     </div>
 
     <label for="columns">Colunas</label>
@@ -40,7 +45,7 @@
     
     <label for="identification">Marca d'Água</label>
     <div class="checkbox-container">
-      <input type="checkbox" id="draftWatermark" checked>
+      <input type="checkbox" id="draftWatermark">
       <label for="draftWatermark">Rascunho</label>
     </div>
     
@@ -63,11 +68,11 @@
 
     import parserLatex from "../latexParser.js"
 
-    replacePlaceholders(provaModelo2);
+    replacePlaceholders(provaModelo3);
 
-    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo2.prova.layout;
+    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-    const listaProvaQuestao = [...provaModelo2.listaProvaQuestao];
+    const listaProvaQuestao = [...provaModelo3.listaProvaQuestao];
 
     window.addEventListener("resize", resizer, false);
 
@@ -105,9 +110,13 @@
         const draftPages = parseInt(document.getElementById('draftPages').value, 10);
         const addDraftWatermark = document.getElementById('draftWatermark').checked;
         const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
-        const onepage = document.getElementById('estender').checked;
+
+        const quebraQuestao = document.getElementById('quebraquestao').checked;
+        const estender = document.getElementById('estender').checked;
         
-        pagesContainer.classList.toggle("pages_pages_one_page", !onepage)
+        pagesContainer.classList.toggle("pages_pages_one_page", !estender)
+
+        provaModelo3.prova.quebraQuestao = quebraQuestao
 
         // Atualizar o layout com as configurações do menu
         const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
@@ -133,14 +142,14 @@
             layoutBuilder.marcaDaguaInstituicao(marcaDagua);
           }
 
-        let layoutResult = layoutBuilder.build(provaModelo2);
+        let layoutResult = layoutBuilder.build(provaModelo3);
 
         const layoutHtml = parserLatex(layoutResult.layoutHtml);
-
+        
         AvaliacaoLayout.LayoutRenderer.render({...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
-          .then(() => {
-            resizer();
-          });
+        .then(() => {          
+          resizer();
+        });
 
         // Fechar o menu após aplicar as configurações
         //sideMenu.classList.remove('open');
