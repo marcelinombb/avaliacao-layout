@@ -1,10 +1,11 @@
 
+
 @page {
     size: A4 portrait;
     margin: 10mm;
 
     @bottom-right {
-        content: counter(page) "/" counter(pages);
+        content: counter(page) "/" var(--total-pages, counter(pages));
     }
 
     @bottom-left {
@@ -58,17 +59,9 @@
     page: folhaDeRosto;
 }
 
-/* @page duasColunas {
-    .pagedjs_page_content {
-        column-count: 2!important;
-        column-width: auto !important;
-        column-gap: 20px !important;
-        column-fill: auto;
-        column-rule: solid 1px;
-    }
-}
+@page duasColunas {
 
- */
+}
 
 #duas-colunas {
     page: duasColunas;

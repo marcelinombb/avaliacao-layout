@@ -35227,7 +35227,11 @@ class TwoColumsHandler extends Handler {
       if (!this.isNotTwoColumn(page) && page.area.childElementCount === 0) {
         page.element.remove();
       }
-    });    
+    });
+    
+    const totalPages = document.body.querySelector(".pagedjs_pages").childElementCount;
+    document.documentElement.style.setProperty("--total-pages", `"${totalPages}"`);
+    
   }
 
   isNotTwoColumn(page) {
