@@ -79,4 +79,6 @@ declare class LayoutRenderer {
     static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
 }
 
-export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer };
+declare function latexParser(text: any): any;
+
+export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer, latexParser };

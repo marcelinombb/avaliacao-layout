@@ -1,5 +1,5 @@
-import katex from "../node_modules/katex/dist/katex.mjs";
-import { decodeHTML } from "../node_modules/entities/dist/esm/index.js";
+import katex from "katex";
+import { decodeHTML } from 'entities'
 
 const delimiters = [
   { left: "$$", right: "$$", display: false },

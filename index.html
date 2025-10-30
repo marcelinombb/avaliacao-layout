@@ -67,9 +67,7 @@
   <script type="module">
 
     import { shuffleAndMultiply, replacePlaceholders } from "./public/avaliacao-layout/util.js";
-
-    import latexParser from "./src/latexParser.js"
-
+    
     replacePlaceholders(provaModelo3);
 
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
@@ -122,7 +120,7 @@
 
       let layoutResult = layoutBuilder.build(provaModelo3);
 
-      const layoutHtml = latexParser(layoutResult.layoutHtml);
+      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
 
       return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
         .then(() => {
