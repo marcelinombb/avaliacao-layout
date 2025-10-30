@@ -66,7 +66,7 @@
   <script type="module">
     import { LayoutProva } from "./layout-colunas.js";
     import { generateAvalicaoHtml } from "./avaliacao-builder.js";
-    import parserLatex from "./latexParser.js";
+    import latexParser from "./latexParser.js";
 
     const DONTSPLIT = "dontsplit";
     
@@ -109,7 +109,7 @@
 
       let avaliacaoHtml = generateAvalicaoHtml(provaModelo)
 
-      avaliacaoHtml = parserLatex(avaliacaoHtml);
+      avaliacaoHtml = latexParser(avaliacaoHtml);
 
       const tempContainer = createQuestoesTempContainer(avaliacaoHtml);
       const { cabecalhoPagina, cabecalho, folhaRosto, paginacao, rodape, rodapeRosto, colunas, marcaDagua } = provaModelo.prova.layout;

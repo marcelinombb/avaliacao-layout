@@ -42,13 +42,13 @@
 
     <label for="identification">Identificação</label>
     <input type="text" id="identification" value="christus">
-    
+
     <label for="identification">Marca d'Água</label>
     <div class="checkbox-container">
       <input type="checkbox" id="draftWatermark">
       <label for="draftWatermark">Rascunho</label>
     </div>
-    
+
     <div class="checkbox-container">
       <input type="checkbox" id="institutionWatermark" checked>
       <label for="institutionWatermark">Instituição</label>
@@ -58,6 +58,8 @@
     <input type="number" id="draftPages" value="2">
 
     <button id="applyConfig">Visualizar</button>
+    <hr>
+    <button id="printButton">Imprimir</button>
   </div>
 
   <script src="prova-modelo.js"></script>
@@ -66,15 +68,70 @@
 
     import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
 
-    import parserLatex from "../latexParser.js"
+    import latexParser from "../latexParser.js"
 
     replacePlaceholders(provaModelo3);
 
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-    const listaProvaQuestao = [...provaModelo3.listaProvaQuestao];
+    //provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
 
     window.addEventListener("resize", resizer, false);
+
+    function renderizarAvaliacao() {
+
+      pagesContainer.innerHTML = "";
+
+      const fontSize = parseInt(document.getElementById('fontSize').value, 10);
+      const columns = parseInt(document.getElementById('columns').value, 10);
+      const identification = document.getElementById('identification').value;
+      const draftPages = parseInt(document.getElementById('draftPages').value, 10);
+      const addDraftWatermark = document.getElementById('draftWatermark').checked;
+      const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
+
+      const quebraQuestao = document.getElementById('quebraquestao').checked;
+      const estender = document.getElementById('estender').checked;
+
+      pagesContainer.classList.toggle("pages_pages_one_page", !estender)
+
+      provaModelo3.prova.quebraQuestao = quebraQuestao
+
+      // Atualizar o layout com as configurações do menu
+      const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
+        .pageHeader(cabecalhoPagina)
+        .fonteTamanho(fontSize)
+        .folhaDeRosto({
+          header: cabecalho,
+          content: folhaRosto,
+          footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`
+        })
+        .pageFooter(rodape)
+        .colunas(columns)
+        .identificacao(identification)
+        .rascunho(draftPages)
+        .paginacao()
+
+
+      if (addDraftWatermark) {
+        layoutBuilder.marcaDaquaRascunho("assets/marcadagua/marcadagua_semfundo.png");
+      }
+
+      if (addInstitutionWatermark) {
+        layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+      }
+
+      let layoutResult = layoutBuilder.build(provaModelo3);
+
+      const layoutHtml = latexParser(layoutResult.layoutHtml);
+
+      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
+        .then(() => {
+          resizer();
+        });
+
+      // Fechar o menu após aplicar as configurações
+      //sideMenu.classList.remove('open');
+    }
 
     //const listaQuestoes = listaQuestao
 
@@ -87,7 +144,7 @@
       const applyConfigButton = document.getElementById('applyConfig');
 
       document.addEventListener("click", function (event) {
-        if(configButton.contains(event.target)) return;
+        if (configButton.contains(event.target)) return;
 
         if (!sideMenu.contains(event.target)) {
           sideMenu.classList.toggle('open');
@@ -99,61 +156,18 @@
         sideMenu.classList.toggle('open');
       });
 
-      // Aplicar configurações e renderizar o layout
-      applyConfigButton.addEventListener('click', () => {
-
-        pagesContainer.innerHTML = "";
-
-        const fontSize = parseInt(document.getElementById('fontSize').value, 10);
-        const columns = parseInt(document.getElementById('columns').value, 10);
-        const identification = document.getElementById('identification').value;
-        const draftPages = parseInt(document.getElementById('draftPages').value, 10);
-        const addDraftWatermark = document.getElementById('draftWatermark').checked;
-        const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
-
-        const quebraQuestao = document.getElementById('quebraquestao').checked;
-        const estender = document.getElementById('estender').checked;
-        
-        pagesContainer.classList.toggle("pages_pages_one_page", !estender)
-
-        provaModelo3.prova.quebraQuestao = quebraQuestao
-
-        // Atualizar o layout com as configurações do menu
-        const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
-          .pageHeader(cabecalhoPagina)
-          .fonteTamanho(fontSize)
-          .folhaDeRosto({
-            header: cabecalho,
-            content: folhaRosto,
-            footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`
-          })
-          .pageFooter(rodape)
-          .colunas(columns)
-          .identificacao(identification)
-          .rascunho(draftPages)
-          .paginacao()
-
-
-          if (addDraftWatermark) {
-            layoutBuilder.marcaDaquaRascunho("assets/marcadagua/marcadagua_semfundo.png");
-          }
-
-          if (addInstitutionWatermark) {
-            layoutBuilder.marcaDaguaInstituicao(marcaDagua);
-          }
-
-        let layoutResult = layoutBuilder.build(provaModelo3);
-
-        const layoutHtml = parserLatex(layoutResult.layoutHtml);
-        
-        AvaliacaoLayout.LayoutRenderer.render({...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
-        .then(() => {          
-          resizer();
+      // Adicionar funcionalidade ao botão de imprimir
+      const printButton = document.getElementById('printButton');
+      
+      printButton.addEventListener('click', () => {
+        renderizarAvaliacao()
+        .then(() => {
+          window.print();
         });
-
-        // Fechar o menu após aplicar as configurações
-        //sideMenu.classList.remove('open');
       });
+
+      // Aplicar configurações e renderizar o layout
+      applyConfigButton.addEventListener('click', () => renderizarAvaliacao());
     }
 
     sideMenu();

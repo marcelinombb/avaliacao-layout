@@ -63,72 +63,16 @@ declare class LayoutAvaliacaoBuilder {
             "--layout-watermark-instituicao": string;
             "--layout-identificacao": string;
         };
-        handlers: ({
-            MyHandler: typeof WatermarkHandler;
-            config: {
-                comMarcaDaguaRascunho: any;
-                cabecalhoPagina?: undefined;
-                cabecalhoFolhaDeRosto?: undefined;
-                footer?: undefined;
-                footerFolhaDeRosto?: undefined;
-            };
-        } | {
-            MyHandler: typeof HeaderFooterHandler;
-            config: {
-                cabecalhoPagina: string;
-                cabecalhoFolhaDeRosto: string;
-                footer: string;
-                footerFolhaDeRosto: string;
-                comMarcaDaguaRascunho?: undefined;
-            };
-        } | {
-            MyHandler: typeof TwoColumsHandler;
-            config: {
-                comMarcaDaguaRascunho?: undefined;
-                cabecalhoPagina?: undefined;
-                cabecalhoFolhaDeRosto?: undefined;
-                footer?: undefined;
-                footerFolhaDeRosto?: undefined;
-            };
-        })[];
+        folhaDeRosto: {
+            header: string;
+            content: string;
+            footer: string;
+        };
+        header: string;
+        footer: string;
+        comMarcaDaguaRascunho: any;
+        handlers: any[];
     }>;
-}
-declare class WatermarkHandler {
-    constructor(chunker: any, polisher: any, caller: any, config: any);
-    chunker: any;
-    polisher: any;
-    caller: any;
-    config: any;
-    afterPageLayout(pageElement: any, page: any, breakToken: any, chunker: any): void;
-}
-declare class HeaderFooterHandler {
-    constructor(chunker: any, polisher: any, caller: any, config: any);
-    chunker: any;
-    polisher: any;
-    caller: any;
-    config: any;
-    originalWidth: number;
-    originalHeight: number;
-    beforePageLayout(page: any): void;
-    createFooterArea(page: any, content: any): void;
-    createHeaderArea(page: any, content: any): void;
-    calculateRealHeight(element: any): any;
-    marginsHeight(element: any, total?: boolean): number;
-    paddingHeight(element: any, total?: boolean): number;
-    borderHeight(element: any, total?: boolean): number;
-}
-declare class TwoColumsHandler {
-    constructor(chunker: any, polisher: any, caller: any, config: any);
-    chunker: any;
-    polisher: any;
-    caller: any;
-    config: any;
-    originalWidth: number;
-    originalHeight: number;
-    beforePageLayout(page: any): void;
-    afterRendered(pages: any): void;
-    isNotTwoColumn(page: any): boolean;
-    createColumnsElement(): HTMLDivElement;
 }
 
 declare class LayoutRenderer {
