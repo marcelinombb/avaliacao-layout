@@ -72,7 +72,7 @@
 
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-    //provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
+    provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
 
     window.addEventListener("resize", resizer, false);
 
@@ -111,7 +111,7 @@
 
 
       if (addDraftWatermark) {
-        layoutBuilder.marcaDaquaRascunho("assets/marcadagua/marcadagua_semfundo.png");
+        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
       }
 
       if (addInstitutionWatermark) {
