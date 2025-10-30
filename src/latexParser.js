@@ -54,7 +54,7 @@ function renderWithDelimiters(latexString, delimiters) {
   return htmlString;
 }
 
-function parserLatex(text) {
+function latexParser(text) {
   
   const regex = /<span class=\\*"math-tex\\*">([.\s\S]*?)<\/span>/g;
 
@@ -83,4 +83,4 @@ function parserLatex(text) {
   return dataModified;
 }
 
-export default parserLatex
+export default latexParser

@@ -66,14 +66,14 @@
 
     import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
 
-    import parserLatex from "../latexParser.js"
+    import latexParser from "../latexParser.js"
 
     replacePlaceholders(provaModelo3);
 
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-    const listaProvaQuestao = [...provaModelo3.listaProvaQuestao];
-
+    provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
+ 
     window.addEventListener("resize", resizer, false);
 
     //const listaQuestoes = listaQuestao
@@ -144,7 +144,7 @@
 
         let layoutResult = layoutBuilder.build(provaModelo3);
 
-        const layoutHtml = parserLatex(layoutResult.layoutHtml);
+        const layoutHtml = latexParser(layoutResult.layoutHtml);
         
         AvaliacaoLayout.LayoutRenderer.render({...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
         .then(() => {          
