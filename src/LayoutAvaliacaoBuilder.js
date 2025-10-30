@@ -1,7 +1,7 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
 import { Handler } from "pagedjs";
 
-const FOLHA_DE_ROSTO = "folhaDeRosto";
+
 
 export class LayoutAvaliacaoBuilder {
   constructor() {
@@ -120,30 +120,6 @@ export class LayoutAvaliacaoBuilder {
       paginacaoAtiva: this.paginacaoAtiva,
     });
 
-    const defaultHandlers = [
-      {
-        MyHandler: WatermarkHandler,
-        config: { comMarcaDaguaRascunho: this.comMarcaDaguaRascunho },
-      },
-      {
-        MyHandler: HeaderFooterHandler,
-        config: {
-          cabecalhoPagina: this.header,
-          cabecalhoFolhaDeRosto: this._folhaDeRosto.header,
-          footer: this.footer
-            ? `<div class="footer-avaliacao">${this.footer}</div>`
-            : "",
-          footerFolhaDeRosto: this._folhaDeRosto.footer
-            ? `<div class="footer-avaliacao">${this._folhaDeRosto.footer}</div>`
-            : "",
-        },
-      },
-      {
-        MyHandler: TwoColumsHandler,
-        config: {}
-      }
-    ];
-
     return Object.freeze({
       layoutHtml: layoutAvaliacao.avalicaoHtml(),
       cssVars: {
@@ -158,221 +134,11 @@ export class LayoutAvaliacaoBuilder {
           ? `"${this._identificacao}"`
           : "none",
       },
-      handlers: defaultHandlers,
+      folhaDeRosto: this._folhaDeRosto,
+      header: this.header,
+      footer: this.footer,
+      comMarcaDaguaRascunho: this.comMarcaDaguaRascunho,
+      handlers: [],
     });
-  }
-}
-
-class WatermarkHandler extends Handler {
-  constructor(chunker, polisher, caller, config) {
-    super(chunker, polisher, caller);
-    this.chunker = chunker;
-    this.polisher = polisher;
-    this.caller = caller;
-    this.config = config;
-  }
-
-  afterPageLayout(pageElement, page, breakToken, chunker) {
-    const watermark = document.createElement("div");
-    watermark.classList.add("watermark");
-    pageElement.querySelector(".pagedjs_area").appendChild(watermark);
-  }
-}
-
-class TwoColumsHandler extends Handler {
-  constructor(chunker, polisher, caller, config) {
-    super(chunker, polisher, caller);
-    this.chunker = chunker;
-    this.polisher = polisher;
-    this.caller = caller;
-    this.config = config;
-    this.originalWidth = 0;
-    this.originalHeight = 0;
-  }
-
-  beforePageLayout(page) {
-
-    if(this.isNotTwoColumn(page)) return
-
-    const { width } = page.area.getBoundingClientRect();
-
-    this.originalWidth = width;
-
-    page.area.style.width = width / 2 - 10 + "px";
-  }
-
-  afterRendered(pages) {
-    let lastPage = null;
-
-    pages.forEach((page) => {
-
-      if (this.isNotTwoColumn(page)) return;
-
-      if (!lastPage) {
-        lastPage = page;
-        return;
-      }
-
-      let currentColumns = lastPage.area.querySelector(".two-column");
-
-      if (!currentColumns) {
-        currentColumns = this.createColumnsElement();
-
-        currentColumns.append(
-          ...lastPage.area.childNodes,
-          ...page.area.childNodes
-        );
-        lastPage.area.appendChild(currentColumns);
-      } else {
-        
-        if (currentColumns.childElementCount >= 2) {
-          lastPage = page;
-          return
-        }
-        
-        currentColumns.append(...page.area.childNodes);
-      }
-
-      currentColumns.childNodes.forEach(child => child.classList.add("column"))
-
-      Object.assign(lastPage.area.style, {
-        width: this.originalWidth + "px",
-      });
-
-    });
-
-    // cleanup pass → remove empty pages
-    pages.forEach((page) => {
-      if (!this.isNotTwoColumn(page) && page.area.childElementCount === 0) {
-        page.element.remove();
-      }
-    });
-    
-    const totalPages = document.body.querySelector(".pagedjs_pages").childElementCount;
-    document.documentElement.style.setProperty("--total-pages", `"${totalPages}"`);
-    
-  }
-
-  isNotTwoColumn(page) {
-    return !page.element.classList.contains(`pagedjs_duasColunas_page`)
-  }
-
-  createColumnsElement() {
-    const el = document.createElement("div");
-    el.classList.add("two-column");
-    el.classList.add("adaptive-block-avalicao-visualize");
-    el.setAttribute("style", `display: flex; flex-direction: row;`)
-    return el;
-  }
-
-}
-
-class HeaderFooterHandler extends Handler {
-  constructor(chunker, polisher, caller, config) {
-    super(chunker, polisher, caller);
-    this.chunker = chunker;
-    this.polisher = polisher;
-    this.caller = caller;
-    this.config = config;
-    this.originalWidth = 0;
-    this.originalHeight = 0;
-  }
-
-  beforePageLayout(page) {
-    if (page.element.classList.contains(`pagedjs_${FOLHA_DE_ROSTO}_page`)) {
-      this.createHeaderArea(page, this.config.cabecalhoFolhaDeRosto);
-      this.createFooterArea(page, this.config.footerFolhaDeRosto);
-      return;
-    }
-
-    this.createHeaderArea(page, this.config.cabecalhoPagina);
-    this.createFooterArea(page, this.config.footer);
-
-    page.area.classList.add("adaptive-block-avalicao-visualize");
-  }
-
-  createFooterArea(page, content) {
-    const pageArea = page.element.querySelector(".pagedjs_area");
-
-    if (pageArea && pageArea.querySelector(".pagedjs_footer_area")) return;
-
-    const footerArea = document.createElement("footer");
-    footerArea.classList.add("pagedjs_footer_area");
-    footerArea.innerHTML = content;
-    pageArea.appendChild(footerArea);
-    // set css variable on this page
-    page.element.style.setProperty(
-      "--pagedjs-footer-height",
-      this.calculateRealHeight(footerArea.firstElementChild) + "px"
-    );
-  }
-
-  createHeaderArea(page, content) {
-    const pageArea = page.element.querySelector(".pagedjs_area");
-
-    if (pageArea && pageArea.querySelector(".pagedjs_headernote_area")) return;
-
-    const headerArea = document.createElement("header");
-    headerArea.classList.add("pagedjs_headernote_area");
-    headerArea.innerHTML = content;
-    pageArea.insertBefore(headerArea, pageArea.firstChild);
-    // set css variable on this page
-    page.element.style.setProperty(
-      "--pagedjs-header-height",
-      this.calculateRealHeight(headerArea) + "px"
-    );
-  }
-
-  calculateRealHeight(element) {
-    if (!element) return 0;
-    const { height } = element.getBoundingClientRect();
-    return (
-      height +
-      this.marginsHeight(element) +
-      this.paddingHeight(element) +
-      this.borderHeight(element)
-    );
-  }
-
-  marginsHeight(element, total = true) {
-    let styles = window.getComputedStyle(element);
-    let marginTop = parseInt(styles.marginTop);
-    let marginBottom = parseInt(styles.marginBottom);
-    let margin = 0;
-    if (marginTop) {
-      margin += marginTop;
-    }
-    if (marginBottom && total) {
-      margin += marginBottom;
-    }
-    return margin;
-  }
-
-  paddingHeight(element, total = true) {
-    let styles = window.getComputedStyle(element);
-    let paddingTop = parseInt(styles.paddingTop);
-    let paddingBottom = parseInt(styles.paddingBottom);
-    let padding = 0;
-    if (paddingTop) {
-      padding += paddingTop;
-    }
-    if (paddingBottom && total) {
-      padding += paddingBottom;
-    }
-    return padding;
-  }
-
-  borderHeight(element, total = true) {
-    let styles = window.getComputedStyle(element);
-    let borderTop = parseInt(styles.borderTop);
-    let borderBottom = parseInt(styles.borderBottom);
-    let borders = 0;
-    if (borderTop) {
-      borders += borderTop;
-    }
-    if (borderBottom && total) {
-      borders += borderBottom;
-    }
-    return borders;
   }
 }

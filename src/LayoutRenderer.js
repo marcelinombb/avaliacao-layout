@@ -1,4 +1,9 @@
 import { Previewer, registeredHandlers } from "pagedjs"
+import {
+  WatermarkHandler,
+  HeaderFooterHandler,
+  TwoColumnsHandler
+} from "./handlers/index.js";
 
 export class LayoutRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
@@ -10,16 +15,39 @@ export class LayoutRenderer {
     // aplica o HTML
     const contentContainer = document.createElement('div');
     contentContainer.innerHTML = result.layoutHtml;
-    //contentContainer.style.visibility = "hidden";
-    //document.body.appendChild(contentContainer);
 
     // aplica CSS vars
     Object.entries(result.cssVars).forEach(([key, value]) => {
       if (value) document.documentElement.style.setProperty(key, value);
     });
+    
+    const defaultHandlers = [
+      {
+        MyHandler: WatermarkHandler,
+        config: { comMarcaDaguaRascunho: result.comMarcaDaguaRascunho },
+      },
+      {
+        MyHandler: HeaderFooterHandler,
+        config: {
+          cabecalhoPagina: result.header,
+          cabecalhoFolhaDeRosto: result.folhaDeRosto.header,
+          footer: result.footer
+            ? `<div class="footer-avaliacao">${result.footer}</div>`
+            : "",
+          footerFolhaDeRosto: result.folhaDeRosto.footer
+            ? `<div class="footer-avaliacao">${result.folhaDeRosto.footer}</div>`
+            : "",
+        },
+      },
+      {
+        MyHandler: TwoColumnsHandler,
+        config: {}
+      },
+      ...result.handlers
+    ];
 
     // registra handlers
-    result.handlers.forEach((handler) => registerHandlersWithConfig(handler));
+    defaultHandlers.forEach((handler) => registerHandlersWithConfig(handler));
 
     // inicializa preview
     let paged = new Previewer();
@@ -49,7 +77,7 @@ function registerHandlersWithConfig(...handlersWithConfig) {
     const alreadyRegistered = registeredHandlers.some(
       (h) => h.__originalHandler === MyHandler
     );
-
+    
     if (!alreadyRegistered) {
       registeredHandlers.push(ConfiguredHandler);
     }
