@@ -11,7 +11,7 @@ export default [
       file: "dist/avaliacao-layout.esm.js",
       format: "esm", // gera um bundle ESM
     },
-    plugins: [resolve(), commonjs(), json(), terser()],
+    plugins: [resolve(), commonjs(), json()/* , terser() */],
   },
   // Bundle para Node.js (CommonJS)
   {
@@ -21,7 +21,7 @@ export default [
       format: "cjs", // CommonJS
       exports: "auto",
     },
-    plugins: [resolve(), commonjs(), json(), terser()],
+    plugins: [resolve(), commonjs(), json()/* , terser() */],
   },
 
   // Bundle para Browser (IIFE ou UMD)
@@ -32,7 +32,7 @@ export default [
       format: "umd", // ou "iife"
       name: "AvaliacaoLayout", // nome global no browser
     },
-    plugins: [resolve(), commonjs(), json(), terser()],
+    plugins: [resolve(), commonjs(), json()/* , terser() */],
   },
   {
     input: "types/index.d.ts", // gerado pelo tsc

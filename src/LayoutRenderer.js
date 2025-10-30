@@ -10,6 +10,8 @@ export class LayoutRenderer {
     // aplica o HTML
     const contentContainer = document.createElement('div');
     contentContainer.innerHTML = result.layoutHtml;
+    //contentContainer.style.visibility = "hidden";
+    //document.body.appendChild(contentContainer);
 
     // aplica CSS vars
     Object.entries(result.cssVars).forEach(([key, value]) => {
@@ -28,7 +30,7 @@ export class LayoutRenderer {
       pagesContainer
     ).then(chunker => {
       chunker.pages.forEach(page => page.removeListeners());
-      contentContainer.innerHTML = "";
+      contentContainer.remove();
       return chunker;
     })
   }

@@ -1,10 +1,11 @@
 
+
 @page {
     size: A4 portrait;
     margin: 10mm;
 
     @bottom-right {
-        content: counter(page) "/" counter(pages);
+        content: counter(page) "/" var(--total-pages, counter(pages));
     }
 
     @bottom-left {
@@ -30,6 +31,26 @@
     /* page-break-inside: avoid; */
 }
 
+.two-column {
+    display: flex;
+    flex-direction: row;
+    height: 100%!important;
+}
+
+.column {
+    width: 50%;
+    height: 100%!important;
+}
+
+.column:first-child {
+    padding-right: 9px;
+    border-right: solid 1px rgb(66, 65, 65);
+}
+
+.column:last-child {
+    padding-left: 10px;
+}
+
 @page folhaDeRosto {
     
 }
@@ -39,13 +60,7 @@
 }
 
 @page duasColunas {
-    .pagedjs_page_content {
-        column-count: 2!important;
-        column-width: auto !important;
-        column-gap: 20px !important;
-        column-fill: auto;
-        column-rule: solid 1px;
-    }
+
 }
 
 #duas-colunas {

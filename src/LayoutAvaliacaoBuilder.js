@@ -1,7 +1,7 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
 import { Handler } from "pagedjs";
 
-const FOLHA_DE_ROSTO = "folhaDeRosto"
+const FOLHA_DE_ROSTO = "folhaDeRosto";
 
 export class LayoutAvaliacaoBuilder {
   constructor() {
@@ -22,7 +22,7 @@ export class LayoutAvaliacaoBuilder {
     this._marcaDaguaInstituicao = null;
     this.quantidadeColunas = 1;
     this.paginacaoAtiva = false;
-    this._identificacao = '';
+    this._identificacao = "";
     this._gabarito = false;
   }
 
@@ -100,7 +100,7 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  identificacao(identificacao = '') {
+  identificacao(identificacao = "") {
     this._identificacao = identificacao;
     return this;
   }
@@ -138,15 +138,25 @@ export class LayoutAvaliacaoBuilder {
             : "",
         },
       },
+      {
+        MyHandler: TwoColumsHandler,
+        config: {}
+      }
     ];
 
     return Object.freeze({
       layoutHtml: layoutAvaliacao.avalicaoHtml(),
       cssVars: {
         "--layout-font-size": this.fontSize + "px",
-        "--layout-watermark-rascunho": this._marcaDaquaRascunho ? `url("${this._marcaDaquaRascunho}")` : "none",
-        "--layout-watermark-instituicao": this._marcaDaguaInstituicao ? `url("${this._marcaDaguaInstituicao}")` : "none",
-        "--layout-identificacao": this._identificacao ? `"${this._identificacao}"` : 'none',
+        "--layout-watermark-rascunho": this._marcaDaquaRascunho
+          ? `url("${this._marcaDaquaRascunho}")`
+          : "none",
+        "--layout-watermark-instituicao": this._marcaDaguaInstituicao
+          ? `url("${this._marcaDaguaInstituicao}")`
+          : "none",
+        "--layout-identificacao": this._identificacao
+          ? `"${this._identificacao}"`
+          : "none",
       },
       handlers: defaultHandlers,
     });
@@ -169,6 +179,94 @@ class WatermarkHandler extends Handler {
   }
 }
 
+class TwoColumsHandler extends Handler {
+  constructor(chunker, polisher, caller, config) {
+    super(chunker, polisher, caller);
+    this.chunker = chunker;
+    this.polisher = polisher;
+    this.caller = caller;
+    this.config = config;
+    this.originalWidth = 0;
+    this.originalHeight = 0;
+  }
+
+  beforePageLayout(page) {
+
+    if(this.isNotTwoColumn(page)) return
+
+    const { width } = page.area.getBoundingClientRect();
+
+    this.originalWidth = width;
+
+    page.area.style.width = width / 2 - 10 + "px";
+  }
+
+  afterRendered(pages) {
+    let lastPage = null;
+
+    pages.forEach((page) => {
+
+      if (this.isNotTwoColumn(page)) return;
+
+      if (!lastPage) {
+        lastPage = page;
+        return;
+      }
+
+      let currentColumns = lastPage.area.querySelector(".two-column");
+
+      if (!currentColumns) {
+        currentColumns = this.createColumnsElement();
+
+        currentColumns.append(
+          ...lastPage.area.childNodes,
+          ...page.area.childNodes
+        );
+        lastPage.area.appendChild(currentColumns);
+      } else {
+        
+        if (currentColumns.childElementCount >= 2) {
+          lastPage = page;
+          return
+        }
+        
+        currentColumns.append(...page.area.childNodes);
+      }
+
+      currentColumns.childNodes.forEach(child => child.classList.add("column"))
+
+      Object.assign(lastPage.area.style, {
+        width: this.originalWidth + "px",
+      });
+
+    });
+
+    // cleanup pass → remove empty pages
+    pages.forEach((page) => {
+      if (!this.isNotTwoColumn(page) && page.area.childElementCount === 0) {
+        page.element.remove();
+      }
+    });
+    
+    const totalPages = document.body.querySelector(".pagedjs_pages").childElementCount;
+    document.documentElement.style.setProperty("--total-pages", `"${totalPages}"`);
+    
+  }
+
+  isNotTwoColumn(page) {
+    return !page.element.classList.contains(`pagedjs_duasColunas_page`)
+  }
+
+  createColumnsElement() {
+    const el = document.createElement("div");
+    el.classList.add("two-column");
+    el.classList.add("adaptive-block-avalicao-visualize");
+    el.setAttribute("style", `display: flex; flex-direction: row;`)
+    return el;
+  }
+
+}
+
 class HeaderFooterHandler extends Handler {
   constructor(chunker, polisher, caller, config) {
     super(chunker, polisher, caller);
@@ -176,6 +274,8 @@ class HeaderFooterHandler extends Handler {
     this.polisher = polisher;
     this.caller = caller;
     this.config = config;
+    this.originalWidth = 0;
+    this.originalHeight = 0;
   }
 
   beforePageLayout(page) {
@@ -187,6 +287,8 @@ class HeaderFooterHandler extends Handler {
 
     this.createHeaderArea(page, this.config.cabecalhoPagina);
     this.createFooterArea(page, this.config.footer);
+
+    page.area.classList.add("adaptive-block-avalicao-visualize");
   }
 
   createFooterArea(page, content) {
@@ -274,7 +376,3 @@ class HeaderFooterHandler extends Handler {
     return borders;
   }
 }
-
-
-
-
