@@ -5,6 +5,13 @@
   "module": "dist/avaliacao-layout.esm.js",
   "types": "dist/avaliacao-layout.d.ts",
   "type": "module",
+  "files": [
+    "dist/**/*",
+    "types/**/*",
+    "public/**/*",
+    "iframe.html",
+    "pdf.html"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.types.json && rollup -c"
   },
