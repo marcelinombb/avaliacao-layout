@@ -144,7 +144,7 @@ export class QuadroResposta {
   }
 
   static tipoQuadroRespostaHtml(questao) {
-    if (questao.tipoLinha === null) return "";
+    if (!questao.tipoLinha) return "";
 
     switch (questao.tipoLinha.codigo) {
       case 1:

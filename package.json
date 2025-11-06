@@ -1,9 +1,9 @@
 {
   "name": "avaliacao-layout",
   "version": "1.0.0",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/avaliacao-layout.cjs",
+  "module": "dist/avaliacao-layout.esm.js",
+  "types": "dist/avaliacao-layout.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.types.json && rollup -c"

@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
   <title>Multi-Page Layout</title>
-  <link rel="stylesheet" href="../../node_modules/katex/dist/katex.min.css">
-  <link rel="stylesheet" href="css/exitus-questao-style.css">
-  <link rel="stylesheet" href="css/exitus-editor-tiptap-style.css">
-  <link rel="stylesheet" href="css/linhas-resposta.css">
-  <link rel="stylesheet" href="css/side-menu.css">
-  <link rel="stylesheet" href="css/preview.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+  <link rel="stylesheet" href="public/css/exitus-questao-style.css">
+  <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css">
+  <link rel="stylesheet" href="public/css/linhas-resposta.css">
+  <link rel="stylesheet" href="public/css/side-menu.css">
+  <link rel="stylesheet" href="public/css/preview-iframe.css">
 </head>
 
 <body>
@@ -23,11 +23,11 @@
     <h3>Configurações</h3>
     <label for="fontSize">Tamanho da Fonte</label>
     <input type="number" id="fontSize" value="14">
-
+<!--
     <div class="checkbox-container">
       <input type="checkbox" id="estender" checked>
       <label for="estender">Estender Paginas</label>
-    </div>
+    </div> -->
 
     <div class="checkbox-container">
       <input type="checkbox" id="quebraquestao" checked>
@@ -62,13 +62,11 @@
     <button id="printButton">Imprimir</button>
   </div>
 
-  <script src="prova-modelo.js"></script>
-  <script src="../../dist/avaliacao-layout.umd.js"></script>
+  <script src="public/prova-modelo.js"></script>
+  <script src="dist/avaliacao-layout.umd.js"></script>
   <script type="module">
 
-    import { shuffleAndMultiply, replacePlaceholders } from "./avaliacao-layout/util.js";
-
-    import latexParser from "../latexParser.js"
+    import { shuffleAndMultiply, replacePlaceholders } from "./public/avaliacao-layout/util.js";
 
     replacePlaceholders(provaModelo3);
 
@@ -76,7 +74,7 @@
 
     //provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
 
-    window.addEventListener("resize", resizer, false);
+    //window.addEventListener("resize", resizer, false);
 
     function renderizarAvaliacao() {
 
@@ -90,9 +88,9 @@
       const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
 
       const quebraQuestao = document.getElementById('quebraquestao').checked;
-      const estender = document.getElementById('estender').checked;
+    /*   const estender = document.getElementById('estender').checked; */
 
-      pagesContainer.classList.toggle("pages_pages_one_page", !estender)
+     /*  pagesContainer.classList.toggle("pages_pages_one_page", !estender) */
 
       provaModelo3.prova.quebraQuestao = quebraQuestao
 
@@ -113,7 +111,7 @@
 
 
       if (addDraftWatermark) {
-        layoutBuilder.marcaDaquaRascunho("assets/marcadagua/marcadagua_semfundo.png");
+        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
       }
 
       if (addInstitutionWatermark) {
@@ -124,9 +122,9 @@
 
       const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
 
-      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["css/layout-avaliacao.css"], pagesContainer)
+      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
         .then(() => {
-          resizer();
+          //resizer();
         });
 
       // Fechar o menu após aplicar as configurações
@@ -158,7 +156,7 @@
 
       // Adicionar funcionalidade ao botão de imprimir
       const printButton = document.getElementById('printButton');
-      
+
       printButton.addEventListener('click', () => {
         renderizarAvaliacao()
         .then(() => {
@@ -171,6 +169,8 @@
     }
 
     sideMenu();
+
+    //renderizarAvaliacao()
 
     function resizer() {
       let pages = document.querySelector(".pagedjs_pages");
@@ -185,6 +185,24 @@
         }
       }
     }
+
+    window.addEventListener('message', (event) => {
+
+      if(event.data.name ===  'render') {
+        const layoutResult = event.data.data(new AvaliacaoLayout.LayoutAvaliacaoBuilder());
+
+        const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+        const pagesContainer = document.getElementById('pages-container');
+
+        pagesContainer.innerHTML = "";
+
+        AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
+        .then(() => {
+
+        });
+      }
+    });
 
   </script>
 </body>

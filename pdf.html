@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>PDF</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+        integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+    <link rel="stylesheet" href="public/css/exitus-questao-style.css">
+    <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css">
+    <link rel="stylesheet" href="public/css/linhas-resposta.css">
+    <link rel="stylesheet" href="public/css/preview.css">
+</head>
+
+<body>
+    <div id="pages-container"></div>
+
+    <script src="dist/avaliacao-layout.umd.js"></script>
+    <script type="module">
+
+        import { replacePlaceholders } from "./public/avaliacao-layout/util.js";
+
+        const pagesContainer = document.getElementById('pages-container');
+
+        window.generatePdf = (provaModelo) => {
+
+            replacePlaceholders(provaModelo);
+
+            const { cabecalhoPagina, cabecalho, folhaRosto, paginacao, rodape, rodapeRosto, colunas, marcaDagua } = provaModelo.prova.layout;
+            const { folhasRascunho } = provaModelo.prova
+            const { rascunho, usuario, numeroCte } = provaModelo
+
+            let rodapeInfo = "";
+
+            if (rascunho) {
+                rodapeInfo = usuario ?? ''
+            } else {
+                rodapeInfo = numeroCte ?? ''
+            }
+
+            console.log(rodapeInfo);
+            
+
+            const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
+                .pageHeader(cabecalhoPagina)
+                .fonteTamanho(parseInt(provaModelo.fonteTamanho))
+                .folhaDeRosto({
+                    header: cabecalho,
+                    content: folhaRosto,
+                    footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`
+                })
+                .pageFooter(rodape)
+                .colunas(colunas)
+                .identificacao(rodapeInfo)
+                .rascunho(folhasRascunho)
+                .paginacao()
+
+
+            if (rascunho) {
+                layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
+            }
+
+            if (marcaDagua) {
+                layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+            }
+
+            let layoutResult = layoutBuilder.build(provaModelo);
+
+            const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+            return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
+                    .then(() => {
+                        document.body.classList.add('renderDone');
+                    });
+
+        }
+
+    </script>
+</body>
+
+</html>

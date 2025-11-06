@@ -31,6 +31,8 @@ export class LayoutAvaliacao {
 
     formataCabecalho(questao) {
 
+        if(!this.provaModelo.prova || !this.provaModelo.prova.layout) return "";
+
         const {
             cabecalhoPrimeiraQuestao,
             cabecalhoQuestao,
@@ -98,7 +100,7 @@ export class LayoutAvaliacao {
     associacoesHtml(associacoes) {
 
         if (associacoes) {
-            
+
             return `<div class="duas-colunas">
 						<div>
 							${this.buildAssociacao(associacoes.coluna1)}
@@ -174,6 +176,8 @@ export class LayoutAvaliacao {
     }
 
     generateReferenciaHtml(provaQuestao) {
+
+        if(!this.provaModelo.prova || !this.provaModelo.prova.layout) return "";
 
         const { origemQuestao, fonte } = this.provaModelo.prova.layout;
         const { referencia } = provaQuestao.questao;
@@ -282,7 +286,7 @@ export class LayoutAvaliacao {
         const dontSplit = this.provaModelo.prova.quebraQuestao ? "" : DONTSPLIT;
 
         return `
-          <div>
+          <div class='tiptap'>
               <div class='questao-completa ${dontSplit}'>
                   ${this.generateReferenciaHtml(questao)}
                   <div class='cabecalho-questao dontend'>
@@ -312,7 +316,7 @@ export class LayoutAvaliacao {
         const folhaDeRosto = this.layoutOptions.folhaDeRosto ? `<div id="folha-rosto">${this.layoutOptions.folhaDeRosto}</div>` : "";
 
         const questoesHtml = this.layoutOptions.quantidadeColunas == 2 ? `<div id='duas-colunas'>${this.questoesHtml()}</div>` : this.questoesHtml();
-        
+
         const anexos = this.anexosHtml();
 
         const rascunhos = `<div class="rascunho"></div>`.repeat(this.layoutOptions.quantidadeFolhasRascunho);
