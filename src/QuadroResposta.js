@@ -146,23 +146,25 @@ export class QuadroResposta {
   static tipoQuadroRespostaHtml(questao) {
     if (!questao.tipoLinha) return "";
 
+    const quadroResposta = new QuadroResposta();
+
     switch (questao.tipoLinha.codigo) {
       case 1:
-        return this.linhasTabelaNumeradas(questao.numeroLinhas);
+        return quadroResposta.linhasTabelaNumeradas(questao.numeroLinhas);
       case 2:
-        return this.linhasTabela(questao.numeroLinhas);
+        return quadroResposta.linhasTabela(questao.numeroLinhas);
       case 3:
-        return this.quadroDeLinhasComCorrecao(questao.numeroLinhas);
+        return quadroResposta.quadroDeLinhasComCorrecao(questao.numeroLinhas);
       case 4:
-        return this.quadroDeLinhasEmBranco(questao.numeroLinhas);
+        return quadroResposta.quadroDeLinhasEmBranco(questao.numeroLinhas);
       case 5:
-        return this.linhasTabelaComCabecalho(questao.numeroLinhas, false);
+        return quadroResposta.linhasTabelaComCabecalho(questao.numeroLinhas, false);
       case 6:
-        return this.linhasSemRespostaSemBorda(questao.numeroLinhas);
+        return quadroResposta.linhasSemRespostaSemBorda(questao.numeroLinhas);
       case 7:
-        return this.linhasSemBordaComLinha(questao.numeroLinhas);
+        return quadroResposta.linhasSemBordaComLinha(questao.numeroLinhas);
       case 8:
-        return this.linhaComCalculo(questao.numeroLinhas);
+        return quadroResposta.linhaComCalculo(questao.numeroLinhas);
       default:
         return "";
     }
