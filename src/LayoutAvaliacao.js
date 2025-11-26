@@ -144,7 +144,7 @@ export class LayoutAvaliacao {
             .join("");
 
         return `
-            <div class="coluna-sm-12 adaptive-margin-bottom">
+            <div class="coluna-sm-12 adaptive-margin-bottom avaliacao-alternativas">
             ${alternativasHtml}
             </div>
         `;

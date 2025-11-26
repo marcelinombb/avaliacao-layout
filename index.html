@@ -1,190 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Multi-Page Layout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
+    <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
+    <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css" />
+    <link rel="stylesheet" href="public/css/linhas-resposta.css" />
+    <link rel="stylesheet" href="public/css/side-menu.css" />
+    <link rel="stylesheet" href="public/css/preview.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Multi-Page Layout</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
-  <link rel="stylesheet" href="public/css/exitus-questao-style.css">
-  <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css">
-  <link rel="stylesheet" href="public/css/linhas-resposta.css">
-  <link rel="stylesheet" href="public/css/side-menu.css">
-  <link rel="stylesheet" href="public/css/preview.css">
-</head>
+  <body>
+    <div id="pages-container"></div>
 
-<body>
-  <div id="pages-container"></div>
+    <button class="floating-button" id="configButton">⚙️</button>
 
-  <button class="floating-button" id="configButton">⚙️</button>
+    <!-- Menu lateral -->
+    <div class="side-menu" id="sideMenu">
+      <h3>Configurações</h3>
+      <label for="fontSize">Tamanho da Fonte</label>
+      <input type="number" id="fontSize" value="14" />
 
-  <!-- Menu lateral -->
-  <div class="side-menu" id="sideMenu">
-    <h3>Configurações</h3>
-    <label for="fontSize">Tamanho da Fonte</label>
-    <input type="number" id="fontSize" value="14">
+      <div class="checkbox-container">
+        <input type="checkbox" id="estender" checked />
+        <label for="estender">Estender Paginas</label>
+      </div>
 
-    <div class="checkbox-container">
-      <input type="checkbox" id="estender" checked>
-      <label for="estender">Estender Paginas</label>
+      <div class="checkbox-container">
+        <input type="checkbox" id="quebraquestao" checked />
+        <label for="quebraquestao">Quebra questão</label>
+      </div>
+
+      <label for="columns">Colunas</label>
+      <select id="columns">
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+
+      <label for="identification">Identificação</label>
+      <input type="text" id="identification" value="christus" />
+
+      <label for="identification">Marca d'Água</label>
+      <div class="checkbox-container">
+        <input type="checkbox" id="draftWatermark" />
+        <label for="draftWatermark">Rascunho</label>
+      </div>
+
+      <div class="checkbox-container">
+        <input type="checkbox" id="institutionWatermark" checked />
+        <label for="institutionWatermark">Instituição</label>
+      </div>
+
+      <label for="draftPages">Páginas de Rascunho</label>
+      <input type="number" id="draftPages" value="2" />
+
+      <label for="tipoAlternativa">Tipo de Alternativa</label>
+      <select id="tipoAlternativa">
+        <option value="1">1, 2, 3...</option>
+        <option value="2">I., II., III...</option>
+        <option value="3">a., b., c...</option>
+        <option value="4" selected>A., B., C...</option>
+        <option value="5">a), b), c)...</option>
+        <option value="6">A), B), C)...</option>
+        <option value="7">(A), (B), (C)...</option>
+        <option value="8">A ( ), B ( )...</option>
+        <option value="9">ENEM (círculo)</option>
+        <option value="10">Sem marcador</option>
+      </select>
+
+      <label for="tipoEmbaralhamento">Ordenação de Alternativas</label>
+      <select id="tipoEmbaralhamento">
+        <option value="0" selected>Não embaralhar</option>
+        <option value="1">Aleatório</option>
+        <option value="2">Ascendente (menor → maior)</option>
+        <option value="3">Descendente (maior → menor)</option>
+      </select>
+
+      <button id="applyConfig">Visualizar</button>
+      <hr />
+      <button id="printButton">Imprimir</button>
     </div>
 
-    <div class="checkbox-container">
-      <input type="checkbox" id="quebraquestao" checked>
-      <label for="quebraquestao">Quebra questão</label>
-    </div>
+    <script src="public/prova-modelo.js"></script>
+    <script src="dist/avaliacao-layout.umd.js"></script>
+    <script type="module">
+      import { shuffleAndMultiply, replacePlaceholders } from "./public/avaliacao-layout/util.js";
 
-    <label for="columns">Colunas</label>
-    <select id="columns">
-      <option value="1">1</option>
-      <option value="2">2</option>
-    </select>
+      replacePlaceholders(provaModelo3);
 
-    <label for="identification">Identificação</label>
-    <input type="text" id="identification" value="christus">
+      const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-    <label for="identification">Marca d'Água</label>
-    <div class="checkbox-container">
-      <input type="checkbox" id="draftWatermark">
-      <label for="draftWatermark">Rascunho</label>
-    </div>
+      const TIPO_ORDENACAO = {
+        NAO_EMBARALHAR: 0,
+        ALEATORIO: 1,
+        ASCENDENTE: 2,
+        DESCENDENTE: 3,
+      };
 
-    <div class="checkbox-container">
-      <input type="checkbox" id="institutionWatermark" checked>
-      <label for="institutionWatermark">Instituição</label>
-    </div>
+      //provaModelo3.listaProvaQuestao = shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
 
-    <label for="draftPages">Páginas de Rascunho</label>
-    <input type="number" id="draftPages" value="2">
+      window.addEventListener("resize", resizer, false);
 
-    <button id="applyConfig">Visualizar</button>
-    <hr>
-    <button id="printButton">Imprimir</button>
-  </div>
+      function renderizarAvaliacao() {
+        pagesContainer.innerHTML = "";
 
-  <script src="public/prova-modelo.js"></script>
-  <script src="dist/avaliacao-layout.umd.js"></script>
-  <script type="module">
+        const fontSize = parseInt(document.getElementById("fontSize").value, 10);
+        const columns = parseInt(document.getElementById("columns").value, 10);
+        const identification = document.getElementById("identification").value;
+        const draftPages = parseInt(document.getElementById("draftPages").value, 10);
+        const addDraftWatermark = document.getElementById("draftWatermark").checked;
+        const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
 
-    import { shuffleAndMultiply, replacePlaceholders } from "./public/avaliacao-layout/util.js";
-    
-    replacePlaceholders(provaModelo3);
+        const quebraQuestao = document.getElementById("quebraquestao").checked;
+        const estender = document.getElementById("estender").checked;
+        const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
+        const tipoEmbaralhamento = parseInt(document.getElementById("tipoEmbaralhamento").value, 10);
 
-    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
+        pagesContainer.classList.toggle("pages_pages_one_page", !estender);
 
-    provaModelo3.listaProvaQuestao = shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
-
-    window.addEventListener("resize", resizer, false);
-
-    function renderizarAvaliacao() {
-
-      pagesContainer.innerHTML = "";
-
-      const fontSize = parseInt(document.getElementById('fontSize').value, 10);
-      const columns = parseInt(document.getElementById('columns').value, 10);
-      const identification = document.getElementById('identification').value;
-      const draftPages = parseInt(document.getElementById('draftPages').value, 10);
-      const addDraftWatermark = document.getElementById('draftWatermark').checked;
-      const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
-
-      const quebraQuestao = document.getElementById('quebraquestao').checked;
-      const estender = document.getElementById('estender').checked;
-
-      pagesContainer.classList.toggle("pages_pages_one_page", !estender)
-
-      provaModelo3.prova.quebraQuestao = quebraQuestao
-
-      // Atualizar o layout com as configurações do menu
-      const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
-        .pageHeader(cabecalhoPagina)
-        .fonteTamanho(fontSize)
-        .folhaDeRosto({
-          header: cabecalho,
-          content: folhaRosto,
-          footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`
-        })
-        .pageFooter(rodape)
-        .colunas(columns)
-        .identificacao(identification)
-        .rascunho(draftPages)
-        .paginacao()
+        provaModelo3.prova.quebraQuestao = quebraQuestao;
 
 
-      if (addDraftWatermark) {
-        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
-      }
+        // Atualizar o layout com as configurações do menu
+        const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
+          .pageHeader(cabecalhoPagina)
+          .fonteTamanho(fontSize)
+          .folhaDeRosto({
+            header: cabecalho,
+            content: folhaRosto,
+            footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`,
+          })
+          .pageFooter(rodape)
+          .colunas(columns)
+          .identificacao(identification)
+          .rascunho(draftPages)
+          .ordemAlternativas(tipoEmbaralhamento)
+          .tipoAlternativas(tipoAlternativa)
+          .paginacao();
 
-      if (addInstitutionWatermark) {
-        layoutBuilder.marcaDaguaInstituicao(marcaDagua);
-      }
+        if (addDraftWatermark) {
+          layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
+        }
 
-      let layoutResult = layoutBuilder.build(provaModelo3);
+        if (addInstitutionWatermark) {
+          layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+        }
 
-      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+        let layoutResult = layoutBuilder.build(provaModelo3);
 
-      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
-        .then(() => {
+        const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+        return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
           resizer();
         });
 
-      // Fechar o menu após aplicar as configurações
-      //sideMenu.classList.remove('open');
-    }
+        // Fechar o menu após aplicar as configurações
+        //sideMenu.classList.remove('open');
+      }
 
-    //const listaQuestoes = listaQuestao
+      //const listaQuestoes = listaQuestao
 
-    // onde a avaliação será renderizada
-    const pagesContainer = document.getElementById('pages-container');
+      // onde a avaliação será renderizada
+      const pagesContainer = document.getElementById("pages-container");
 
-    function sideMenu() {
-      const configButton = document.getElementById('configButton');
-      const sideMenu = document.getElementById('sideMenu');
-      const applyConfigButton = document.getElementById('applyConfig');
+      function sideMenu() {
+        const configButton = document.getElementById("configButton");
+        const sideMenu = document.getElementById("sideMenu");
+        const applyConfigButton = document.getElementById("applyConfig");
 
-      document.addEventListener("click", function (event) {
-        if (configButton.contains(event.target)) return;
+        document.addEventListener("click", function (event) {
+          if (configButton.contains(event.target)) return;
 
-        if (!sideMenu.contains(event.target)) {
-          sideMenu.classList.toggle('open');
-        }
-      });
-
-      // Abrir/fechar o menu lateral
-      configButton.addEventListener('click', () => {
-        sideMenu.classList.toggle('open');
-      });
-
-      // Adicionar funcionalidade ao botão de imprimir
-      const printButton = document.getElementById('printButton');
-      
-      printButton.addEventListener('click', () => {
-        renderizarAvaliacao()
-        .then(() => {
-          window.print();
+          if (!sideMenu.contains(event.target)) {
+            sideMenu.classList.toggle("open");
+          }
         });
-      });
 
-      // Aplicar configurações e renderizar o layout
-      applyConfigButton.addEventListener('click', () => renderizarAvaliacao());
-    }
+        // Abrir/fechar o menu lateral
+        configButton.addEventListener("click", () => {
+          sideMenu.classList.toggle("open");
+        });
 
-    sideMenu();
+        // Adicionar funcionalidade ao botão de imprimir
+        const printButton = document.getElementById("printButton");
 
-    function resizer() {
-      let pages = document.querySelector(".pagedjs_pages");
+        printButton.addEventListener("click", () => {
+          renderizarAvaliacao().then(() => {
+            window.print();
+          });
+        });
 
-      if (pages) {
-        let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
-        if (scale < 1) {
-          pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2
-            }px, 0)`;
-        } else {
-          pages.style.transform = "none";
+        // Aplicar configurações e renderizar o layout
+        applyConfigButton.addEventListener("click", () => renderizarAvaliacao());
+      }
+
+      sideMenu();
+
+      function resizer() {
+        let pages = document.querySelector(".pagedjs_pages");
+
+        if (pages) {
+          let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
+          if (scale < 1) {
+            pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2}px, 0)`;
+          } else {
+            pages.style.transform = "none";
+          }
         }
       }
-    }
-
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
