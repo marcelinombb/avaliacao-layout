@@ -70,14 +70,6 @@
         <option value="10">Sem marcador</option>
       </select>
 
-      <label for="tipoEmbaralhamento">Ordenação de Alternativas</label>
-      <select id="tipoEmbaralhamento">
-        <option value="0" selected>Não embaralhar</option>
-        <option value="1">Aleatório</option>
-        <option value="2">Ascendente (menor → maior)</option>
-        <option value="3">Descendente (maior → menor)</option>
-      </select>
-
       <button id="applyConfig">Visualizar</button>
       <hr />
       <button id="printButton">Imprimir</button>
@@ -116,7 +108,6 @@
         const quebraQuestao = document.getElementById("quebraquestao").checked;
         const estender = document.getElementById("estender").checked;
         const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
-        const tipoEmbaralhamento = parseInt(document.getElementById("tipoEmbaralhamento").value, 10);
 
         pagesContainer.classList.toggle("pages_pages_one_page", !estender);
 
@@ -136,8 +127,7 @@
           .colunas(columns)
           .identificacao(identification)
           .rascunho(draftPages)
-          .ordemAlternativas(tipoEmbaralhamento)
-          .tipoAlternativas(tipoAlternativa)
+          .tipoAlternativas(provaModelo3.prova.tipoAlternativa)
           .paginacao();
 
         if (addDraftWatermark) {

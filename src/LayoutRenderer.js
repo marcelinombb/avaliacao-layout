@@ -3,7 +3,6 @@ import {
   WatermarkHandler,
   HeaderFooterHandler,
   TwoColumnsHandler,
-  OrderHandler
 } from "./handlers/index.js";
 
 export class LayoutRenderer {
@@ -44,10 +43,10 @@ export class LayoutRenderer {
         MyHandler: TwoColumnsHandler,
         config: {}
       },
-      {
+      /* {
         MyHandler: OrderHandler,
         config: { ordemAlternativas: result.ordemAlternativas, tipoAlternativa: result.tipoAlternativas }
-      },
+      }, */
       ...result.handlers
     ];
 

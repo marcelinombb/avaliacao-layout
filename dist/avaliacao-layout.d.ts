@@ -8,10 +8,10 @@ declare class LayoutAvaliacao {
     assercaoRazaoHtml(assercoes: any): string;
     buildAssociacao(coluna: any): any;
     associacoesHtml(associacoes: any): string;
-    alternativasHtml(alternativas: any): string;
+    alternativasHtml(alternativas: any, ordemAlternativas?: any): string;
     generateReferenciaInfo(): void;
     generateReferenciaHtml(provaQuestao: any): string;
-    layoutQuestaoPorTipoHtml(questao: any): any;
+    layoutQuestaoPorTipoHtml(questao: any, ordemAlternativas?: any): any;
     questaoCompletaHtml(questao: any): string;
     questoesHtml(): any;
     avalicaoHtml(): string;

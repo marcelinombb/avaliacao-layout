@@ -116,29 +116,74 @@ export class LayoutAvaliacao {
         return ""
     }
 
-    alternativasHtml(alternativas) {
+    alternativasHtml(alternativas, ordemAlternativas = null) {
+
+        const TIPO_ORDENACAO = {
+            NAO_EMBARALHAR: 0,
+            ALEATORIO: 1,
+            ASCENDENTE: 2,
+            DESCENDENTE: 3,
+        };
 
         function embaralharAlternativas(alternativas) {
-            const copy = [...alternativas]; // create a shallow copy
+            const copy = [...alternativas];
             for (let i = copy.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [copy[i], copy[j]] = [copy[j], copy[i]]; // swap elements
+                [copy[i], copy[j]] = [copy[j], copy[i]];
             }
             return copy;
         }
 
-        if (this.provaModelo.prova.embaralharAlternativas) {
-            alternativas = embaralharAlternativas(alternativas);
+        const tipoAlternativa = this.provaModelo.prova.tipoAlternativa;
+
+        const tempContainer = document.createElement('div');
+        tempContainer.style.cssText = 'position: absolute; visibility: hidden; left: -9999px;';
+        document.body.appendChild(tempContainer);
+
+        const alternativasComLargura = alternativas.map((texto, idx) => {
+            const div = document.createElement('div');
+            div.className = 'linha-alternativa';
+            div.innerHTML = `
+                <span class="media-esq">${conversorDeIndicesParaAlternativas(idx, tipoAlternativa)}</span>
+                <span class="media-corpo"><p>${texto}</p></span>
+            `;
+            tempContainer.appendChild(div);
+
+            const conteudoAlternativa = div.querySelector('.media-corpo');
+            const width = conteudoAlternativa.getBoundingClientRect().width;
+
+            return { texto, indiceOriginal: idx, width, element: div };
+        });
+
+        document.body.removeChild(tempContainer);
+
+        let alternativasOrdenadas = alternativasComLargura;
+
+        if (ordemAlternativas !== null) {
+            switch (ordemAlternativas) {
+                case TIPO_ORDENACAO.ALEATORIO:
+                    alternativasOrdenadas = embaralharAlternativas(alternativasComLargura);
+                    break;
+                case TIPO_ORDENACAO.ASCENDENTE:
+                    alternativasOrdenadas = [...alternativasComLargura].sort((a, b) => a.width - b.width);
+                    break;
+                case TIPO_ORDENACAO.DESCENDENTE:
+                    alternativasOrdenadas = [...alternativasComLargura].sort((a, b) => b.width - a.width);
+                    break;
+                // NAO_EMBARALHAR (0) ou default: mantém ordem original
+            }
+        }else {
+             alternativasOrdenadas = [...alternativasComLargura].sort((a, b) => a.width - b.width);
         }
 
-        const alternativasHtml = alternativas
-            .map((alternativa, index) => {
+        const alternativasHtml = alternativasOrdenadas
+            .map((item, index) => {
                 return `
                 <div class="linha-alternativa">
                 <span class="media-esq">
-                    ${conversorDeIndicesParaAlternativas(index, this.provaModelo.prova.tipoAlternativa)}
+                    ${conversorDeIndicesParaAlternativas(index, tipoAlternativa)}
                 </span>
-                <span class="media-corpo"><p>${alternativa}</p></span>
+                <span class="media-corpo"><p>${item.texto}</p></span>
                 </div>`;
             })
             .join("");
@@ -205,7 +250,7 @@ export class LayoutAvaliacao {
         `;
     }
 
-    layoutQuestaoPorTipoHtml(questao) {
+    layoutQuestaoPorTipoHtml(questao, ordemAlternativas = null) {
         try {
 
             const tipoQuestao = questao.tipoQuestao;
@@ -238,7 +283,7 @@ export class LayoutAvaliacao {
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
                         <div style="padding-bottom: 12px;"></div>
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativas)}
                         </div>
                     `;
                 case 'Múltipla Escolha - Alternativas Constantes':
@@ -252,7 +297,7 @@ export class LayoutAvaliacao {
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
                         <div style="padding-bottom: 12px;"></div>
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativas)}
                         </div>
                     `;
                 default:
@@ -268,7 +313,7 @@ export class LayoutAvaliacao {
                         ${this.associacoesHtml(questaoObj.associacoes)}
                         ${this.assercaoRazaoHtml(questaoObj.assercoes)}
                         ${isMultiplaEscolha ? this.afirmacoesHtml(questaoObj.afirmacoes, questaoObj.justificarFalsas) : ''}
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativas)}
                     </div>
                     `;
             }
@@ -292,7 +337,7 @@ export class LayoutAvaliacao {
                   <div class='cabecalho-questao dontend'>
                       ${this.formataCabecalho(questao)}
                   </div>
-                  ${this.layoutQuestaoPorTipoHtml(questao.questao)}
+                  ${this.layoutQuestaoPorTipoHtml(questao.questao, questao.ordemAlternativas)}
               </div>
               ${QuadroResposta.tipoQuadroRespostaHtml(questao)}
               ${this.layoutOptions.gabarito ? questao.questao.visualizaResposta : ''}
