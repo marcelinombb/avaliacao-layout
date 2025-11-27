@@ -3,16 +3,16 @@ declare class LayoutAvaliacao {
     provaModelo: any;
     layoutOptions: any;
     anexosHtml(): any;
-    formataCabecalho(questao: any): any;
+    formataCabecalho(provaQuestao: any): any;
     afirmacoesHtml(afirmacoes: any, justificarFalsas: any): any;
     assercaoRazaoHtml(assercoes: any): string;
     buildAssociacao(coluna: any): any;
     associacoesHtml(associacoes: any): string;
-    alternativasHtml(alternativas: any): string;
+    alternativasHtml(alternativas: any, ordemAlternativa: any): string;
     generateReferenciaInfo(): void;
     generateReferenciaHtml(provaQuestao: any): string;
-    layoutQuestaoPorTipoHtml(questao: any): any;
-    questaoCompletaHtml(questao: any): string;
+    layoutQuestaoPorTipoHtml(provaQuestao: any): any;
+    questaoCompletaHtml(provaQuestao: any): string;
     questoesHtml(): any;
     avalicaoHtml(): string;
 }
@@ -37,6 +37,8 @@ declare class LayoutAvaliacaoBuilder {
     paginacaoAtiva: boolean;
     _identificacao: string;
     _gabarito: boolean;
+    tipoOrdenacaoAlternativa: number;
+    _tipoAlternativa: any;
     marcaDaguaRascunho(comMarcaDagua: any): this;
     comMarcaDaguaRascunho: any;
     pageHeader(header: any): this;
@@ -55,6 +57,8 @@ declare class LayoutAvaliacaoBuilder {
     colunas(quantidade: any): this;
     identificacao(identificacao?: string): this;
     paginacao(): this;
+    ordemAlternativa(tipoOrdenacao: any): this;
+    tipoAlternativa(tipoAlternativa: any): this;
     build(provaModelo: any): Readonly<{
         layoutHtml: string;
         cssVars: {
@@ -71,6 +75,8 @@ declare class LayoutAvaliacaoBuilder {
         header: string;
         footer: string;
         comMarcaDaguaRascunho: any;
+        ordemAlternativa: number;
+        tipoAlternativa: any;
         handlers: any[];
     }>;
 }

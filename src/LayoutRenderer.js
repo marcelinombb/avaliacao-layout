@@ -2,13 +2,14 @@ import { Previewer, registeredHandlers } from "pagedjs"
 import {
   WatermarkHandler,
   HeaderFooterHandler,
-  TwoColumnsHandler
+  TwoColumnsHandler,
+  OrderHandler
 } from "./handlers/index.js";
 
 export class LayoutRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
 
-    if(!result || pagesContainer === undefined) {
+    if (!result || pagesContainer === undefined) {
       throw new Error("Parâmetros inválidos para renderização do layout de avaliação.");
     }
 
@@ -20,7 +21,7 @@ export class LayoutRenderer {
     Object.entries(result.cssVars).forEach(([key, value]) => {
       if (value) document.documentElement.style.setProperty(key, value);
     });
-    
+
     const defaultHandlers = [
       {
         MyHandler: WatermarkHandler,
@@ -42,6 +43,10 @@ export class LayoutRenderer {
       {
         MyHandler: TwoColumnsHandler,
         config: {}
+      },
+      {
+        MyHandler: OrderHandler,
+        config: { ordemAlternativa: result.ordemAlternativa, tipoAlternativa: result.tipoAlternativa }
       },
       ...result.handlers
     ];
@@ -74,12 +79,15 @@ function registerHandlersWithConfig(...handlersWithConfig) {
 
     ConfiguredHandler.__originalHandler = MyHandler;
 
-    const alreadyRegistered = registeredHandlers.some(
+    
+    const existingIndex = registeredHandlers.findIndex(
       (h) => h.__originalHandler === MyHandler
     );
-    
-    if (!alreadyRegistered) {
-      registeredHandlers.push(ConfiguredHandler);
+
+    if (existingIndex !== -1) {
+      registeredHandlers.splice(existingIndex, 1);
     }
+
+    registeredHandlers.push(ConfiguredHandler);
   });
 }

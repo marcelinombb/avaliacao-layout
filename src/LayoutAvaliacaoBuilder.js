@@ -1,7 +1,11 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
-import { Handler } from "pagedjs";
 
-
+const TIPO_ORDENACAO = {
+  NAO_EMBARALHAR: 0,
+  ALEATORIO: 1,
+  ASCENDENTE: 2,
+  DESCENDENTE: 3,
+}
 
 export class LayoutAvaliacaoBuilder {
   constructor() {
@@ -24,6 +28,8 @@ export class LayoutAvaliacaoBuilder {
     this.paginacaoAtiva = false;
     this._identificacao = "";
     this._gabarito = false;
+    this.tipoOrdenacaoAlternativa = TIPO_ORDENACAO.NAO_EMBARALHAR;
+    this._tipoAlternativa = null;
   }
 
   marcaDaguaRascunho(comMarcaDagua) {
@@ -111,6 +117,24 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
+  ordemAlternativa(tipoOrdenacao) {
+
+    if (!Object.values(TIPO_ORDENACAO).includes(tipoOrdenacao)) {
+      throw new Error("Tipo de ordenação de alternativas inválido.");
+    }
+
+    this.tipoOrdenacaoAlternativa = tipoOrdenacao;
+
+    return this;
+  }
+
+  tipoAlternativa(tipoAlternativa) {
+
+    this._tipoAlternativa = tipoAlternativa;
+
+    return this;
+  }
+
   build(provaModelo) {
     const layoutAvaliacao = new LayoutAvaliacao(provaModelo, {
       fontSize: this.fontSize,
@@ -139,6 +163,8 @@ export class LayoutAvaliacaoBuilder {
       header: this.header,
       footer: this.footer,
       comMarcaDaguaRascunho: this.comMarcaDaguaRascunho,
+      ordemAlternativa: this.tipoOrdenacaoAlternativa,
+      tipoAlternativa: this._tipoAlternativa,
       handlers: [],
     });
   }
