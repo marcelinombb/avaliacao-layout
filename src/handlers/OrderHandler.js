@@ -15,8 +15,6 @@ export default class OrderHandler extends Handler {
         this.polisher = polisher;
         this.caller = caller;
         this.config = config;
-        this.originalWidth = 0;
-        this.originalHeight = 0;
     }
 
     afterPageLayout(pageElement) {
@@ -38,7 +36,7 @@ export default class OrderHandler extends Handler {
 
             });
 
-            switch (this.config.ordemAlternativas) {
+            switch (this.config.ordemAlternativa) {
                 case TIPO_ORDENACAO.ASCENDENTE:
                     alternativasRect.sort((a, b) => a.width - b.width);
                     break;

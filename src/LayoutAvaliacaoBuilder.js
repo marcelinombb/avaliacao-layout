@@ -28,8 +28,8 @@ export class LayoutAvaliacaoBuilder {
     this.paginacaoAtiva = false;
     this._identificacao = "";
     this._gabarito = false;
-    this.tipoOrdenacaoAlternativas = TIPO_ORDENACAO.NAO_EMBARALHAR;
-    this._tipoAlternativas = null;
+    this.tipoOrdenacaoAlternativa = TIPO_ORDENACAO.NAO_EMBARALHAR;
+    this._tipoAlternativa = null;
   }
 
   marcaDaguaRascunho(comMarcaDagua) {
@@ -116,20 +116,20 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  ordemAlternativas(tipoOrdenacao) {
+  ordemAlternativa(tipoOrdenacao) {
 
     if (!Object.values(TIPO_ORDENACAO).includes(tipoOrdenacao)) {
       throw new Error("Tipo de ordenação de alternativas inválido.");
     }
 
-    this.tipoOrdenacaoAlternativas = tipoOrdenacao;
+    this.tipoOrdenacaoAlternativa = tipoOrdenacao;
 
     return this;
   }
 
-  tipoAlternativas(tipoAlternativa) {
+  tipoAlternativa(tipoAlternativa) {
 
-    this._tipoAlternativas = tipoAlternativa;
+    this._tipoAlternativa = tipoAlternativa;
 
     return this;
   }
@@ -162,8 +162,8 @@ export class LayoutAvaliacaoBuilder {
       header: this.header,
       footer: this.footer,
       comMarcaDaguaRascunho: this.comMarcaDaguaRascunho,
-      ordemAlternativas: this.tipoOrdenacaoAlternativas,
-      tipoAlternativas: this._tipoAlternativas,
+      ordemAlternativa: this.tipoOrdenacaoAlternativa,
+      tipoAlternativa: this._tipoAlternativa,
       handlers: [],
     });
   }

@@ -37,8 +37,8 @@ declare class LayoutAvaliacaoBuilder {
     paginacaoAtiva: boolean;
     _identificacao: string;
     _gabarito: boolean;
-    tipoOrdenacaoAlternativas: number;
-    _tipoAlternativas: any;
+    tipoOrdenacaoAlternativa: number;
+    _tipoAlternativa: any;
     marcaDaguaRascunho(comMarcaDagua: any): this;
     comMarcaDaguaRascunho: any;
     pageHeader(header: any): this;
@@ -57,8 +57,8 @@ declare class LayoutAvaliacaoBuilder {
     colunas(quantidade: any): this;
     identificacao(identificacao?: string): this;
     paginacao(): this;
-    ordemAlternativas(tipoOrdenacao: any): this;
-    tipoAlternativas(tipoAlternativa: any): this;
+    ordemAlternativa(tipoOrdenacao: any): this;
+    tipoAlternativa(tipoAlternativa: any): this;
     build(provaModelo: any): Readonly<{
         layoutHtml: string;
         cssVars: {
@@ -75,8 +75,8 @@ declare class LayoutAvaliacaoBuilder {
         header: string;
         footer: string;
         comMarcaDaguaRascunho: any;
-        ordemAlternativas: number;
-        tipoAlternativas: any;
+        ordemAlternativa: number;
+        tipoAlternativa: any;
         handlers: any[];
     }>;
 }

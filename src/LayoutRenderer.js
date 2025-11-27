@@ -46,7 +46,7 @@ export class LayoutRenderer {
       },
       {
         MyHandler: OrderHandler,
-        config: { ordemAlternativas: result.ordemAlternativas, tipoAlternativa: result.tipoAlternativas }
+        config: { ordemAlternativa: result.ordemAlternativa, tipoAlternativa: result.tipoAlternativa }
       },
       ...result.handlers
     ];
