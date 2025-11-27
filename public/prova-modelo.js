@@ -1743,6 +1743,7 @@ const provaModelo3 = {
             "valor": 1,
             "ordem": 1,
             "ordemPersonalizada": null,
+            "ordemAlternativa": 1,
             "origem": "I",
             "titulo": null,
             "ordemAlternativas": null,

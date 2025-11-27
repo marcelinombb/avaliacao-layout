@@ -29,7 +29,7 @@ export class LayoutAvaliacao {
         return anexosHtml;
     }
 
-    formataCabecalho(questao) {
+    formataCabecalho(provaQuestao) {
 
         if(!this.provaModelo.prova || !this.provaModelo.prova.layout) return "";
 
@@ -40,15 +40,15 @@ export class LayoutAvaliacao {
         } = this.provaModelo.prova.layout;
 
         const cabecalhoTemplate =
-            questao.ordem === 1 ? cabecalhoPrimeiraQuestao : cabecalhoQuestao;
+            provaQuestao.ordem === 1 ? cabecalhoPrimeiraQuestao : cabecalhoQuestao;
 
         const ordem = ordemQuestaoPersonalizada
-            ? questao.ordemPersonalizada ?? ""
-            : questao.ordem;
+            ? provaQuestao.ordemPersonalizada ?? ""
+            : provaQuestao.ordem;
 
         return cabecalhoTemplate
             .replace("#ORDEM#", ordem)
-            .replace("#VALOR#", questao.valor.toString().replace(".", ","));
+            .replace("#VALOR#", provaQuestao.valor.toString().replace(".", ","));
     }
 
     afirmacoesHtml(afirmacoes, justificarFalsas) {
@@ -116,20 +116,7 @@ export class LayoutAvaliacao {
         return ""
     }
 
-    alternativasHtml(alternativas) {
-
-        function embaralharAlternativas(alternativas) {
-            const copy = [...alternativas]; // create a shallow copy
-            for (let i = copy.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [copy[i], copy[j]] = [copy[j], copy[i]]; // swap elements
-            }
-            return copy;
-        }
-
-        if (this.provaModelo.prova.embaralharAlternativas) {
-            alternativas = embaralharAlternativas(alternativas);
-        }
+    alternativasHtml(alternativas, ordemAlternativa) {
 
         const alternativasHtml = alternativas
             .map((alternativa, index) => {
@@ -144,8 +131,8 @@ export class LayoutAvaliacao {
             .join("");
 
         return `
-            <div class="coluna-sm-12 adaptive-margin-bottom avaliacao-alternativas">
-            ${alternativasHtml}
+            <div class="coluna-sm-12 adaptive-margin-bottom avaliacao-alternativas" data-ordem-alternativa="${ordemAlternativa ?? 0}">
+                ${alternativasHtml}
             </div>
         `;
     }
@@ -205,8 +192,10 @@ export class LayoutAvaliacao {
         `;
     }
 
-    layoutQuestaoPorTipoHtml(questao) {
+    layoutQuestaoPorTipoHtml(provaQuestao) {
         try {
+
+            const { questao, ordemAlternativa } = provaQuestao;
 
             const tipoQuestao = questao.tipoQuestao;
 
@@ -238,7 +227,7 @@ export class LayoutAvaliacao {
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
                         <div style="padding-bottom: 12px;"></div>
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativa)}
                         </div>
                     `;
                 case 'Múltipla Escolha - Alternativas Constantes':
@@ -252,7 +241,7 @@ export class LayoutAvaliacao {
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
                         <div style="padding-bottom: 12px;"></div>
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativa)}
                         </div>
                     `;
                 default:
@@ -268,7 +257,7 @@ export class LayoutAvaliacao {
                         ${this.associacoesHtml(questaoObj.associacoes)}
                         ${this.assercaoRazaoHtml(questaoObj.assercoes)}
                         ${isMultiplaEscolha ? this.afirmacoesHtml(questaoObj.afirmacoes, questaoObj.justificarFalsas) : ''}
-                        ${this.alternativasHtml(questaoObj.alternativas)}
+                        ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativa)}
                     </div>
                     `;
             }
@@ -277,25 +266,25 @@ export class LayoutAvaliacao {
         }
     }
 
-    questaoCompletaHtml(questao) {
+    questaoCompletaHtml(provaQuestao) {
 
-        const linhasDeEspacamento = "<br>".repeat(questao.linhasBranco);
+        const linhasDeEspacamento = "<br>".repeat(provaQuestao.linhasBranco);
 
-        const columnBreak = questao.quebraPagina ? "<div class='columnbreak'></div>" : "";
+        const columnBreak = provaQuestao.quebraPagina ? "<div class='columnbreak'></div>" : "";
 
         const dontSplit = this.provaModelo.prova.quebraQuestao ? "" : DONTSPLIT;
 
         return `
           <div class='tiptap'>
               <div class='questao-completa ${dontSplit}'>
-                  ${this.generateReferenciaHtml(questao)}
+                  ${this.generateReferenciaHtml(provaQuestao)}
                   <div class='cabecalho-questao dontend'>
-                      ${this.formataCabecalho(questao)}
+                      ${this.formataCabecalho(provaQuestao)}
                   </div>
-                  ${this.layoutQuestaoPorTipoHtml(questao.questao)}
+                  ${this.layoutQuestaoPorTipoHtml(provaQuestao)}
               </div>
-              ${QuadroResposta.tipoQuadroRespostaHtml(questao)}
-              ${this.layoutOptions.gabarito ? questao.questao.visualizaResposta : ''}
+              ${QuadroResposta.tipoQuadroRespostaHtml(provaQuestao)}
+              ${this.layoutOptions.gabarito ? provaQuestao.questao.visualizaResposta : ''}
               <div>${linhasDeEspacamento}</div>
               ${columnBreak}
           </div>
@@ -307,7 +296,7 @@ export class LayoutAvaliacao {
         this.generateReferenciaInfo()
 
         return this.provaModelo.listaProvaQuestao
-            .map(questao => this.questaoCompletaHtml(questao))
+            .map(provaQuestao => this.questaoCompletaHtml(provaQuestao))
             .join("")
     }
 

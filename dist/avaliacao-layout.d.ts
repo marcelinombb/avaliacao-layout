@@ -3,16 +3,16 @@ declare class LayoutAvaliacao {
     provaModelo: any;
     layoutOptions: any;
     anexosHtml(): any;
-    formataCabecalho(questao: any): any;
+    formataCabecalho(provaQuestao: any): any;
     afirmacoesHtml(afirmacoes: any, justificarFalsas: any): any;
     assercaoRazaoHtml(assercoes: any): string;
     buildAssociacao(coluna: any): any;
     associacoesHtml(associacoes: any): string;
-    alternativasHtml(alternativas: any): string;
+    alternativasHtml(alternativas: any, ordemAlternativa: any): string;
     generateReferenciaInfo(): void;
     generateReferenciaHtml(provaQuestao: any): string;
-    layoutQuestaoPorTipoHtml(questao: any): any;
-    questaoCompletaHtml(questao: any): string;
+    layoutQuestaoPorTipoHtml(provaQuestao: any): any;
+    questaoCompletaHtml(provaQuestao: any): string;
     questoesHtml(): any;
     avalicaoHtml(): string;
 }

@@ -23,20 +23,28 @@ export default class OrderHandler extends Handler {
 
             const alternativasRect = [];
 
+            const rawOrdem = blocoAlternativas.dataset.ordemAlternativa;
+            let ordemAlternativa = Number.parseInt(rawOrdem, 10);
+            if (!rawOrdem || Number.isNaN(ordemAlternativa) || ordemAlternativa === 0) {
+                ordemAlternativa = this.config && typeof this.config.ordemAlternativa === "number"
+                    ? this.config.ordemAlternativa
+                    : TIPO_ORDENACAO.NAO_EMBARALHAR;
+            }
+
             Array.from(blocoAlternativas.children).forEach((child) => {
 
-                if (child == null || child == undefined) return;
+                if (child == null) return;
 
                 const conteudoAlternativa = child.querySelector(".media-corpo");
 
                 alternativasRect.push({
                     element: child.cloneNode(true),
-                    width: conteudoAlternativa.getBoundingClientRect().width
+                    width: (conteudoAlternativa || child).getBoundingClientRect().width
                 });
 
             });
 
-            switch (this.config.ordemAlternativa) {
+            switch (ordemAlternativa) {
                 case TIPO_ORDENACAO.ASCENDENTE:
                     alternativasRect.sort((a, b) => a.width - b.width);
                     break;
@@ -54,7 +62,7 @@ export default class OrderHandler extends Handler {
                     break;
             }
 
-            blocoAlternativas.innerHTML = "";
+            const fragment = document.createDocumentFragment();
 
             alternativasRect.forEach(({ element }, index) => {
 
@@ -63,8 +71,11 @@ export default class OrderHandler extends Handler {
                     label.innerHTML = conversorDeIndicesParaAlternativas(index, this.config.tipoAlternativa);
                 }
 
-                blocoAlternativas.appendChild(element);
+                fragment.appendChild(element);
             });
+
+            blocoAlternativas.innerHTML = "";
+            blocoAlternativas.appendChild(fragment);
         });
     }
 
