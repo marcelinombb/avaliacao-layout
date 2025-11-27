@@ -67,6 +67,7 @@ export class LayoutAvaliacaoBuilder {
 
   gabarito() {
     this._gabarito = true;
+    return this;
   }
 
   rascunho(quantidadeFolhasRascunho) {
