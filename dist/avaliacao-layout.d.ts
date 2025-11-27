@@ -44,7 +44,7 @@ declare class LayoutAvaliacaoBuilder {
     marcaDaguaInstituicao(marcaDaguaUrl: any): this;
     marcaDaquaRascunho(marcaDaguaUrl: any): this;
     fonteTamanho(tamanho: any): this;
-    gabarito(): void;
+    gabarito(): this;
     rascunho(quantidadeFolhasRascunho: any): this;
     quantidadeFolhasRascunho: any;
     folhaDeRosto({ header, content, footer }: {
