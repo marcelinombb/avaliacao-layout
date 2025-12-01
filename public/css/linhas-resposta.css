@@ -1,4 +1,4 @@
-.answer-table {
+  .answer-table {
   max-width: 100%;
   width: 100%;
   margin: 10px 0;
@@ -63,4 +63,45 @@
 .side-number-content {
   min-height: 30px;
   background: white;
+}
+
+/* Classes para linhas sem borda superior */
+.class-table.no-top-border,
+.class-table.no-top-border > header,
+.class-table.no-top-border > div:first-child {
+  border-top: none !important;
+}
+
+.linha-text {
+  padding: 3px 7px 2px 7px;
+}
+
+.linha-bottom {
+  border-bottom: 1px solid black;
+}
+
+.linha-title {
+  font-weight: bold;
+}
+
+/* Linhas sem borda (caso 6 e 7) */
+.linhas-sem-borda {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.linhas-sem-borda .linha {
+  min-height: 30px;
+  padding: 5px 0;
+}
+
+/* Linha com underline (traço embaixo, sem borda de caixa) */
+.linha-underline {
+  border-bottom: 1px solid black;
+}
+
+/* Linha de título com underline (caso 7) */
+.linha-titulo-underline {
+  border-bottom: 1px solid black;
+  margin-bottom: 5px;
 }

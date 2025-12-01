@@ -56,6 +56,11 @@
       <label for="draftPages">Páginas de Rascunho</label>
       <input type="number" id="draftPages" value="2" />
 
+      <div class="checkbox-container">
+        <input type="checkbox" id="exibirGabarito" />
+        <label for="exibirGabarito">Exibir Gabarito</label>
+      </div>
+
       <label for="tipoAlternativa">Tipo de Alternativa</label>
       <select id="tipoAlternativa">
         <option value="1">1, 2, 3...</option>
@@ -118,6 +123,8 @@
         const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
         const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
 
+        const exibirGabarito = document.getElementById("exibirGabarito").checked;
+
         pagesContainer.classList.toggle("pages_pages_one_page", !estender);
 
         provaModelo3.prova.quebraQuestao = quebraQuestao;
@@ -146,6 +153,10 @@
 
         if (addInstitutionWatermark) {
           layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+        }
+
+        if (exibirGabarito) {
+          layoutBuilder.gabarito();
         }
 
         let layoutResult = layoutBuilder.build(provaModelo3);

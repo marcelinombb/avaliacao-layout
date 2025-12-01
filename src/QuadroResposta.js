@@ -36,8 +36,8 @@ export class QuadroResposta {
         `;
   }
 
-  linhasTabelaComCabecalho(numberOfLines) {
-    return this.linhasTabela(numberOfLines, true);
+  linhasTabelaComCabecalho(numberOfLines, withHeader = true) {
+    return this.linhasTabela(numberOfLines, withHeader);
   }
 
   linhasSemRespostaSemBorda(numberOfLines) {
@@ -45,35 +45,35 @@ export class QuadroResposta {
     const lines = Array.from(
       { length: numberOfLines },
       () => `
-    <div class="linha linha-text linha-bottom" style="padding-top: 5px;">
-      <td>&nbsp;</td>
+    <div class="linha linha-text linha-underline">
+      &nbsp;
     </div>
   `
     ).join("");
 
     return `
-    <div class="class-table">
+    <div class="linhas-sem-borda">
       ${lines}
     </div>
   `;
   }
 
-  // melhorar nome
+  // Linhas Sem Borda e Com Linha Para Título
   linhasSemBordaComLinha(numberOfLines) {
     if (!numberOfLines) return "";
     const lines = Array.from(
       { length: numberOfLines },
       () => `
-    <div class="linha linha-text linha-bottom" style="padding-top: 5px;">
-      <td>&nbsp;</td>
+    <div class="linha linha-text linha-underline">
+      &nbsp;
     </div>
   `
     ).join("");
 
     return `
-    <div class="class-table">
-      <div class="linha linha-text linha-title linha-bottom">
-        <td>&nbsp;</td>
+    <div class="linhas-sem-borda">
+      <div class="linha linha-text linha-titulo-underline">
+        &nbsp;
       </div>
       ${lines}
     </div>
@@ -92,8 +92,8 @@ export class QuadroResposta {
     ).join("");
 
     return `
-                <div class="class-table table-quadro">
-                <header style="border-top: none; border-bottom:1px solid black;"><strong class="table-column w100">Cálculo</strong></header>
+                <div class="class-table table-quadro" >
+                <header style="border-top: 1px solid black; border-bottom:1px solid black;"><strong class="table-column w100">Cálculo</strong></header>
                 ${lines}
                 </div>
             `;
@@ -144,12 +144,12 @@ export class QuadroResposta {
   }
 
   static tipoQuadroRespostaHtml(provaQuestao) {
-    if (!provaQuestao.tipoLinha) return "";
+    if (!provaQuestao.tipoLinha.codigo) return "";
 
 
     const quadroResposta = new QuadroResposta();
 
-    switch (provaQuestao.tipoLinha) {
+    switch (provaQuestao.tipoLinha.codigo) {
       case 1:
         return quadroResposta.linhasTabelaNumeradas(provaQuestao.numeroLinhas);
       case 2:
