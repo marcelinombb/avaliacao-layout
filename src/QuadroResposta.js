@@ -144,8 +144,7 @@ export class QuadroResposta {
   }
 
   static tipoQuadroRespostaHtml(provaQuestao) {
-    if (!provaQuestao.tipoLinha.codigo) return "";
-
+    if (!provaQuestao.tipoLinha || !provaQuestao.tipoLinha.codigo) return "";
 
     const quadroResposta = new QuadroResposta();
 
