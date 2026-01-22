@@ -109,10 +109,10 @@ function replacePlaceholders(provaModelo) {
       (provaModelo.prova.turma?.periodoLetivo.nome ?? "&nbsp;"),
     "#MODELO#": " - Modelo " + provaModelo.nome,
     "#PROFESSOR#":
-      provaModelo.prova.turma?.professor.nome == null &&
-        provaModelo.prova.usuario != null
+      provaModelo.prova.turma?.listaTurmaDisciplina?.[0]?.nomeProfessor == null &&
+      provaModelo.prova.usuario != null
         ? provaModelo.prova.usuario.nome
-        : provaModelo.prova.turma?.professor.nome,
+        : provaModelo.prova.turma?.listaTurmaDisciplina?.[0]?.nomeProfessor,
     "#TURNO#": provaModelo.prova.turma?.cursoUnidade.turno.nome,
     "#DURACAO#": provaModelo.prova.duracao,
     "#TOTALQUEST#": provaModelo.listaProvaQuestao.length,

@@ -266,7 +266,7 @@ export class LayoutAvaliacao {
 
         const linhasDeEspacamento = "<br>".repeat(provaQuestao.linhasBranco);
 
-        const columnBreak = provaQuestao.quebraPagina ? "<div class='columnbreak'></div>" : "";
+        const columnBreak = provaQuestao.quebraPagina ? "<div class='quebra-pagina'></div>" : "";
 
         const dontSplit = this.provaModelo.prova.quebraQuestao ? "" : DONTSPLIT;
 

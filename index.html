@@ -91,9 +91,8 @@
     <script src="public/prova-modelo.js"></script>
     <script src="dist/avaliacao-layout.umd.js"></script>
     <script type="module">
-      import { shuffleAndMultiply, replacePlaceholders } from "./public/avaliacao-layout/util.js";
 
-      replacePlaceholders(provaModelo3);
+      AvaliacaoLayout.replacePlaceholders(provaModelo3);
 
       const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
@@ -104,7 +103,7 @@
         DESCENDENTE: 3,
       };
 
-      //provaModelo3.listaProvaQuestao = shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
+      //provaModelo3.listaProvaQuestao = AvaliacaoLayout.shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
 
       window.addEventListener("resize", resizer, false);
 

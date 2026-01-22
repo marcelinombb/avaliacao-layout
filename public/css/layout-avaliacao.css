@@ -33,6 +33,10 @@
     /* page-break-inside: avoid; */
 }
 
+.quebra-pagina {
+    break-before: page;
+}
+
 .two-column {
     display: flex;
     flex-direction: row;
