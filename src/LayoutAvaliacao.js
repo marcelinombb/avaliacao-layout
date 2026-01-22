@@ -212,7 +212,6 @@ export class LayoutAvaliacao {
                         ${questaoObj.textoBase ?? ''}
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
-                        <div style="padding-bottom: 12px;"></div>
                         ${this.associacoesHtml(questaoObj.associacoes)}
                         </div>
                     `;
@@ -226,7 +225,6 @@ export class LayoutAvaliacao {
                         ${this.associacoesHtml(questaoObj.associacoes)}
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
-                        <div style="padding-bottom: 12px;"></div>
                         ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativa)}
                         </div>
                     `;
@@ -240,7 +238,6 @@ export class LayoutAvaliacao {
                         ${isMultiplaEscolha ? this.afirmacoesHtml(questaoObj.afirmacoes, questaoObj.justificarFalsas) : ''}
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
-                        <div style="padding-bottom: 12px;"></div>
                         ${this.alternativasHtml(questaoObj.alternativas, ordemAlternativa)}
                         </div>
                     `;
@@ -252,7 +249,6 @@ export class LayoutAvaliacao {
                         ${questaoObj.textoBase ?? ''}
                         <div style="padding-bottom: 12px;"></div>
                         ${questaoObj.comando ?? ''}
-                        <div style="padding-bottom: 12px;"></div>
                         ${!isMultiplaEscolha ? this.afirmacoesHtml(questaoObj.afirmacoes, questaoObj.justificarFalsas) : ''}
                         ${this.associacoesHtml(questaoObj.associacoes)}
                         ${this.assercaoRazaoHtml(questaoObj.assercoes)}

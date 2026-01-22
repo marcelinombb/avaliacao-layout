@@ -111,3 +111,6 @@
     z-index: 0;
 }
 
+.pagedjs_sheet  p {
+    margin: 0;
+}
