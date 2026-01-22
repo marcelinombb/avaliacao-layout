@@ -103,7 +103,7 @@ div:has(> span.media-esq) {
 .media-dir,
 .media-corpo {
   width: auto;
-  display: inline-flex;
+  display: inline-block;
 }
 
 .display-block {
