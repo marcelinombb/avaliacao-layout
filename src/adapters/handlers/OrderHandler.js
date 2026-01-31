@@ -1,5 +1,5 @@
 import { Handler } from "pagedjs";
-import { conversorDeIndicesParaAlternativas } from "../util.js";
+import { conversorDeIndicesParaAlternativas } from "../../infrastructure/utils/util.js";
 
 const TIPO_ORDENACAO = {
     NAO_EMBARALHAR: 0,
@@ -22,6 +22,8 @@ export default class OrderHandler extends Handler {
         pageElement.querySelectorAll(".avaliacao-alternativas").forEach((blocoAlternativas) => {
 
             const alternativasRect = [];
+
+            if (blocoAlternativas.dataset.ordemAlternativaProcessada) return;
 
             const rawOrdem = blocoAlternativas.dataset.ordemAlternativa;
             let ordemAlternativa = Number.parseInt(rawOrdem, 10);
@@ -75,6 +77,7 @@ export default class OrderHandler extends Handler {
             });
 
             blocoAlternativas.innerHTML = "";
+            blocoAlternativas.setAttribute("data-ordem-alternativa-processada", "true");
             blocoAlternativas.appendChild(fragment);
         });
     }

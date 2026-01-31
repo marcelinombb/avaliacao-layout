@@ -1,19 +1,38 @@
+declare class Assessment {
+    constructor({ id, title, questions, attachments, layout }: {
+        id: any;
+        title: any;
+        questions?: any[];
+        attachments?: any[];
+        layout?: {};
+    });
+    id: any;
+    title: any;
+    questions: any[];
+    attachments: any[];
+    layout: {};
+}
+
+declare class GenerateAssessmentLayout {
+    /**
+     * Executes the use case
+     * @param {Object} rawData - The provaModelo object
+     * @param {Object} options - The layoutOptions
+     */
+    execute(rawData: any, options: any): {
+        html: string;
+    };
+    mapToEntity(rawData: any): Assessment;
+}
+
 declare class LayoutAvaliacao {
     constructor(provaModelo: any, layoutOptions: any);
     provaModelo: any;
     layoutOptions: any;
-    anexosHtml(): any;
-    formataCabecalho(provaQuestao: any): any;
-    afirmacoesHtml(afirmacoes: any, justificarFalsas: any): any;
-    assercaoRazaoHtml(assercoes: any): string;
-    buildAssociacao(coluna: any): any;
-    associacoesHtml(associacoes: any): string;
-    alternativasHtml(alternativas: any, ordemAlternativa: any): string;
-    generateReferenciaInfo(): void;
-    generateReferenciaHtml(provaQuestao: any): string;
-    layoutQuestaoPorTipoHtml(provaQuestao: any): any;
-    questaoCompletaHtml(provaQuestao: any): string;
-    questoesHtml(): any;
+    generateUseCase: GenerateAssessmentLayout;
+    /**
+     * @deprecated Use GenerateAssessmentLayout use case directly for clean architecture
+     */
     avalicaoHtml(): string;
 }
 
@@ -87,4 +106,7 @@ declare class LayoutRenderer {
 
 declare function latexParser(text: any): any;
 
-export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer, latexParser };
+declare function shuffleAndMultiply(arr: any, multiplier: any): any[];
+declare function replacePlaceholders(provaModelo: any): any;
+
+export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer, latexParser, replacePlaceholders, shuffleAndMultiply };

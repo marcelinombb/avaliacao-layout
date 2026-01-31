@@ -1,4 +1,4 @@
-import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
+import { LayoutAvaliacao } from "../LayoutAvaliacao.js";
 
 const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,

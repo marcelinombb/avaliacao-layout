@@ -4,7 +4,7 @@ import {
   HeaderFooterHandler,
   TwoColumnsHandler,
   OrderHandler
-} from "./handlers/index.js";
+} from "../../adapters/handlers/index.js";
 
 export class LayoutRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
@@ -79,7 +79,7 @@ function registerHandlersWithConfig(...handlersWithConfig) {
 
     ConfiguredHandler.__originalHandler = MyHandler;
 
-    
+
     const existingIndex = registeredHandlers.findIndex(
       (h) => h.__originalHandler === MyHandler
     );
