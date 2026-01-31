@@ -28,7 +28,7 @@ export default class TwoColumnsHandler extends Handler {
     if (!page || !page.area) return false;
 
     const children = page.area.children[0].children;
-    
+
     // Verifica se algum filho tem altura maior que 0
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
@@ -92,12 +92,12 @@ export default class TwoColumnsHandler extends Handler {
     });
 
     pagesToRemove.forEach(page => {
-        const index = pages.indexOf(page);
-        if (index > -1) {
-          pages.splice(index, 1);
-        }
+      const index = pages.indexOf(page);
+      if (index > -1) {
+        pages.splice(index, 1);
+      }
 
-        page.element.parentNode?.removeChild(page.element);
+      page.element.parentNode?.removeChild(page.element);
     });
 
     this.updatePageNumbers(pages);
@@ -110,10 +110,10 @@ export default class TwoColumnsHandler extends Handler {
     if (!pagesContainer) return;
 
     const totalPages = pagesContainer.children.length;
-    
+
     // Usa CSS custom property (mais performático)
     document.documentElement.style.setProperty(
-      "--total-pages", 
+      "--total-pages",
       `"${totalPages}"`
     );
 

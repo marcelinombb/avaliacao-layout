@@ -1,225 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Multi-Page Layout</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
-    <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
-    <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css" />
-    <link rel="stylesheet" href="public/css/linhas-resposta.css" />
-    <link rel="stylesheet" href="public/css/side-menu.css" />
-    <link rel="stylesheet" href="public/css/preview.css" />
-  </head>
 
-  <body>
-    <div id="pages-container"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Multi-Page Layout</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+    integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
+  <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
+  <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css" />
+  <link rel="stylesheet" href="public/css/linhas-resposta.css" />
+  <link rel="stylesheet" href="public/css/side-menu.css" />
+  <link rel="stylesheet" href="public/css/preview.css" />
+</head>
 
-    <button class="floating-button" id="configButton">⚙️</button>
+<body>
+  <div id="pages-container"></div>
 
-    <!-- Menu lateral -->
-    <div class="side-menu" id="sideMenu">
-      <h3>Configurações</h3>
-      <label for="fontSize">Tamanho da Fonte</label>
-      <input type="number" id="fontSize" value="14" />
+  <button class="floating-button" id="configButton">⚙️</button>
+  <button class="floating-button-left" id="optionsButton">🛠️</button>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="estender" checked />
-        <label for="estender">Estender Paginas</label>
-      </div>
+  <!-- Menu lateral esquerdo (Opções da Questão) -->
+  <div class="left-menu" id="leftMenu">
+    <h3>Opções da Questão</h3>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="quebraquestao" checked />
-        <label for="quebraquestao">Quebra questão</label>
-      </div>
+    <label for="tipoAlternativa">Tipo de Alternativa</label>
+    <select id="tipoAlternativa">
+      <option value="1">1, 2, 3...</option>
+      <option value="2">I., II., III...</option>
+      <option value="3">a., b., c...</option>
+      <option value="4" selected>A., B., C...</option>
+      <option value="5">a), b), c)...</option>
+      <option value="6">A), B), C)...</option>
+      <option value="7">(A), (B), (C)...</option>
+      <option value="8">A ( ), B ( )...</option>
+      <option value="9">ENEM (círculo)</option>
+      <option value="10">Sem marcador</option>
+    </select>
 
-      <label for="columns">Colunas</label>
-      <select id="columns">
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
+    <label for="ordemAlternativa">Ordenação de Alternativas</label>
+    <select id="ordemAlternativa">
+      <option value="0" selected>Não embaralhar</option>
+      <option value="1">Aleatório</option>
+      <option value="2">Ascendente (menor → maior)</option>
+      <option value="3">Descendente (maior → menor)</option>
+    </select>
 
-      <label for="identification">Identificação</label>
-      <input type="text" id="identification" value="christus" />
+    <button id="applyConfigLeft">Visualizar</button>
 
-      <label for="identification">Marca d'Água</label>
-      <div class="checkbox-container">
-        <input type="checkbox" id="draftWatermark" />
-        <label for="draftWatermark">Rascunho</label>
-      </div>
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+    <h3>Questões da Prova</h3>
+    <div id="questionsContainer"></div>
+  </div>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="institutionWatermark" checked />
-        <label for="institutionWatermark">Instituição</label>
-      </div>
+  <!-- Menu lateral -->
+  <div class="side-menu" id="sideMenu">
+    <h3>Configurações</h3>
+    <label for="fontSize">Tamanho da Fonte</label>
+    <input type="number" id="fontSize" value="14" />
 
-      <label for="draftPages">Páginas de Rascunho</label>
-      <input type="number" id="draftPages" value="2" />
-
-      <div class="checkbox-container">
-        <input type="checkbox" id="exibirGabarito" />
-        <label for="exibirGabarito">Exibir Gabarito</label>
-      </div>
-
-      <label for="tipoAlternativa">Tipo de Alternativa</label>
-      <select id="tipoAlternativa">
-        <option value="1">1, 2, 3...</option>
-        <option value="2">I., II., III...</option>
-        <option value="3">a., b., c...</option>
-        <option value="4" selected>A., B., C...</option>
-        <option value="5">a), b), c)...</option>
-        <option value="6">A), B), C)...</option>
-        <option value="7">(A), (B), (C)...</option>
-        <option value="8">A ( ), B ( )...</option>
-        <option value="9">ENEM (círculo)</option>
-        <option value="10">Sem marcador</option>
-      </select>
-
-      <label for="ordemAlternativa">Ordenação de Alternativas</label>
-      <select id="ordemAlternativa">
-        <option value="0" selected>Não embaralhar</option>
-        <option value="1">Aleatório</option>
-        <option value="2">Ascendente (menor → maior)</option>
-        <option value="3">Descendente (maior → menor)</option>
-      </select>
-
-      <button id="applyConfig">Visualizar</button>
-      <hr />
-      <button id="printButton">Imprimir</button>
+    <div class="checkbox-container">
+      <input type="checkbox" id="estender" checked />
+      <label for="estender">Estender Paginas</label>
     </div>
 
-    <script src="public/prova-modelo.js"></script>
-    <script src="dist/avaliacao-layout.umd.js"></script>
-    <script type="module">
+    <div class="checkbox-container">
+      <input type="checkbox" id="quebraquestao" checked />
+      <label for="quebraquestao">Quebra questão</label>
+    </div>
 
-      AvaliacaoLayout.replacePlaceholders(provaModelo3);
+    <label for="columns">Colunas</label>
+    <select id="columns">
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
 
-      const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
+    <label for="identification">Identificação</label>
+    <input type="text" id="identification" value="christus" />
 
-      const TIPO_ORDENACAO = {
-        NAO_EMBARALHAR: 0,
-        ALEATORIO: 1,
-        ASCENDENTE: 2,
-        DESCENDENTE: 3,
-      };
+    <label for="identification">Marca d'Água</label>
+    <div class="checkbox-container">
+      <input type="checkbox" id="draftWatermark" />
+      <label for="draftWatermark">Rascunho</label>
+    </div>
 
-      //provaModelo3.listaProvaQuestao = AvaliacaoLayout.shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
+    <div class="checkbox-container">
+      <input type="checkbox" id="institutionWatermark" checked />
+      <label for="institutionWatermark">Instituição</label>
+    </div>
 
-      window.addEventListener("resize", resizer, false);
+    <label for="draftPages">Páginas de Rascunho</label>
+    <input type="number" id="draftPages" value="2" />
 
-      function renderizarAvaliacao() {
-        pagesContainer.innerHTML = "";
+    <div class="checkbox-container">
+      <input type="checkbox" id="exibirGabarito" />
+      <label for="exibirGabarito">Exibir Gabarito</label>
+    </div>
 
-        const fontSize = parseInt(document.getElementById("fontSize").value, 10);
-        const columns = parseInt(document.getElementById("columns").value, 10);
-        const identification = document.getElementById("identification").value;
-        const draftPages = parseInt(document.getElementById("draftPages").value, 10);
-        const addDraftWatermark = document.getElementById("draftWatermark").checked;
-        const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
+    <button id="applyConfig">Visualizar</button>
+    <hr />
+    <button id="printButton">Imprimir</button>
+  </div>
 
-        const quebraQuestao = document.getElementById("quebraquestao").checked;
-        const estender = document.getElementById("estender").checked;
-        const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
-        const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
+  <script src="public/prova-modelo.js"></script>
+  <script src="dist/avaliacao-layout.umd.js"></script>
+  <script type="module">
 
-        const exibirGabarito = document.getElementById("exibirGabarito").checked;
+    AvaliacaoLayout.replacePlaceholders(provaModelo3);
 
-        pagesContainer.classList.toggle("pages_pages_one_page", !estender);
+    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
-        provaModelo3.prova.quebraQuestao = quebraQuestao;
+    const TIPO_ORDENACAO = {
+      NAO_EMBARALHAR: 0,
+      ALEATORIO: 1,
+      ASCENDENTE: 2,
+      DESCENDENTE: 3,
+    };
+
+    //provaModelo3.listaProvaQuestao = AvaliacaoLayout.shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
+
+    window.addEventListener("resize", resizer, false);
+
+    function renderizarAvaliacao() {
+      pagesContainer.innerHTML = "";
+
+      const fontSize = parseInt(document.getElementById("fontSize").value, 10);
+      const columns = parseInt(document.getElementById("columns").value, 10);
+      const identification = document.getElementById("identification").value;
+      const draftPages = parseInt(document.getElementById("draftPages").value, 10);
+      const addDraftWatermark = document.getElementById("draftWatermark").checked;
+      const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
+
+      const quebraQuestao = document.getElementById("quebraquestao").checked;
+      const estender = document.getElementById("estender").checked;
+      const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
+      const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
+
+      const exibirGabarito = document.getElementById("exibirGabarito").checked;
+
+      pagesContainer.classList.toggle("pages_pages_one_page", !estender);
+
+      provaModelo3.prova.quebraQuestao = quebraQuestao;
 
 
-        // Atualizar o layout com as configurações do menu
-        const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
-          .pageHeader(cabecalhoPagina)
-          .fonteTamanho(fontSize)
-          .folhaDeRosto({
-            header: cabecalho,
-            content: folhaRosto,
-            footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`,
-          })
-          .pageFooter(rodape)
-          .colunas(columns)
-          .identificacao(identification)
-          .rascunho(draftPages)
-          .ordemAlternativa(ordemAlternativa)
-          .tipoAlternativa(tipoAlternativa)
-          .paginacao();
+      // Atualizar o layout com as configurações do menu
+      const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
+        .pageHeader(cabecalhoPagina)
+        .fonteTamanho(fontSize)
+        .folhaDeRosto({
+          header: cabecalho,
+          content: folhaRosto,
+          footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`,
+        })
+        .pageFooter(rodape)
+        .colunas(columns)
+        .identificacao(identification)
+        .rascunho(draftPages)
+        .ordemAlternativa(ordemAlternativa)
+        .tipoAlternativa(tipoAlternativa)
+        .paginacao();
 
-        if (addDraftWatermark) {
-          layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
-        }
-
-        if (addInstitutionWatermark) {
-          layoutBuilder.marcaDaguaInstituicao(marcaDagua);
-        }
-
-        if (exibirGabarito) {
-          layoutBuilder.gabarito();
-        }
-
-        let layoutResult = layoutBuilder.build(provaModelo3);
-
-        const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
-
-        return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
-          resizer();
-        });
-
-        // Fechar o menu após aplicar as configurações
-        //sideMenu.classList.remove('open');
+      if (addDraftWatermark) {
+        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
       }
 
-      //const listaQuestoes = listaQuestao
-
-      // onde a avaliação será renderizada
-      const pagesContainer = document.getElementById("pages-container");
-
-      function sideMenu() {
-        const configButton = document.getElementById("configButton");
-        const sideMenu = document.getElementById("sideMenu");
-        const applyConfigButton = document.getElementById("applyConfig");
-
-        document.addEventListener("click", function (event) {
-          if (configButton.contains(event.target)) return;
-
-          if (!sideMenu.contains(event.target)) {
-            sideMenu.classList.toggle("open");
-          }
-        });
-
-        // Abrir/fechar o menu lateral
-        configButton.addEventListener("click", () => {
-          sideMenu.classList.toggle("open");
-        });
-
-        // Adicionar funcionalidade ao botão de imprimir
-        const printButton = document.getElementById("printButton");
-
-        printButton.addEventListener("click", () => {
-          renderizarAvaliacao().then(() => {
-            window.print();
-          });
-        });
-
-        // Aplicar configurações e renderizar o layout
-        applyConfigButton.addEventListener("click", () => renderizarAvaliacao());
+      if (addInstitutionWatermark) {
+        layoutBuilder.marcaDaguaInstituicao(marcaDagua);
       }
 
-      sideMenu();
+      if (exibirGabarito) {
+        layoutBuilder.gabarito();
+      }
 
-      function resizer() {
-        let pages = document.querySelector(".pagedjs_pages");
+      let layoutResult = layoutBuilder.build(provaModelo3);
 
-        if (pages) {
-          let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
-          if (scale < 1) {
-            pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2}px, 0)`;
-          } else {
-            pages.style.transform = "none";
-          }
+      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
+        resizer();
+      });
+
+      // Fechar o menu após aplicar as configurações
+      //sideMenu.classList.remove('open');
+    }
+
+    //const listaQuestoes = listaQuestao
+
+    // onde a avaliação será renderizada
+    const pagesContainer = document.getElementById("pages-container");
+
+    function sideMenu() {
+      const configButton = document.getElementById("configButton");
+      const sideMenu = document.getElementById("sideMenu");
+      const applyConfigButton = document.getElementById("applyConfig");
+
+      document.addEventListener("click", function (event) {
+        if (configButton.contains(event.target)) return;
+
+        if (sideMenu.classList.contains("open") && !sideMenu.contains(event.target)) {
+          sideMenu.classList.remove("open");
+        }
+      });
+
+      // Abrir/fechar o menu lateral
+      configButton.addEventListener("click", () => {
+        sideMenu.classList.toggle("open");
+      });
+
+      // Adicionar funcionalidade ao botão de imprimir
+      const printButton = document.getElementById("printButton");
+
+      printButton.addEventListener("click", () => {
+        renderizarAvaliacao().then(() => {
+          window.print();
+        });
+      });
+
+      // Aplicar configurações e renderizar o layout
+      applyConfigButton.addEventListener("click", () => renderizarAvaliacao());
+    }
+
+    sideMenu();
+
+    function leftSideMenu() {
+      const optionsButton = document.getElementById("optionsButton");
+      const leftMenu = document.getElementById("leftMenu");
+      const applyConfigLeft = document.getElementById("applyConfigLeft");
+
+      optionsButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        leftMenu.classList.toggle("open");
+      });
+
+      document.addEventListener("click", function (event) {
+        if (leftMenu.classList.contains("open") && !leftMenu.contains(event.target) && !optionsButton.contains(event.target)) {
+          leftMenu.classList.remove("open");
+        }
+      });
+
+      applyConfigLeft.addEventListener("click", () => renderizarAvaliacao());
+    }
+
+    leftSideMenu();
+
+    const TIPO_LINHA_OPTIONS = [
+      { code: 1, name: "Numerada" },
+      { code: 2, name: "Tabela" },
+      { code: 3, name: "Correção" },
+      { code: 4, name: "Em Branco" },
+      { code: 5, name: "Tabela s/ Cab." },
+      { code: 6, name: "Sem Borda" },
+      { code: 7, name: "Sem Borda c/ Título" },
+      { code: 8, name: "Cálculo" }
+    ];
+
+    function renderQuestionConfig() {
+      const container = document.getElementById("questionsContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      provaModelo3.listaProvaQuestao.forEach((questao, index) => {
+        const div = document.createElement("div");
+        div.className = "question-block";
+
+        const h4 = document.createElement("h4");
+        h4.innerText = `Questão ${questao.ordem} (ID: ${questao.id || questao.codigo || index + 1})`;
+        h4.style.margin = "0 0 10px 0";
+        div.appendChild(h4);
+
+        // Define helpers
+        const createLabel = (text) => {
+          const l = document.createElement("label");
+          l.innerText = text;
+          return l;
+        };
+
+        // Tipo Linha
+        div.appendChild(createLabel("Tipo de Linha"));
+        const select = document.createElement("select");
+        TIPO_LINHA_OPTIONS.forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt.code;
+          o.innerText = opt.name;
+          if (questao.tipoLinha && questao.tipoLinha.codigo === opt.code) o.selected = true;
+          select.appendChild(o);
+        });
+        select.onchange = (e) => {
+          const val = parseInt(e.target.value);
+          const name = TIPO_LINHA_OPTIONS.find(x => x.code === val).name;
+          questao.tipoLinha = { codigo: val, nome: name };
+        };
+        div.appendChild(select);
+
+        // Numero Linhas
+        div.appendChild(createLabel("Número de Linhas"));
+        const inputNum = document.createElement("input");
+        inputNum.type = "number";
+        inputNum.value = questao.numeroLinhas || 0;
+        inputNum.onchange = (e) => {
+          questao.numeroLinhas = parseInt(e.target.value);
+        };
+        div.appendChild(inputNum);
+
+        // Linhas em Branco
+        div.appendChild(createLabel("Linhas em Branco"));
+        const inputBranco = document.createElement("input");
+        inputBranco.type = "number";
+        inputBranco.value = questao.linhasBranco || 0;
+        inputBranco.onchange = (e) => {
+          questao.linhasBranco = parseInt(e.target.value);
+        };
+        div.appendChild(inputBranco);
+
+        // Quebra Pagina
+        const divCheck = document.createElement("div");
+        divCheck.className = "checkbox-container";
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.id = `qp_${index}`;
+        check.checked = questao.quebraPagina || false;
+        check.onchange = (e) => {
+          questao.quebraPagina = e.target.checked;
+        };
+        const labelCheck = document.createElement("label");
+        labelCheck.htmlFor = `qp_${index}`;
+        labelCheck.innerText = "Quebra Página";
+
+        divCheck.appendChild(check);
+        divCheck.appendChild(labelCheck);
+        div.appendChild(divCheck);
+
+        container.appendChild(div);
+      });
+    }
+
+    renderQuestionConfig();
+
+    function resizer() {
+      let pages = document.querySelector(".pagedjs_pages");
+
+      if (pages) {
+        let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
+        if (scale < 1) {
+          pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2}px, 0)`;
+        } else {
+          pages.style.transform = "none";
         }
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

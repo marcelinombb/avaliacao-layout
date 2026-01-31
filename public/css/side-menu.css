@@ -1,10 +1,14 @@
   /* Botão flutuante */
 
   @media print {
-    .floating-button {
+
+    .floating-button,
+    .floating-button-left {
       display: none;
     }
-    .side-menu {
+
+    .side-menu,
+    .left-menu {
       display: none;
     }
   }
@@ -22,6 +26,25 @@
     font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    /* Ensure it is above the menu if needed, though menu is z-1000 */
+  }
+
+  .floating-button-left {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #28a745;
+    /* Different color to distinguish */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
   }
 
   /* Menu lateral */
@@ -42,17 +65,40 @@
     right: 0;
   }
 
-  .side-menu h3 {
+  /* Menu lateral esquerdo */
+  .left-menu {
+    position: fixed;
+    top: 0;
+    left: -500px;
+    width: 300px;
+    height: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .left-menu.open {
+    left: 0;
+  }
+
+  .side-menu h3,
+  .left-menu h3 {
     margin-top: 0;
   }
 
-  .side-menu label {
+  .side-menu label,
+  .left-menu label {
     display: block;
     margin: 10px 0 5px;
   }
 
   .side-menu input,
-  .side-menu select {
+  .side-menu select,
+  .left-menu input,
+  .left-menu select {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
@@ -60,7 +106,8 @@
     border-radius: 4px;
   }
 
-  .side-menu button {
+  .side-menu button,
+  .left-menu button {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -70,7 +117,8 @@
     cursor: pointer;
   }
 
-  .side-menu button:hover {
+  .side-menu button:hover,
+  .left-menu button:hover {
     background-color: #0056b3;
   }
 
@@ -88,4 +136,10 @@
   .checkbox-container label {
     margin: 0;
     cursor: pointer;
+  }
+
+  .question-block {
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
   }
