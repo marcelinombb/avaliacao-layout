@@ -1,7 +1,7 @@
-import { conversorDeIndicesParaAlternativas } from "../../infrastructure/utils/util.js";
-import { QuadroResposta } from "./QuadroRespostaPresenter.js";
+import { conversorDeIndicesParaAlternativas } from "../utils/util.js";
+import { QuadroRespostaRenderer } from "./QuadroRespostaRenderer.js";
 
-export class HtmlQuestionPresenter {
+export class QuestionRenderer {
     constructor(question, assessmentLayout, options) {
         this.question = question;
         this.assessmentLayout = assessmentLayout;
@@ -201,6 +201,6 @@ export class HtmlQuestionPresenter {
     }
 
     renderResponseQuadro() {
-        return QuadroResposta.tipoQuadroRespostaHtml(this.question);
+        return QuadroRespostaRenderer.tipoQuadroRespostaHtml(this.question);
     }
 }

@@ -13,27 +13,12 @@ declare class Assessment {
     layout: {};
 }
 
-declare class GenerateAssessmentLayout {
-    /**
-     * Executes the use case
-     * @param {Object} rawData - The provaModelo object
-     * @param {Object} options - The layoutOptions
-     */
-    execute(rawData: any, options: any): {
-        html: string;
-    };
-    mapToEntity(rawData: any): Assessment;
-}
-
 declare class LayoutAvaliacao {
     constructor(provaModelo: any, layoutOptions: any);
     provaModelo: any;
     layoutOptions: any;
-    generateUseCase: GenerateAssessmentLayout;
-    /**
-     * @deprecated Use GenerateAssessmentLayout use case directly for clean architecture
-     */
     avalicaoHtml(): string;
+    _mapToEntity(rawData: any): Assessment;
 }
 
 declare class LayoutAvaliacaoBuilder {
@@ -100,7 +85,7 @@ declare class LayoutAvaliacaoBuilder {
     }>;
 }
 
-declare class LayoutRenderer {
+declare class PagedJsRenderer {
     static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
 }
 
@@ -109,4 +94,4 @@ declare function latexParser(text: any): any;
 declare function shuffleAndMultiply(arr: any, multiplier: any): any[];
 declare function replacePlaceholders(provaModelo: any): any;
 
-export { LayoutAvaliacao, LayoutAvaliacaoBuilder, LayoutRenderer, latexParser, replacePlaceholders, shuffleAndMultiply };
+export { LayoutAvaliacao, LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, latexParser, replacePlaceholders, shuffleAndMultiply };

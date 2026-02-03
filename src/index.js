@@ -1,13 +1,13 @@
-import { LayoutAvaliacaoBuilder } from './adapters/LayoutAvaliacaoBuilder.js';
-import { LayoutRenderer } from './infrastructure/rendering/LayoutRenderer.js';
+import { LayoutAvaliacaoBuilder } from './LayoutAvaliacaoBuilder.js';
+import { PagedJsRenderer } from './rendering/PagedJsRenderer.js';
 import { LayoutAvaliacao } from './LayoutAvaliacao.js';
-import latexParser from './infrastructure/parsers/latexParser.js';
-import { replacePlaceholders, shuffleAndMultiply } from './infrastructure/utils/util.js'
+import latexParser from './rendering/utils/latexParser.js';
+import { replacePlaceholders, shuffleAndMultiply } from './rendering/utils/util.js'
 
 export {
     LayoutAvaliacao,
     LayoutAvaliacaoBuilder,
-    LayoutRenderer,
+    PagedJsRenderer as LayoutRenderer, // Alias for backward compatibility if needed, or just export PagedJsRenderer
     latexParser,
     replacePlaceholders,
     shuffleAndMultiply

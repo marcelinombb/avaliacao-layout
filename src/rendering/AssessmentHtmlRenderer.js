@@ -1,6 +1,6 @@
-import { HtmlQuestionPresenter } from "./HtmlQuestionPresenter.js";
+import { QuestionRenderer } from "./components/QuestionRenderer.js";
 
-export class HtmlAssessmentPresenter {
+export class AssessmentHtmlRenderer {
     constructor(assessment, options) {
         this.assessment = assessment;
         this.options = options;
@@ -18,7 +18,7 @@ export class HtmlAssessmentPresenter {
     renderQuestions() {
         const questionsHtml = this.assessment.questions
             .map(question => {
-                const presenter = new HtmlQuestionPresenter(question, this.assessment.layout, this.options);
+                const presenter = new QuestionRenderer(question, this.assessment.layout, this.options);
                 return presenter.render();
             })
             .join("");

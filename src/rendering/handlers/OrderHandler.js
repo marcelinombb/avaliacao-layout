@@ -1,5 +1,5 @@
 import { Handler } from "pagedjs";
-import { conversorDeIndicesParaAlternativas } from "../../infrastructure/utils/util.js";
+import { conversorDeIndicesParaAlternativas } from "../utils/util.js";
 
 const TIPO_ORDENACAO = {
     NAO_EMBARALHAR: 0,

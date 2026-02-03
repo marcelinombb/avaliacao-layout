@@ -4,9 +4,9 @@ import {
   HeaderFooterHandler,
   TwoColumnsHandler,
   OrderHandler
-} from "../../adapters/handlers/index.js";
+} from "./handlers/index.js";
 
-export class LayoutRenderer {
+export class PagedJsRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
 
     if (!result || pagesContainer === undefined) {

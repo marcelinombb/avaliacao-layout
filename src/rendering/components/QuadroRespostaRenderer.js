@@ -1,18 +1,18 @@
-export class QuadroResposta {
+export class QuadroRespostaRenderer {
   linhasTabelaNumeradas(numberOfLines, withHeader = true) {
     const header = `<tr>
                       <td class="side-number-header" colspan="2">Resposta</td>
                     </tr>`;
 
-            let rows = Array.from(
-              { length: numberOfLines },
-              (_, index) => `
+    let rows = Array.from(
+      { length: numberOfLines },
+      (_, index) => `
           <tr>
             <td class="side-number">${index + 1}</td>
             <td class="side-number-content"></td>
           </tr>
         `
-            ).join("");
+    ).join("");
 
     return `
       <table class="side-number-table">
@@ -125,9 +125,8 @@ export class QuadroResposta {
     const rows = Array.from(
       { length: numberOfLines },
       (_, index) => `<div>
-            <span class="table-column" style="width: 5%; border-right: 1px solid black;">${
-              index + 1
-            }</span>
+            <span class="table-column" style="width: 5%; border-right: 1px solid black;">${index + 1
+        }</span>
             <span class="table-column" style="width: 80%;border-right: 1px solid black;">&nbsp;</span>
             <span class="table-column" style="width: 5%;border-right: 1px solid black;">&nbsp;</span>
             <span class="table-column" style="width: 5%;border-right: 1px solid black;">&nbsp;</span>
@@ -146,7 +145,7 @@ export class QuadroResposta {
   static tipoQuadroRespostaHtml(provaQuestao) {
     if (!provaQuestao.tipoLinha || !provaQuestao.tipoLinha.codigo) return "";
 
-    const quadroResposta = new QuadroResposta();
+    const quadroResposta = new QuadroRespostaRenderer();
 
     switch (provaQuestao.tipoLinha.codigo) {
       case 1:
