@@ -5,7 +5,7 @@ import dts from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
 
 export default [
-  /*  {
+  {
      input: "src/index.js", // ponto de entrada da sua lib
      output: {
        file: "dist/avaliacao-layout.esm.js",
@@ -22,7 +22,7 @@ export default [
        exports: "auto",
      },
      plugins: [resolve(), commonjs(), json(), terser()],
-   }, */
+   },
 
   // Bundle para Browser (IIFE ou UMD)
   {
