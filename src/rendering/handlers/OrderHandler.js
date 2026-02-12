@@ -30,7 +30,6 @@ export default class OrderHandler extends Handler {
         const { ref, splitFrom, ordemAlternativa: rawOrdem } = bloco.dataset;
 
         const filhos = Array.from(bloco.querySelectorAll(".linha-alternativa"));
-        console.log(filhos.length)
         if (!filhos.length) return;
 
         // guarda tamanho original apenas na primeira renderização

@@ -33,6 +33,10 @@
     /* page-break-inside: avoid; */
 }
 
+.linha-alternativa {
+    break-inside: avoid;
+}
+
 .quebra-pagina {
     break-before: page;
 }
