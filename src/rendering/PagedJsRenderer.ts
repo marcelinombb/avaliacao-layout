@@ -4,9 +4,9 @@ import {
   HeaderFooterHandler,
   TwoColumnsHandler,
   OrderHandler
-} from "./handlers/index.js";
+} from "./handlers/index";
 
-export class LayoutRenderer {
+export class PagedJsRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
 
     if (!result || pagesContainer === undefined) {
@@ -19,7 +19,7 @@ export class LayoutRenderer {
 
     // aplica CSS vars
     Object.entries(result.cssVars).forEach(([key, value]) => {
-      if (value) document.documentElement.style.setProperty(key, value);
+      if (value) document.documentElement.style.setProperty(key, String(value));
     });
 
     const defaultHandlers = [
@@ -79,7 +79,7 @@ function registerHandlersWithConfig(...handlersWithConfig) {
 
     ConfiguredHandler.__originalHandler = MyHandler;
 
-    
+
     const existingIndex = registeredHandlers.findIndex(
       (h) => h.__originalHandler === MyHandler
     );

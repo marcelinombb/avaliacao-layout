@@ -1,225 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Multi-Page Layout</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
-    <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
-    <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css" />
-    <link rel="stylesheet" href="public/css/linhas-resposta.css" />
-    <link rel="stylesheet" href="public/css/side-menu.css" />
-    <link rel="stylesheet" href="public/css/preview.css" />
-  </head>
 
-  <body>
-    <div id="pages-container"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Multi-Page Layout</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+    integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
+  <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
+  <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css" />
+  <link rel="stylesheet" href="public/css/linhas-resposta.css" />
+  <link rel="stylesheet" href="public/css/side-menu.css" />
+  <link rel="stylesheet" href="public/css/preview.css" />
+</head>
 
-    <button class="floating-button" id="configButton">⚙️</button>
+<body>
+  <div id="loading-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+    <div
+      style="border: 5px solid #f3f3f3; border-top: 5px solid #007bff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;">
+    </div>
+    <p style="margin-top: 20px; font-family: sans-serif; color: #333;">Renderizando...</p>
+  </div>
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
 
-    <!-- Menu lateral -->
-    <div class="side-menu" id="sideMenu">
-      <h3>Configurações</h3>
-      <label for="fontSize">Tamanho da Fonte</label>
-      <input type="number" id="fontSize" value="14" />
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <div id="pages-container"></div>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="estender" checked />
-        <label for="estender">Estender Paginas</label>
-      </div>
+  <button class="floating-button" id="configButton">⚙️</button>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="quebraquestao" checked />
-        <label for="quebraquestao">Quebra questão</label>
-      </div>
 
-      <label for="columns">Colunas</label>
-      <select id="columns">
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
+  <!-- Menu lateral -->
+  <div class="side-menu" id="sideMenu">
+    <h3>Configurações</h3>
+    <label for="fontSize">Tamanho da Fonte</label>
+    <input type="number" id="fontSize" value="14" />
 
-      <label for="identification">Identificação</label>
-      <input type="text" id="identification" value="christus" />
+    <!-- <div class="checkbox-container">
+      <input type="checkbox" id="estender" checked />
+      <label for="estender">Estender Paginas</label>
+    </div> -->
 
-      <label for="identification">Marca d'Água</label>
-      <div class="checkbox-container">
-        <input type="checkbox" id="draftWatermark" />
-        <label for="draftWatermark">Rascunho</label>
-      </div>
-
-      <div class="checkbox-container">
-        <input type="checkbox" id="institutionWatermark" checked />
-        <label for="institutionWatermark">Instituição</label>
-      </div>
-
-      <label for="draftPages">Páginas de Rascunho</label>
-      <input type="number" id="draftPages" value="2" />
-
-      <div class="checkbox-container">
-        <input type="checkbox" id="exibirGabarito" />
-        <label for="exibirGabarito">Exibir Gabarito</label>
-      </div>
-
-      <label for="tipoAlternativa">Tipo de Alternativa</label>
-      <select id="tipoAlternativa">
-        <option value="1">1, 2, 3...</option>
-        <option value="2">I., II., III...</option>
-        <option value="3">a., b., c...</option>
-        <option value="4" selected>A., B., C...</option>
-        <option value="5">a), b), c)...</option>
-        <option value="6">A), B), C)...</option>
-        <option value="7">(A), (B), (C)...</option>
-        <option value="8">A ( ), B ( )...</option>
-        <option value="9">ENEM (círculo)</option>
-        <option value="10">Sem marcador</option>
-      </select>
-
-      <label for="ordemAlternativa">Ordenação de Alternativas</label>
-      <select id="ordemAlternativa">
-        <option value="0" selected>Não embaralhar</option>
-        <option value="1">Aleatório</option>
-        <option value="2">Ascendente (menor → maior)</option>
-        <option value="3">Descendente (maior → menor)</option>
-      </select>
-
-      <button id="applyConfig">Visualizar</button>
-      <hr />
-      <button id="printButton">Imprimir</button>
+    <div class="checkbox-container">
+      <input type="checkbox" id="quebraquestao" checked />
+      <label for="quebraquestao">Quebra questão</label>
     </div>
 
-    <script src="public/prova-modelo.js"></script>
-    <script src="dist/avaliacao-layout.umd.js"></script>
-    <script type="module">
+    <label for="columns">Colunas</label>
+    <select id="columns">
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
 
-      AvaliacaoLayout.replacePlaceholders(provaModelo3);
+    <label for="identification">Identificação</label>
+    <input type="text" id="identification" value="christus" />
 
-      const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
+    <label for="identification">Marca d'Água</label>
+    <div class="checkbox-container">
+      <input type="checkbox" id="draftWatermark" />
+      <label for="draftWatermark">Rascunho</label>
+    </div>
 
-      const TIPO_ORDENACAO = {
-        NAO_EMBARALHAR: 0,
-        ALEATORIO: 1,
-        ASCENDENTE: 2,
-        DESCENDENTE: 3,
+    <div class="checkbox-container">
+      <input type="checkbox" id="institutionWatermark" checked />
+      <label for="institutionWatermark">Instituição</label>
+    </div>
+
+    <label for="draftPages">Páginas de Rascunho</label>
+    <input type="number" id="draftPages" value="0" />
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="exibirGabarito" />
+      <label for="exibirGabarito">Exibir Gabarito</label>
+    </div>
+
+    <button id="applyConfig">Visualizar</button>
+    <hr />
+    <button id="printButton">Imprimir</button>
+  </div>
+
+  <!-- Menu lateral esquerdo persistente -->
+  <div class="question-sidebar open" id="questionSidebar">
+    <button id="toggleSidebarBtn" class="toggle-sidebar-btn">◀</button>
+
+    <div class="question-list-item" id="global-config-card">
+      <div class="question-header" onclick="toggleGlobalConfig()">
+        <span class="q-title">Opções Gerais</span>
+        <div class="toggle-icon" id="global-toggle-icon">▼</div>
+      </div>
+      <div class="question-body" id="global-config-body">
+
+        <div class="control-group">
+          <label for="tipoAlternativa">Tipo de Alternativa</label>
+          <select id="tipoAlternativa">
+            <option value="1">1, 2, 3...</option>
+            <option value="2">I., II., III...</option>
+            <option value="3">a., b., c...</option>
+            <option value="4" selected>A., B., C...</option>
+            <option value="5">a), b), c)...</option>
+            <option value="6">A), B), C)...</option>
+            <option value="7">(A), (B), (C)...</option>
+            <option value="8">A ( ), B ( )...</option>
+            <option value="9">ENEM (círculo)</option>
+            <option value="10">Sem marcador</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="ordemAlternativa">Ordenação de Alternativas</label>
+          <select id="ordemAlternativa">
+            <option value="0" selected>Não embaralhar</option>
+            <option value="1">Aleatório</option>
+            <option value="2">Ascendente (menor → maior)</option>
+            <option value="3">Descendente (maior → menor)</option>
+          </select>
+        </div>
+
+        <div class="question-actions">
+          <button class="btn-apply" id="btnApplyGlobal">Aplicar Alterações</button>
+        </div>
+      </div>
+    </div>
+
+
+
+    <hr />
+    <h3>Questões da Prova</h3>
+    <div id="questionsContainer"></div>
+  </div>
+
+  <script src="public/prova-modelo.js"></script>
+  <script src="dist/avaliacao-layout.umd.js"></script>
+  <script type="module">
+
+    AvaliacaoLayout.replacePlaceholders(provaModelo3);
+
+    const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
+
+    const TIPO_ORDENACAO = {
+      NAO_EMBARALHAR: 0,
+      ALEATORIO: 1,
+      ASCENDENTE: 2,
+      DESCENDENTE: 3,
+    };
+
+    //provaModelo3.listaProvaQuestao = AvaliacaoLayout.shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
+
+    window.addEventListener("resize", resizer, false);
+
+    // Configurações Globais
+    window.toggleGlobalConfig = function () {
+      const body = document.getElementById('global-config-body');
+      const header = document.querySelector('#global-config-card .question-header');
+      const icon = document.getElementById('global-toggle-icon');
+
+      const isVisible = body.classList.contains('show');
+
+      if (isVisible) {
+        body.classList.remove('show');
+        header.classList.remove('active');
+        icon.innerText = '▼';
+      } else {
+        body.classList.add('show');
+        header.classList.add('active');
+        icon.innerText = '▲';
+      }
+    };
+
+    document.getElementById('btnApplyGlobal')?.addEventListener('click', () => {
+      renderizarAvaliacao();
+      const btn = document.getElementById('btnApplyGlobal');
+      const originalText = btn.innerText;
+      btn.innerText = "Aplicado!";
+      btn.classList.add("btn-success");
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove("btn-success");
+      }, 1500);
+    });
+
+    function renderizarAvaliacao(questionId = null) {
+      const overlay = document.getElementById("loading-overlay");
+      if (overlay) {
+        overlay.style.display = "flex";
+      }
+
+      pagesContainer.innerHTML = "";
+
+      const fontSize = parseInt(document.getElementById("fontSize").value, 10);
+      const columns = parseInt(document.getElementById("columns").value, 10);
+      const identification = document.getElementById("identification").value;
+      const draftPages = parseInt(document.getElementById("draftPages").value, 10);
+      const addDraftWatermark = document.getElementById("draftWatermark").checked;
+      const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
+
+      const quebraQuestao = document.getElementById("quebraquestao").checked;
+      //const estender = document.getElementById("estender").checked;
+      const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
+      const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
+
+      const exibirGabarito = document.getElementById("exibirGabarito").checked;
+
+      pagesContainer.classList.toggle("pages_pages_one_page", true);
+
+      provaModelo3.prova.quebraQuestao = quebraQuestao;
+
+
+      // Atualizar o layout com as configurações do menu
+      const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
+        .pageHeader(cabecalhoPagina)
+        .fonteTamanho(fontSize)
+        .folhaDeRosto({
+          header: cabecalho,
+          content: folhaRosto,
+          footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`,
+        })
+        .pageFooter(rodape)
+        .colunas(columns)
+        .identificacao(identification)
+        .rascunho(draftPages)
+        .ordemAlternativa(ordemAlternativa)
+        .tipoAlternativa(tipoAlternativa)
+        .paginacao();
+
+      if (addDraftWatermark) {
+        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
+      }
+
+      if (addInstitutionWatermark) {
+        layoutBuilder.marcaDaguaInstituicao(marcaDagua);
+      }
+
+      if (exibirGabarito) {
+        layoutBuilder.gabarito();
+      }
+
+      let layoutResult = layoutBuilder.build(provaModelo3);
+
+      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
+        resizer();
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+
+        if (questionId) {
+          setTimeout(() => {
+            window.scrollToQuestion(questionId);
+          }, 100);
+        }
+      });
+
+      // Fechar o menu após aplicar as configurações
+      //sideMenu.classList.remove('open');
+    }
+
+    //const listaQuestoes = listaQuestao
+
+    // onde a avaliação será renderizada
+    const pagesContainer = document.getElementById("pages-container");
+
+    function sideMenu() {
+      const configButton = document.getElementById("configButton");
+      const sideMenu = document.getElementById("sideMenu");
+      const applyConfigButton = document.getElementById("applyConfig");
+
+      document.addEventListener("click", function (event) {
+        if (configButton.contains(event.target)) return;
+
+        if (sideMenu.classList.contains("open") && !sideMenu.contains(event.target)) {
+          sideMenu.classList.remove("open");
+        }
+      });
+
+      // Abrir/fechar o menu lateral
+      configButton.addEventListener("click", () => {
+        sideMenu.classList.toggle("open");
+      });
+
+      // Adicionar funcionalidade ao botão de imprimir
+      const printButton = document.getElementById("printButton");
+
+      printButton.addEventListener("click", () => {
+        renderizarAvaliacao().then(() => {
+          window.print();
+        });
+      });
+
+      // Aplicar configurações e renderizar o layout
+      applyConfigButton.addEventListener("click", () => renderizarAvaliacao());
+    }
+
+    sideMenu();
+
+
+
+    function leftSideMenu() {
+      const sidebar = document.getElementById("questionSidebar");
+      const toggleBtn = document.getElementById("toggleSidebarBtn");
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+          sidebar.classList.toggle("open");
+          if (sidebar.classList.contains("open")) {
+            toggleBtn.innerText = "◀";
+          } else {
+            toggleBtn.innerText = "▶";
+          }
+        });
+      }
+    }
+
+    leftSideMenu();
+
+    const TIPO_LINHA_OPTIONS = [
+      { code: 1, name: "Numerada" },
+      { code: 2, name: "Tabela" },
+      { code: 3, name: "Correção" },
+      { code: 4, name: "Em Branco" },
+      { code: 5, name: "Tabela s/ Cab." },
+      { code: 6, name: "Sem Borda" },
+      { code: 7, name: "Sem Borda c/ Título" },
+      { code: 8, name: "Cálculo" },
+      { code: 9, name: "Nenhum" }
+    ];
+
+    function renderQuestionConfig() {
+      const container = document.getElementById("questionsContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      // Add helper for scrolling
+      window.scrollToQuestion = (id) => {
+        // Find the element with data-questao-id
+        const el = document.querySelector(`[data-questao-id="${id}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight effect?
+          el.style.transition = "background-color 0.5s";
+          el.style.backgroundColor = "#fff3cd";
+          setTimeout(() => {
+            el.style.backgroundColor = "";
+          }, 2000);
+        } else {
+          console.warn(`Question element with id ${id} not found.`);
+        }
       };
 
-      //provaModelo3.listaProvaQuestao = AvaliacaoLayout.shuffleAndMultiply(provaModelo3.listaProvaQuestao, 1);
+      // Add toggle function
+      window.toggleQuestionOptions = (index) => {
+        const body = document.getElementById(`q-body-${index}`);
+        const header = document.getElementById(`q-header-${index}`);
+        const isVisible = body.classList.contains("show");
 
-      window.addEventListener("resize", resizer, false);
-
-      function renderizarAvaliacao() {
-        pagesContainer.innerHTML = "";
-
-        const fontSize = parseInt(document.getElementById("fontSize").value, 10);
-        const columns = parseInt(document.getElementById("columns").value, 10);
-        const identification = document.getElementById("identification").value;
-        const draftPages = parseInt(document.getElementById("draftPages").value, 10);
-        const addDraftWatermark = document.getElementById("draftWatermark").checked;
-        const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
-
-        const quebraQuestao = document.getElementById("quebraquestao").checked;
-        const estender = document.getElementById("estender").checked;
-        const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
-        const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
-
-        const exibirGabarito = document.getElementById("exibirGabarito").checked;
-
-        pagesContainer.classList.toggle("pages_pages_one_page", !estender);
-
-        provaModelo3.prova.quebraQuestao = quebraQuestao;
-
-
-        // Atualizar o layout com as configurações do menu
-        const layoutBuilder = new AvaliacaoLayout.LayoutAvaliacaoBuilder()
-          .pageHeader(cabecalhoPagina)
-          .fonteTamanho(fontSize)
-          .folhaDeRosto({
-            header: cabecalho,
-            content: folhaRosto,
-            footer: `<div class="footer-avaliacao">${rodapeRosto ?? rodape}</div>`,
-          })
-          .pageFooter(rodape)
-          .colunas(columns)
-          .identificacao(identification)
-          .rascunho(draftPages)
-          .ordemAlternativa(ordemAlternativa)
-          .tipoAlternativa(tipoAlternativa)
-          .paginacao();
-
-        if (addDraftWatermark) {
-          layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
+        if (!isVisible) {
+          body.classList.add("show");
+          header.classList.add("active");
+          header.querySelector(".toggle-icon").innerText = "▲";
+        } else {
+          body.classList.remove("show");
+          header.classList.remove("active");
+          header.querySelector(".toggle-icon").innerText = "▼";
         }
+      };
 
-        if (addInstitutionWatermark) {
-          layoutBuilder.marcaDaguaInstituicao(marcaDagua);
-        }
+      provaModelo3.listaProvaQuestao.forEach((questao, index) => {
+        const questionId = questao.questao?.codigo || questao.id || questao.codigo || index + 1;
 
-        if (exibirGabarito) {
-          layoutBuilder.gabarito();
-        }
+        const div = document.createElement("div");
+        div.className = "question-list-item";
 
-        let layoutResult = layoutBuilder.build(provaModelo3);
+        // Create Header
+        const header = document.createElement("div");
+        header.className = "question-header";
+        header.id = `q-header-${index}`;
 
-        const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+        const titleText = `Questão ${questao.ordem} <span class="q-code">(${questao.codigo || 'sem código'})</span>`;
+        header.innerHTML = `
+          <div class="q-title">${titleText}</div>
+          <div class="toggle-icon">▼</div>
+        `;
 
-        return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
-          resizer();
+        header.onclick = (e) => {
+          window.scrollToQuestion(questionId);
+          window.toggleQuestionOptions(index);
+        };
+        div.appendChild(header);
+
+        // Create Body (Options)
+        const body = document.createElement("div");
+        body.className = "question-body";
+        body.id = `q-body-${index}`;
+
+        // Helper to create control groups
+        const createControlGroup = (labelStr, inputEl) => {
+          const group = document.createElement("div");
+          group.className = "control-group";
+          const label = document.createElement("label");
+          label.innerText = labelStr;
+          group.appendChild(label);
+          group.appendChild(inputEl);
+          return group;
+        };
+
+        const h4 = document.createElement("h4");
+        h4.innerText = "Configurações";
+        body.appendChild(h4);
+
+        // Tipo Linha
+        const select = document.createElement("select");
+        TIPO_LINHA_OPTIONS.forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt.code;
+          o.innerText = opt.name;
+          if (questao.tipoLinha && questao.tipoLinha.codigo === opt.code) o.selected = true;
+          select.appendChild(o);
         });
+        select.onchange = (e) => {
+          const val = parseInt(e.target.value);
+          const name = TIPO_LINHA_OPTIONS.find(x => x.code === val).name;
+          questao.tipoLinha = { codigo: val, nome: name };
+        };
+        body.appendChild(createControlGroup("Tipo de Linha", select));
 
-        // Fechar o menu após aplicar as configurações
-        //sideMenu.classList.remove('open');
+        // Numero Linhas
+        const inputNum = document.createElement("input");
+        inputNum.type = "number";
+        inputNum.value = questao.numeroLinhas || 0;
+        inputNum.onchange = (e) => {
+          questao.numeroLinhas = parseInt(e.target.value);
+        };
+        body.appendChild(createControlGroup("Número de Linhas", inputNum));
+
+        // Linhas em Branco
+        const inputBranco = document.createElement("input");
+        inputBranco.type = "number";
+        inputBranco.value = questao.linhasBranco || 0;
+        inputBranco.onchange = (e) => {
+          questao.linhasBranco = parseInt(e.target.value);
+        };
+        body.appendChild(createControlGroup("Linhas em Branco", inputBranco));
+
+        // Quebra Pagina
+        const divCheck = document.createElement("div");
+        divCheck.className = "checkbox-container";
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.id = `qp_${index}`;
+        check.checked = questao.quebraPagina || false;
+        check.onchange = (e) => {
+          questao.quebraPagina = e.target.checked;
+        };
+        const labelCheck = document.createElement("label");
+        labelCheck.htmlFor = `qp_${index}`;
+        labelCheck.innerText = "Quebra Página";
+        divCheck.appendChild(check);
+        divCheck.appendChild(labelCheck);
+        body.appendChild(divCheck);
+
+        // Action Buttons
+        const actionsDiv = document.createElement("div");
+        actionsDiv.className = "question-actions";
+
+        const applyBtn = document.createElement("button");
+        applyBtn.innerText = "Aplicar Alterações";
+        applyBtn.className = "btn-apply";
+        applyBtn.onclick = () => {
+          renderizarAvaliacao(questionId);
+
+          // Visual feedback
+          const originalText = applyBtn.innerText;
+          applyBtn.innerText = "Aplicado!";
+          applyBtn.classList.add("btn-success");
+          setTimeout(() => {
+            applyBtn.innerText = originalText;
+            applyBtn.classList.remove("btn-success");
+          }, 1500);
+        };
+
+        actionsDiv.appendChild(applyBtn);
+        body.appendChild(actionsDiv);
+
+        div.appendChild(body);
+        container.appendChild(div);
+      });
+    }
+
+    renderQuestionConfig();
+
+    function resizer() {
+      let pages = document.querySelector(".pagedjs_pages");
+
+      if (pages) {
+        let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
+        if (scale < 1) {
+          pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2}px, 0)`;
+        } else {
+          pages.style.transform = "none";
+        }
       }
+    }
+  </script>
+</body>
 
-      //const listaQuestoes = listaQuestao
-
-      // onde a avaliação será renderizada
-      const pagesContainer = document.getElementById("pages-container");
-
-      function sideMenu() {
-        const configButton = document.getElementById("configButton");
-        const sideMenu = document.getElementById("sideMenu");
-        const applyConfigButton = document.getElementById("applyConfig");
-
-        document.addEventListener("click", function (event) {
-          if (configButton.contains(event.target)) return;
-
-          if (!sideMenu.contains(event.target)) {
-            sideMenu.classList.toggle("open");
-          }
-        });
-
-        // Abrir/fechar o menu lateral
-        configButton.addEventListener("click", () => {
-          sideMenu.classList.toggle("open");
-        });
-
-        // Adicionar funcionalidade ao botão de imprimir
-        const printButton = document.getElementById("printButton");
-
-        printButton.addEventListener("click", () => {
-          renderizarAvaliacao().then(() => {
-            window.print();
-          });
-        });
-
-        // Aplicar configurações e renderizar o layout
-        applyConfigButton.addEventListener("click", () => renderizarAvaliacao());
-      }
-
-      sideMenu();
-
-      function resizer() {
-        let pages = document.querySelector(".pagedjs_pages");
-
-        if (pages) {
-          let scale = (window.innerWidth * 0.9) / pages.offsetWidth;
-          if (scale < 1) {
-            pages.style.transform = `scale(${scale}) translate(${window.innerWidth / 2 - (pages.offsetWidth * scale) / 2}px, 0)`;
-          } else {
-            pages.style.transform = "none";
-          }
-        }
-      }
-    </script>
-  </body>
 </html>

@@ -1,0 +1,18 @@
+{{#if question.reference.texto}}
+{{#if question.showReference}}
+<div
+    style="margin-top: 10px; margin-bottom:15px; font-size:{{options.fontSize}}px; font-family: {{assessmentLayout.fonte}};">
+    <div class="referencia-style" style="margin-top: 0px;">
+        Para as questões {{{question.referenceInfo}}}
+    </div>
+    <div>
+        {{#if assessmentLayout.origemQuestao}}
+        <span class="fonte-questao-width italic">
+            ({{{question.reference.fonte.descricao}}} - {{{question.reference.fonte.anoFonte}}})
+        </span>
+        {{/if}}
+        <span>{{{question.reference.texto}}}</span>
+    </div>
+</div>
+{{/if}}
+{{/if}}

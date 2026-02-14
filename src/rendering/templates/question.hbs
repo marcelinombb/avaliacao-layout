@@ -1,0 +1,17 @@
+<div class='tiptap' data-questao-id="{{question.id}}">
+    <div class='questao-completa {{#unless assessmentLayout.quebraQuestao}}dontsplit{{/unless}}'>
+        {{> reference }}
+        <div class='cabecalho-questao dontend'>
+            {{> header }}
+        </div>
+        {{> body }}
+    </div>
+    {{> responseBox }}
+    {{#if options.gabarito}}
+    {{{question.visualizaResposta}}}
+    {{/if}}
+    <div>{{{repeat "<br>" question.linhasBranco}}}</div>
+    {{#if question.quebraPagina}}
+    <div class='quebra-pagina'></div>
+    {{/if}}
+</div>

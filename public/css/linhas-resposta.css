@@ -1,107 +1,174 @@
   .answer-table {
-  max-width: 100%;
-  width: 100%;
-  margin: 10px 0;
-  border-collapse: collapse;
-}
-.answer-table td {
-  border: 1px solid black; /* Creates the horizontal lines */
-  height: 30px; /* Adjust height for line spacing */
-}
+    max-width: 100%;
+    width: 100%;
+    margin: 10px 0;
+    border-collapse: collapse;
+  }
 
-.box {
-  width: 100%;
-  border: 1px solid black;
-  box-sizing: border-box;
-  margin: 10px 0;
-}
+  .answer-table td {
+    border: 1px solid black;
+    /* Creates the horizontal lines */
+    height: 30px;
+    /* Adjust height for line spacing */
+  }
 
-.box-header {
-  background-color: #d3d3d3;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  padding: 10px;
-  border-bottom: 1px solid black;
-  height: 30px;
-  box-sizing: border-box;
-}
+  .box {
+    width: 100%;
+    border: 1px solid black;
+    box-sizing: border-box;
+    margin: 10px 0;
+  }
 
-.box-content {
-  min-height: 30px;
-  max-height: 700px;
-  background: white;
-}
+  .box-header {
+    background-color: #d3d3d3;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    height: 30px;
+    box-sizing: border-box;
+  }
 
-.side-number-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid black;
-}
+  .box-content {
+    min-height: 30px;
+    max-height: 700px;
+    background: white;
+  }
 
-.side-number-table td {
-  border: 1px solid black;
-  height: 30px;
-  box-sizing: border-box;
-}
+  .side-number-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid black;
+  }
 
-.side-number-header {
-  background-color: #d3d3d3;
-  text-align: center;
-  font-weight: bold;
-}
+  .side-number-table td {
+    border: 1px solid black;
+    height: 30px;
+    box-sizing: border-box;
+  }
 
-.side-number {
-  text-align: center;
-  vertical-align: top;
-  padding: 5px;
-  width: 50px;
-}
+  .side-number-header {
+    background-color: #d3d3d3;
+    text-align: center;
+    font-weight: bold;
+  }
 
-.side-number-content {
-  min-height: 30px;
-  background: white;
-}
+  .side-number {
+    text-align: center;
+    vertical-align: top;
+    padding: 5px;
+    width: 50px;
+  }
 
-/* Classes para linhas sem borda superior */
-.class-table.no-top-border,
-.class-table.no-top-border > header,
-.class-table.no-top-border > div:first-child {
-  border-top: none !important;
-}
+  .side-number-content {
+    min-height: 30px;
+    background: white;
+  }
 
-.linha-text {
-  padding: 3px 7px 2px 7px;
-}
+  /* Classes para linhas sem borda superior */
+  .class-table.no-top-border,
+  .class-table.no-top-border>header,
+  .class-table.no-top-border>div:first-child {
+    border-top: none !important;
+  }
 
-.linha-bottom {
-  border-bottom: 1px solid black;
-}
+  .linha-text {
+    padding: 3px 7px 2px 7px;
+  }
 
-.linha-title {
-  font-weight: bold;
-}
+  .linha-bottom {
+    border-bottom: 1px solid black;
+  }
 
-/* Linhas sem borda (caso 6 e 7) */
-.linhas-sem-borda {
-  width: 100%;
-  margin: 10px 0;
-}
+  .linha-title {
+    font-weight: bold;
+  }
 
-.linhas-sem-borda .linha {
-  min-height: 30px;
-  padding: 5px 0;
-}
+  /* Linhas sem borda (caso 6 e 7) */
+  .linhas-sem-borda {
+    width: 100%;
+    margin: 10px 0;
+  }
 
-/* Linha com underline (traço embaixo, sem borda de caixa) */
-.linha-underline {
-  border-bottom: 1px solid black;
-}
+  .linhas-sem-borda .linha {
+    min-height: 30px;
+    padding: 5px 0;
+  }
 
-/* Linha de título com underline (caso 7) */
-.linha-titulo-underline {
-  border-bottom: 1px solid black;
-  margin-bottom: 5px;
-}
+  /* Linha com underline (traço embaixo, sem borda de caixa) */
+  .linha-underline {
+    border-bottom: 1px solid black;
+  }
+
+  /* Linha de título com underline (caso 7) */
+  .linha-titulo-underline {
+    border-bottom: 1px solid black;
+    margin-bottom: 5px;
+  }
+
+  /* Styles migrated and refactored from exitus-questao-style.css for Quadro Resposta */
+
+  .quadro-resposta-tabela {
+    width: 100%;
+    -webkit-border-collapse: collapse;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 15px;
+    margin-top: 5px;
+  }
+
+  .quadro-resposta-tabela>header:after,
+  .quadro-resposta-tabela>div:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .quadro-resposta-tabela .quadro-resposta-coluna {
+    float: left;
+    padding: 3px 0px 2px 0px;
+  }
+
+  .quadro-resposta-tabela>div>.quadro-resposta-coluna:first-child {
+    padding-left: 7px;
+  }
+
+  .quadro-resposta-tabela td,
+  .quadro-resposta-tabela>div {
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+
+  .quadro-resposta-tabela>div~div {
+    margin-top: -1px;
+  }
+
+  .quadro-resposta-tabela caption,
+  .quadro-resposta-tabela>header {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    background-color: #a9a9a9;
+    text-align: center;
+  }
+
+  .quadro-resposta-container {
+    border-bottom: 1px solid black;
+  }
+
+  .quadro-resposta-linha-custom {
+    border-top: none !important;
+    border-bottom: none !important;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    break-inside: avoid;
+  }
+
+  .w100 {
+    width: 100%;
+  }

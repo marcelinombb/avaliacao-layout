@@ -1,0 +1,21 @@
+{{#if object}}
+<div class="duas-colunas">
+    <div>
+        {{#each object.coluna1}}
+        <div class="linha-alternativa">
+            <span class="media-esq">{{{this.item}}}</span>
+            <span class="media-corpo">{{{this.descricao}}}</span>
+        </div>
+        {{/each}}
+    </div>
+    <div>
+        {{#each object.coluna2}}
+        <div class="linha-alternativa">
+            <span class="media-esq">{{{this.item}}}</span>
+            <span class="media-corpo">{{{this.descricao}}}</span>
+        </div>
+        {{/each}}
+    </div>
+</div>
+<div style="padding-bottom: 12px;"></div>
+{{/if}}

@@ -1,4 +1,4 @@
-import { LayoutAvaliacao } from "./LayoutAvaliacao.js";
+import { LayoutAvaliacao } from "./LayoutAvaliacao";
 
 const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,
@@ -8,6 +8,24 @@ const TIPO_ORDENACAO = {
 }
 
 export class LayoutAvaliacaoBuilder {
+  header: string;
+  footer: string;
+  fontSize: number;
+  _folhaDeRosto: any;
+  pagina: any;
+  numeroFolhasRascunho: any;
+  _marcaDaquaRascunho: any;
+  _marcaDaguaInstituicao: any;
+  quantidadeColunas: number;
+  paginacaoAtiva: boolean;
+  _identificacao: string;
+  _gabarito: boolean;
+  tipoOrdenacaoAlternativa: number;
+  _tipoAlternativa: any;
+
+  comMarcaDaguaRascunho: any;
+  quantidadeFolhasRascunho: any;
+
   constructor() {
     this.header = "";
     this.footer = "";
