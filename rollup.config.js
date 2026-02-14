@@ -6,6 +6,7 @@ import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
+import { string } from "rollup-plugin-string";
 
 const isWatch = process.env.ROLLUP_WATCH === "true";
 
@@ -24,6 +25,7 @@ const esmConfig = {
       tsconfig: "./tsconfig.json",
       compilerOptions: { declaration: false, declarationMap: false, declarationDir: undefined }
     }),
+    string({ include: "**/*.hbs" }),
     terser(),
   ],
 };
@@ -41,6 +43,7 @@ const cjsConfig = {
     commonjs(),
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
+    string({ include: "**/*.hbs" }),
     terser(),
   ],
 };
@@ -58,6 +61,7 @@ const umdConfig = {
     commonjs(),
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
+    string({ include: "**/*.hbs" }),
     terser(),
     isWatch &&
     serve({

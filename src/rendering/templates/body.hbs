@@ -1,0 +1,46 @@
+{{#if useRaw}}
+{{{question.visualizaQuestaoRaw}}}
+{{else}}
+<div class="adaptive-block-avalicao-visualize">
+    {{{question.visualizaQuestaoParsed.fonte}}}
+    {{{question.visualizaQuestaoParsed.instrucao}}}
+    {{{question.visualizaQuestaoParsed.textoBase}}}
+    <div style="padding-bottom: 12px;"></div>
+
+    {{#switch question.type}}
+    {{#case 'Aberta - Associação'}}
+    {{{question.visualizaQuestaoParsed.comando}}}
+    {{> associations object=question.visualizaQuestaoParsed.associacoes}}
+    {{/case}}
+    {{#case 'Múltipla Escolha - Associação'}}
+    {{> associations object=question.visualizaQuestaoParsed.associacoes}}
+    <div style="padding-bottom: 12px;"></div>
+    {{{question.visualizaQuestaoParsed.comando}}}
+    {{> alternatives object=question.visualizaQuestaoParsed.alternativas}}
+    {{/case}}
+    {{#case 'Múltipla Escolha - Alternativas Constantes'}}
+    {{#if isMultiplaEscolha}}
+    {{> statements object=question.visualizaQuestaoParsed.afirmacoes
+    justificarFalsas=question.visualizaQuestaoParsed.justificarFalsas }}
+    {{/if}}
+    <div style="padding-bottom: 12px;"></div>
+    {{{question.visualizaQuestaoParsed.comando}}}
+    {{> alternatives object=question.visualizaQuestaoParsed.alternativas}}
+    {{/case}}
+    {{#default}}
+    {{{question.visualizaQuestaoParsed.comando}}}
+    {{#unless isMultiplaEscolha}}
+    {{> statements object=question.visualizaQuestaoParsed.afirmacoes
+    justificarFalsas=question.visualizaQuestaoParsed.justificarFalsas }}
+    {{/unless}}
+    {{> associations object=question.visualizaQuestaoParsed.associacoes}}
+    {{> assertions object=question.visualizaQuestaoParsed.assercoes}}
+    {{#if isMultiplaEscolha}}
+    {{> statements object=question.visualizaQuestaoParsed.afirmacoes
+    justificarFalsas=question.visualizaQuestaoParsed.justificarFalsas }}
+    {{/if}}
+    {{> alternatives object=question.visualizaQuestaoParsed.alternativas}}
+    {{/default}}
+    {{/switch}}
+</div>
+{{/if}}

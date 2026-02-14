@@ -1,0 +1,15 @@
+{{#if object}}
+<div class="coluna-sm-12 adaptive-margin-bottom avaliacao-alternativas"
+    data-ordem-alternativa="{{question.orderAlternative}}">
+    {{#each object}}
+    <div class="linha-alternativa">
+        <span class="media-esq">
+            {{formatAlternativeIndex @index ../assessmentLayout.tipoAlternativa}}
+        </span>
+        <span class="media-corpo">
+            <p>{{{this}}}</p>
+        </span>
+    </div>
+    {{/each}}
+</div>
+{{/if}}
