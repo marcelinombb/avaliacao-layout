@@ -17,8 +17,6 @@ export class QuestionRenderer {
         const linesBreak = "<br>".repeat(this.question.linhasBranco || 0);
         const columnBreak = this.question.quebraPagina ? "<div class='quebra-pagina'></div>" : "";
 
-        console.log(this.question);
-
         return `
           <div class='tiptap' data-questao-id="${this.question.id}">
               <div class='questao-completa ${dontSplit}'>

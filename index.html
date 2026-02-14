@@ -15,43 +15,28 @@
 </head>
 
 <body>
+  <div id="loading-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+    <div
+      style="border: 5px solid #f3f3f3; border-top: 5px solid #007bff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;">
+    </div>
+    <p style="margin-top: 20px; font-family: sans-serif; color: #333;">Renderizando...</p>
+  </div>
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
   <div id="pages-container"></div>
 
   <button class="floating-button" id="configButton">⚙️</button>
-  <button class="floating-button-left" id="optionsButton">🛠️</button>
 
-  <!-- Menu lateral esquerdo (Opções da Questão) -->
-  <div class="left-menu" id="leftMenu">
-    <h3>Opções da Questão</h3>
-
-    <label for="tipoAlternativa">Tipo de Alternativa</label>
-    <select id="tipoAlternativa">
-      <option value="1">1, 2, 3...</option>
-      <option value="2">I., II., III...</option>
-      <option value="3">a., b., c...</option>
-      <option value="4" selected>A., B., C...</option>
-      <option value="5">a), b), c)...</option>
-      <option value="6">A), B), C)...</option>
-      <option value="7">(A), (B), (C)...</option>
-      <option value="8">A ( ), B ( )...</option>
-      <option value="9">ENEM (círculo)</option>
-      <option value="10">Sem marcador</option>
-    </select>
-
-    <label for="ordemAlternativa">Ordenação de Alternativas</label>
-    <select id="ordemAlternativa">
-      <option value="0" selected>Não embaralhar</option>
-      <option value="1">Aleatório</option>
-      <option value="2">Ascendente (menor → maior)</option>
-      <option value="3">Descendente (maior → menor)</option>
-    </select>
-
-    <button id="applyConfigLeft">Visualizar</button>
-
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
-    <h3>Questões da Prova</h3>
-    <div id="questionsContainer"></div>
-  </div>
 
   <!-- Menu lateral -->
   <div class="side-menu" id="sideMenu">
@@ -59,10 +44,10 @@
     <label for="fontSize">Tamanho da Fonte</label>
     <input type="number" id="fontSize" value="14" />
 
-    <div class="checkbox-container">
+    <!-- <div class="checkbox-container">
       <input type="checkbox" id="estender" checked />
       <label for="estender">Estender Paginas</label>
-    </div>
+    </div> -->
 
     <div class="checkbox-container">
       <input type="checkbox" id="quebraquestao" checked />
@@ -102,6 +87,56 @@
     <button id="printButton">Imprimir</button>
   </div>
 
+  <!-- Menu lateral esquerdo persistente -->
+  <div class="question-sidebar open" id="questionSidebar">
+    <button id="toggleSidebarBtn" class="toggle-sidebar-btn">◀</button>
+
+    <div class="question-list-item" id="global-config-card">
+      <div class="question-header" onclick="toggleGlobalConfig()">
+        <span class="q-title">Opções Gerais</span>
+        <div class="toggle-icon" id="global-toggle-icon">▼</div>
+      </div>
+      <div class="question-body" id="global-config-body">
+
+        <div class="control-group">
+          <label for="tipoAlternativa">Tipo de Alternativa</label>
+          <select id="tipoAlternativa">
+            <option value="1">1, 2, 3...</option>
+            <option value="2">I., II., III...</option>
+            <option value="3">a., b., c...</option>
+            <option value="4" selected>A., B., C...</option>
+            <option value="5">a), b), c)...</option>
+            <option value="6">A), B), C)...</option>
+            <option value="7">(A), (B), (C)...</option>
+            <option value="8">A ( ), B ( )...</option>
+            <option value="9">ENEM (círculo)</option>
+            <option value="10">Sem marcador</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="ordemAlternativa">Ordenação de Alternativas</label>
+          <select id="ordemAlternativa">
+            <option value="0" selected>Não embaralhar</option>
+            <option value="1">Aleatório</option>
+            <option value="2">Ascendente (menor → maior)</option>
+            <option value="3">Descendente (maior → menor)</option>
+          </select>
+        </div>
+
+        <div class="question-actions">
+          <button class="btn-apply" id="btnApplyGlobal">Aplicar Alterações</button>
+        </div>
+      </div>
+    </div>
+
+
+
+    <hr />
+    <h3>Questões da Prova</h3>
+    <div id="questionsContainer"></div>
+  </div>
+
   <script src="public/prova-modelo.js"></script>
   <script src="dist/avaliacao-layout.umd.js"></script>
   <script type="module">
@@ -121,7 +156,43 @@
 
     window.addEventListener("resize", resizer, false);
 
-    function renderizarAvaliacao() {
+    // Configurações Globais
+    window.toggleGlobalConfig = function () {
+      const body = document.getElementById('global-config-body');
+      const header = document.querySelector('#global-config-card .question-header');
+      const icon = document.getElementById('global-toggle-icon');
+
+      const isVisible = body.classList.contains('show');
+
+      if (isVisible) {
+        body.classList.remove('show');
+        header.classList.remove('active');
+        icon.innerText = '▼';
+      } else {
+        body.classList.add('show');
+        header.classList.add('active');
+        icon.innerText = '▲';
+      }
+    };
+
+    document.getElementById('btnApplyGlobal')?.addEventListener('click', () => {
+      renderizarAvaliacao();
+      const btn = document.getElementById('btnApplyGlobal');
+      const originalText = btn.innerText;
+      btn.innerText = "Aplicado!";
+      btn.classList.add("btn-success");
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove("btn-success");
+      }, 1500);
+    });
+
+    function renderizarAvaliacao(questionId = null) {
+      const overlay = document.getElementById("loading-overlay");
+      if (overlay) {
+        overlay.style.display = "flex";
+      }
+
       pagesContainer.innerHTML = "";
 
       const fontSize = parseInt(document.getElementById("fontSize").value, 10);
@@ -132,13 +203,13 @@
       const addInstitutionWatermark = document.getElementById("institutionWatermark").checked;
 
       const quebraQuestao = document.getElementById("quebraquestao").checked;
-      const estender = document.getElementById("estender").checked;
+      //const estender = document.getElementById("estender").checked;
       const tipoAlternativa = parseInt(document.getElementById("tipoAlternativa").value, 10);
       const ordemAlternativa = parseInt(document.getElementById("ordemAlternativa").value, 10);
 
       const exibirGabarito = document.getElementById("exibirGabarito").checked;
 
-      pagesContainer.classList.toggle("pages_pages_one_page", !estender);
+      pagesContainer.classList.toggle("pages_pages_one_page", true);
 
       provaModelo3.prova.quebraQuestao = quebraQuestao;
 
@@ -178,6 +249,15 @@
 
       return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
         resizer();
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+
+        if (questionId) {
+          setTimeout(() => {
+            window.scrollToQuestion(questionId);
+          }, 100);
+        }
       });
 
       // Fechar o menu após aplicar as configurações
@@ -222,23 +302,22 @@
 
     sideMenu();
 
+
+
     function leftSideMenu() {
-      const optionsButton = document.getElementById("optionsButton");
-      const leftMenu = document.getElementById("leftMenu");
-      const applyConfigLeft = document.getElementById("applyConfigLeft");
+      const sidebar = document.getElementById("questionSidebar");
+      const toggleBtn = document.getElementById("toggleSidebarBtn");
 
-      optionsButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        leftMenu.classList.toggle("open");
-      });
-
-      document.addEventListener("click", function (event) {
-        if (leftMenu.classList.contains("open") && !leftMenu.contains(event.target) && !optionsButton.contains(event.target)) {
-          leftMenu.classList.remove("open");
-        }
-      });
-
-      applyConfigLeft.addEventListener("click", () => renderizarAvaliacao());
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+          sidebar.classList.toggle("open");
+          if (sidebar.classList.contains("open")) {
+            toggleBtn.innerText = "◀";
+          } else {
+            toggleBtn.innerText = "▶";
+          }
+        });
+      }
     }
 
     leftSideMenu();
@@ -251,7 +330,8 @@
       { code: 5, name: "Tabela s/ Cab." },
       { code: 6, name: "Sem Borda" },
       { code: 7, name: "Sem Borda c/ Título" },
-      { code: 8, name: "Cálculo" }
+      { code: 8, name: "Cálculo" },
+      { code: 9, name: "Nenhum" }
     ];
 
     function renderQuestionConfig() {
@@ -259,24 +339,84 @@
       if (!container) return;
       container.innerHTML = "";
 
+      // Add helper for scrolling
+      window.scrollToQuestion = (id) => {
+        // Find the element with data-questao-id
+        const el = document.querySelector(`[data-questao-id="${id}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight effect?
+          el.style.transition = "background-color 0.5s";
+          el.style.backgroundColor = "#fff3cd";
+          setTimeout(() => {
+            el.style.backgroundColor = "";
+          }, 2000);
+        } else {
+          console.warn(`Question element with id ${id} not found.`);
+        }
+      };
+
+      // Add toggle function
+      window.toggleQuestionOptions = (index) => {
+        const body = document.getElementById(`q-body-${index}`);
+        const header = document.getElementById(`q-header-${index}`);
+        const isVisible = body.classList.contains("show");
+
+        if (!isVisible) {
+          body.classList.add("show");
+          header.classList.add("active");
+          header.querySelector(".toggle-icon").innerText = "▲";
+        } else {
+          body.classList.remove("show");
+          header.classList.remove("active");
+          header.querySelector(".toggle-icon").innerText = "▼";
+        }
+      };
+
       provaModelo3.listaProvaQuestao.forEach((questao, index) => {
+        const questionId = questao.questao?.codigo || questao.id || questao.codigo || index + 1;
+
         const div = document.createElement("div");
-        div.className = "question-block";
+        div.className = "question-list-item";
 
-        const h4 = document.createElement("h4");
-        h4.innerText = `Questão ${questao.ordem} (ID: ${questao.id || questao.codigo || index + 1})`;
-        h4.style.margin = "0 0 10px 0";
-        div.appendChild(h4);
+        // Create Header
+        const header = document.createElement("div");
+        header.className = "question-header";
+        header.id = `q-header-${index}`;
 
-        // Define helpers
-        const createLabel = (text) => {
-          const l = document.createElement("label");
-          l.innerText = text;
-          return l;
+        const titleText = `Questão ${questao.ordem} <span class="q-code">(${questao.codigo || 'sem código'})</span>`;
+        header.innerHTML = `
+          <div class="q-title">${titleText}</div>
+          <div class="toggle-icon">▼</div>
+        `;
+
+        header.onclick = (e) => {
+          window.scrollToQuestion(questionId);
+          window.toggleQuestionOptions(index);
+        };
+        div.appendChild(header);
+
+        // Create Body (Options)
+        const body = document.createElement("div");
+        body.className = "question-body";
+        body.id = `q-body-${index}`;
+
+        // Helper to create control groups
+        const createControlGroup = (labelStr, inputEl) => {
+          const group = document.createElement("div");
+          group.className = "control-group";
+          const label = document.createElement("label");
+          label.innerText = labelStr;
+          group.appendChild(label);
+          group.appendChild(inputEl);
+          return group;
         };
 
+        const h4 = document.createElement("h4");
+        h4.innerText = "Configurações";
+        body.appendChild(h4);
+
         // Tipo Linha
-        div.appendChild(createLabel("Tipo de Linha"));
         const select = document.createElement("select");
         TIPO_LINHA_OPTIONS.forEach(opt => {
           const o = document.createElement("option");
@@ -290,27 +430,25 @@
           const name = TIPO_LINHA_OPTIONS.find(x => x.code === val).name;
           questao.tipoLinha = { codigo: val, nome: name };
         };
-        div.appendChild(select);
+        body.appendChild(createControlGroup("Tipo de Linha", select));
 
         // Numero Linhas
-        div.appendChild(createLabel("Número de Linhas"));
         const inputNum = document.createElement("input");
         inputNum.type = "number";
         inputNum.value = questao.numeroLinhas || 0;
         inputNum.onchange = (e) => {
           questao.numeroLinhas = parseInt(e.target.value);
         };
-        div.appendChild(inputNum);
+        body.appendChild(createControlGroup("Número de Linhas", inputNum));
 
         // Linhas em Branco
-        div.appendChild(createLabel("Linhas em Branco"));
         const inputBranco = document.createElement("input");
         inputBranco.type = "number";
         inputBranco.value = questao.linhasBranco || 0;
         inputBranco.onchange = (e) => {
           questao.linhasBranco = parseInt(e.target.value);
         };
-        div.appendChild(inputBranco);
+        body.appendChild(createControlGroup("Linhas em Branco", inputBranco));
 
         // Quebra Pagina
         const divCheck = document.createElement("div");
@@ -325,11 +463,34 @@
         const labelCheck = document.createElement("label");
         labelCheck.htmlFor = `qp_${index}`;
         labelCheck.innerText = "Quebra Página";
-
         divCheck.appendChild(check);
         divCheck.appendChild(labelCheck);
-        div.appendChild(divCheck);
+        body.appendChild(divCheck);
 
+        // Action Buttons
+        const actionsDiv = document.createElement("div");
+        actionsDiv.className = "question-actions";
+
+        const applyBtn = document.createElement("button");
+        applyBtn.innerText = "Aplicar Alterações";
+        applyBtn.className = "btn-apply";
+        applyBtn.onclick = () => {
+          renderizarAvaliacao(questionId);
+
+          // Visual feedback
+          const originalText = applyBtn.innerText;
+          applyBtn.innerText = "Aplicado!";
+          applyBtn.classList.add("btn-success");
+          setTimeout(() => {
+            applyBtn.innerText = originalText;
+            applyBtn.classList.remove("btn-success");
+          }, 1500);
+        };
+
+        actionsDiv.appendChild(applyBtn);
+        body.appendChild(actionsDiv);
+
+        div.appendChild(body);
         container.appendChild(div);
       });
     }
