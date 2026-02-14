@@ -1,8 +1,12 @@
-import { conversorDeIndicesParaAlternativas } from "../utils/util.js";
-import { QuadroRespostaRenderer } from "./QuadroRespostaRenderer.js";
+import { conversorDeIndicesParaAlternativas } from "../utils/util";
+import { QuadroRespostaRenderer } from "./QuadroRespostaRenderer";
 
 export class QuestionRenderer {
-    constructor(question, assessmentLayout, options) {
+    question: any;
+    assessmentLayout: any;
+    options: any;
+
+    constructor(question: any, assessmentLayout: any, options: any) {
         this.question = question;
         this.assessmentLayout = assessmentLayout;
         this.options = options;
@@ -13,8 +17,10 @@ export class QuestionRenderer {
         const linesBreak = "<br>".repeat(this.question.linhasBranco || 0);
         const columnBreak = this.question.quebraPagina ? "<div class='quebra-pagina'></div>" : "";
 
+        console.log(this.question);
+
         return `
-          <div class='tiptap'>
+          <div class='tiptap' data-questao-id="${this.question.id}">
               <div class='questao-completa ${dontSplit}'>
                   ${this.renderReference()}
                   <div class='cabecalho-questao dontend'>
@@ -201,6 +207,6 @@ export class QuestionRenderer {
     }
 
     renderResponseQuadro() {
-        return QuadroRespostaRenderer.tipoQuadroRespostaHtml(this.question);
+        return QuadroRespostaRenderer.tipoQuadroRespostaHtml(this.question.tipoLinha.codigo, this.question.numeroLinhas);
     }
 }

@@ -1,10 +1,13 @@
-import { Assessment } from "./domain/Assessment.js";
-import { Question } from "./domain/Question.js";
-import { ReferenceService } from "./domain/ReferenceService.js";
-import { AssessmentHtmlRenderer } from "./rendering/AssessmentHtmlRenderer.js";
+import { Assessment } from "./domain/Assessment";
+import { Question } from "./domain/Question";
+import { ReferenceService } from "./domain/ReferenceService";
+import { AssessmentHtmlRenderer } from "./rendering/AssessmentHtmlRenderer";
 
 export class LayoutAvaliacao {
-    constructor(provaModelo, layoutOptions) {
+    provaModelo: any;
+    layoutOptions: any;
+
+    constructor(provaModelo: any, layoutOptions: any) {
         this.provaModelo = provaModelo;
         this.layoutOptions = layoutOptions;
     }
@@ -36,7 +39,7 @@ export class LayoutAvaliacao {
             }
 
             const question = new Question({
-                id: q.questao.id,
+                id: q.questao.codigo,
                 order: q.ordem,
                 customOrder: q.ordemPersonalizada,
                 value: q.valor,

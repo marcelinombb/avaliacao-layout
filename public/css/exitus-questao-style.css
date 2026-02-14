@@ -11,13 +11,18 @@ body {
   text-align: center;
 }
 
-.align-left + div:after,
-.align-left + div > p:after {
+.align-left+div:after,
+.align-left+div>p:after {
   content: "";
   display: table;
 }
 
-.align-left:before, .align-left+div:before, .align-left:after, .align-left+div:after, .align-left, .align-left+div {
+.align-left:before,
+.align-left+div:before,
+.align-left:after,
+.align-left+div:after,
+.align-left,
+.align-left+div {
   display: inline !important;
 }
 
@@ -49,13 +54,13 @@ body {
   clear: both;
 }
 
-.duas-colunas > div:after {
+.duas-colunas>div:after {
   content: " ";
   display: table;
   clear: both;
 }
 
-.duas-colunas > div {
+.duas-colunas>div {
   box-sizing: border-box;
   width: 50% !important;
   padding-left: 12px;
@@ -128,43 +133,27 @@ span.display-block {
   margin-top: 5px;
 }
 
-.class-table > header:after,
-.class-table > div:after {
-  content: "";
-  display: table;
-  clear: both;
-}
 
-.class-table .table-column {
-  float: left;
-  padding: 3px 0px 2px 0px;
-}
 
-.class-table > div > .table-column:first-child {
-  padding-left: 7px;
-}
 
-.class-table td,
-.class-table > div {
+
+.class-table td {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
 }
 
 .class-table tr:first-child td {
- /*  border-top: 1px solid black; */
+  /*  border-top: 1px solid black; */
 }
 
 .class-table td {
   padding: 3px 7px 2px 7px;
 }
 
-.class-table > div ~ div {
-  margin-top: -1px;
-}
 
-.class-table caption,
-.class-table > header {
+
+.class-table caption {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
@@ -177,16 +166,7 @@ table.class-table caption {
   padding: 3px 7px 2px 7px;
 }
 
-.table-quadro {
-  border-bottom: 1px solid black;
-}
 
-.linha-quadro {
-  border-top: none !important;
-  border-bottom: none !important;
-  padding-top: 3px;
-  padding-bottom: 2px;
-}
 
 .linha {
   padding-top: 3px;
@@ -238,7 +218,7 @@ img {
 }
 
 table {
- /*  max-width: 700px; */
+  /*  max-width: 700px; */
   max-height: 890px;
 }
 
@@ -258,7 +238,7 @@ table {
   z-index: 10;
 }
 
-.marcadagua > img {
+.marcadagua>img {
   max-width: 100% !important;
   max-height: 100% !important;
 }
@@ -281,18 +261,18 @@ figure.image {
   min-width: 50px;
 }
 
-.logo-cabecalho{
-	max-height:75px;
-	border:0px solid black;
-	float:left;
-	margin:0px;
+.logo-cabecalho {
+  max-height: 75px;
+  border: 0px solid black;
+  float: left;
+  margin: 0px;
 }
 
-.logo-cabecalho-pagina{
-	max-height:40px;
-	border:0px solid black;
-	margin:0px;
-	width:auto;
+.logo-cabecalho-pagina {
+  max-height: 40px;
+  border: 0px solid black;
+  margin: 0px;
+  width: auto;
 }
 
 .referencia-container {
@@ -303,32 +283,32 @@ figure.image {
   display: flex;
 }
 
-.flex-wrap{
-/* font-weight: bold; */
-flex-wrap:wrap;
-width:100%;
+.flex-wrap {
+  /* font-weight: bold; */
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .container {
-	max-width: auto;
-	margin: 0 auto;
+  max-width: auto;
+  margin: 0 auto;
 }
 
-#table1{	
-	width:100%;
-	border:none;
+#table1 {
+  width: 100%;
+  border: none;
   margin: auto;
   height: 100%;
   display: table;
 }
-	
-#table1 td{
-	height:2px;
+
+#table1 td {
+  height: 2px;
   vertical-align: middle;
 }
-	
-#table1 tr td{
-	border:none;
+
+#table1 tr td {
+  border: none;
 }
 
 .cabecalho-questao div[style*="margin-top:15px"] {

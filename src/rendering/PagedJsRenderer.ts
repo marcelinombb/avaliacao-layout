@@ -4,7 +4,7 @@ import {
   HeaderFooterHandler,
   TwoColumnsHandler,
   OrderHandler
-} from "./handlers/index.js";
+} from "./handlers/index";
 
 export class PagedJsRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
@@ -19,7 +19,7 @@ export class PagedJsRenderer {
 
     // aplica CSS vars
     Object.entries(result.cssVars).forEach(([key, value]) => {
-      if (value) document.documentElement.style.setProperty(key, value);
+      if (value) document.documentElement.style.setProperty(key, String(value));
     });
 
     const defaultHandlers = [

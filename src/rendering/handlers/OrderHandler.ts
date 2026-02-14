@@ -1,5 +1,5 @@
 import { Handler } from "pagedjs";
-import { conversorDeIndicesParaAlternativas } from "../utils/util.js";
+import { conversorDeIndicesParaAlternativas } from "../utils/util";
 
 export const TIPO_ORDENACAO = Object.freeze({
     NAO_EMBARALHAR: 0,
@@ -10,14 +10,15 @@ export const TIPO_ORDENACAO = Object.freeze({
 
 export default class OrderHandler extends Handler {
 
-    orderCache = new Map();
+    orderCache = new Map<string, number>();
+    config: any;
 
-    constructor(chunker, polisher, caller, config = {}) {
+    constructor(chunker: any, polisher: any, caller: any, config: any = {}) {
         super(chunker, polisher, caller);
         this.config = config;
     }
 
-    afterPageLayout(pageElement) {
+    afterPageLayout(pageElement: any) {
         const blocos = pageElement.querySelectorAll(".avaliacao-alternativas");
 
         for (const bloco of blocos) {
@@ -25,11 +26,11 @@ export default class OrderHandler extends Handler {
         }
     }
 
-    processarBloco(bloco) {
+    processarBloco(bloco: any) {
 
         const { ref, splitFrom, ordemAlternativa: rawOrdem } = bloco.dataset;
 
-        const filhos = Array.from(bloco.querySelectorAll(".linha-alternativa"));
+        const filhos = Array.from(bloco.querySelectorAll(".linha-alternativa")) as HTMLElement[];
         if (!filhos.length) return;
 
         // guarda tamanho original apenas na primeira renderização
@@ -39,7 +40,7 @@ export default class OrderHandler extends Handler {
 
         const ordem = this.resolverTipoOrdenacao(rawOrdem);
 
-        const alternativas = filhos.map((element) => ({
+        const alternativas = filhos.map((element: HTMLElement) => ({
             element,
             width: this.obterWidth(element)
         }));
@@ -49,7 +50,7 @@ export default class OrderHandler extends Handler {
         this.reRenderizar(bloco, alternativas, ref, splitFrom);
     }
 
-    resolverTipoOrdenacao(rawOrdem) {
+    resolverTipoOrdenacao(rawOrdem: any) {
         const parsed = Number.parseInt(rawOrdem, 10);
 
         if (!rawOrdem || Number.isNaN(parsed) || parsed === 0) {
@@ -61,12 +62,12 @@ export default class OrderHandler extends Handler {
         return parsed;
     }
 
-    obterWidth(element) {
+    obterWidth(element: any) {
         const conteudo = element.querySelector(".media-corpo");
         return (conteudo || element).getBoundingClientRect().width;
     }
 
-    aplicarOrdenacao(alternativas, tipo) {
+    aplicarOrdenacao(alternativas: any[], tipo: number) {
 
         switch (tipo) {
 
@@ -88,14 +89,14 @@ export default class OrderHandler extends Handler {
         }
     }
 
-    reRenderizar(bloco, alternativas, ref, splitFrom) {
+    reRenderizar(bloco: any, alternativas: any[], ref: string, splitFrom: any) {
 
         const fragment = document.createDocumentFragment();
         const baseIndex = splitFrom ? (this.orderCache.get(ref) ?? 0) : 0;
 
         alternativas.forEach(({ element }, index) => {
 
-            const indiceFinal = baseIndex + index;
+            const indiceFinal: number = baseIndex + index;
 
             const label = element.querySelector(".media-esq");
             if (label) {
@@ -112,7 +113,7 @@ export default class OrderHandler extends Handler {
         bloco.dataset.ordemAlternativaProcessada = "true";
     }
 
-    shuffle(array) {
+    shuffle(array: any[]) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
