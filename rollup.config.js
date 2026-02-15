@@ -6,7 +6,24 @@ import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
-import { string } from "rollup-plugin-string";
+import Handlebars from "handlebars";
+
+// Custom Handlebars precompile plugin that returns template functions (strings, not DOM)
+const hbsPlugin = () => ({
+  name: 'hbs-precompile',
+  transform(code, id) {
+    if (!id.endsWith('.hbs')) return null;
+    const spec = Handlebars.precompile(code);
+    return {
+      code: `
+        import HandlebarsRuntime from 'handlebars/runtime';
+        const Handlebars = HandlebarsRuntime.default || HandlebarsRuntime;
+        export default Handlebars.template(${spec});
+      `,
+      map: { mappings: '' }
+    };
+  }
+});
 
 const isWatch = process.env.ROLLUP_WATCH === "true";
 
@@ -25,8 +42,8 @@ const esmConfig = {
       tsconfig: "./tsconfig.json",
       compilerOptions: { declaration: false, declarationMap: false, declarationDir: undefined }
     }),
-    string({ include: "**/*.hbs" }),
-    terser(),
+    hbsPlugin(),
+    !isWatch && terser(),
   ],
 };
 
@@ -43,8 +60,8 @@ const cjsConfig = {
     commonjs(),
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
-    string({ include: "**/*.hbs" }),
-    terser(),
+    hbsPlugin(),
+    !isWatch && terser(),
   ],
 };
 
@@ -61,8 +78,8 @@ const umdConfig = {
     commonjs(),
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
-    string({ include: "**/*.hbs" }),
-    terser(),
+    hbsPlugin(),
+    !isWatch && terser(),
     isWatch &&
     serve({
       open: true,

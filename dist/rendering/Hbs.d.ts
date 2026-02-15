@@ -1,1 +1,1 @@
-export declare const renderQuestion: (context: any) => string;
+export declare const renderQuestion: (context: any) => any;
