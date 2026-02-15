@@ -5,6 +5,7 @@ import {
   TwoColumnsHandler,
   OrderHandler
 } from "./handlers/index";
+import ColumnHandler from "./handlers/ColumnHandler";
 
 export class PagedJsRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
@@ -41,7 +42,7 @@ export class PagedJsRenderer {
         },
       },
       {
-        MyHandler: TwoColumnsHandler,
+        MyHandler: ColumnHandler,
         config: {}
       },
       {

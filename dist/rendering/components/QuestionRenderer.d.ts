@@ -3,5 +3,5 @@ export declare class QuestionRenderer {
     assessmentLayout: any;
     options: any;
     constructor(question: any, assessmentLayout: any, options: any);
-    render(): string;
+    render(): any;
 }
