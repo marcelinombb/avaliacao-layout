@@ -5,8 +5,8 @@ This project now uses [Handlebars](https://handlebarsjs.com/) for rendering ques
 ## Directory Structure
 
 *   `src/rendering/templates/`: Contains the `.hbs` template files.
-*   `src/rendering/Hbs.ts`: Main entry point for Handlebars setup, helper registration, and template compilation.
-*   `src/declarations.d.ts`: TypeScript declarations to allow importing `.hbs` files as strings.
+*   `src/rendering/Hbs.ts`: Main entry point for Handlebars setup, helper registration, and template usage.
+*   `src/declarations.d.ts`: TypeScript declarations to allow importing `.hbs` files as precompiled templates.
 
 ## Templates
 
@@ -20,7 +20,7 @@ The following templates are available:
 *   **statements.hbs**: Renders statements (afirmações).
 *   **associations.hbs**: Renders association columns.
 *   **assertions.hbs**: Renders assertions (assercões).
-*   **response-box.hbs**: Renders the answer box (quadro de resposta).
+*   **responseBox.hbs**: Renders the answer box (quadro de resposta).
 
 ## Custom Helpers
 
@@ -62,8 +62,13 @@ Implements switch-case logic within templates.
 
 ## How to Modify
 
-To change the HTML structure of a question, modify the corresponding `.hbs` file in `src/rendering/templates/`. You do not need to touch the TypeScript code unless you are adding new data or logic.
+To change the HTML structure of a question, modify the corresponding `.hbs` file in `src/rendering/templates/`. The project is configured to watch for changes in `.hbs` files. When you save a change, the build process will automatically recompile the template and reload the browser if run in dev mode.
+
+You do not need to touch the TypeScript code unless you are adding new data or logic.
 
 ## Build Configuration
 
-The project uses `rollup-plugin-string` to import `.hbs` files as raw strings, which are then compiled by Handlebars at runtime.
+The project uses a custom Rollup plugin (`hbs-precompile` in `rollup.config.js`) to precompile templates. 
+This means `.hbs` files are transformed into JavaScript modules that export the compiled template function.
+
+At runtime, the application imports `handlebars/runtime` (a lighter version of Handlebars without the compiler) to execute these precompiled templates. This improves performance and reduces the bundle size.
