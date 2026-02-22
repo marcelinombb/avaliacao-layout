@@ -1,4 +1,6 @@
-import Handlebars from "handlebars";
+import HandlebarsRuntime from "handlebars/runtime";
+const Handlebars = (HandlebarsRuntime as any).default || HandlebarsRuntime;
+
 import { conversorDeIndicesParaAlternativas } from "./utils/util";
 import { QuadroRespostaRenderer } from "./components/QuadroRespostaRenderer";
 
@@ -11,7 +13,7 @@ import alternativesTpl from "./templates/alternatives.hbs";
 import statementsTpl from "./templates/statements.hbs";
 import associationsTpl from "./templates/associations.hbs";
 import assertionsTpl from "./templates/assertions.hbs";
-import responseBoxTpl from "./templates/response-box.hbs";
+import responseBoxTpl from "./templates/responseBox.hbs";
 
 // Register Partials
 Handlebars.registerPartial("reference", referenceTpl);
@@ -65,10 +67,8 @@ Handlebars.registerHelper("default", function (this: any, options) {
     }
 });
 
-const compiledTemplate = Handlebars.compile(questionTpl);
-
 export const renderQuestion = (context: any) => {
-    return compiledTemplate(context, {
+    return (questionTpl as any)(context, {
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true
     });

@@ -48,33 +48,30 @@ body {
   padding-right: 12px;
 }
 
-.duas-colunas:after {
-  content: " ";
-  display: table;
-  clear: both;
-}
-
-.duas-colunas>div:after {
-  content: " ";
-  display: table;
-  clear: both;
-}
-
-.duas-colunas>div {
-  box-sizing: border-box;
-  width: 50% !important;
-  padding-left: 12px;
-  float: left;
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .media-wrapper {
   padding-top: 10px;
 }
 
+ol.avaliacao-alternativas,
+ul.lista-sem-estilo {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .linha-alternativa {
   display: flex !important;
   flex-direction: row;
   padding-top: 10px;
+  word-break: break-word;
+  /* Movido do seletor genérico via :has */
 }
 
 .item_enem {
@@ -88,12 +85,6 @@ body {
   text-align: center !important;
 }
 
-div:has(> span.media-esq) {
-  display: flex !important;
-  flex-direction: row;
-  padding-top: 10px;
-  word-break: break-word;
-}
 
 .media-esq {
   padding-right: 10px;

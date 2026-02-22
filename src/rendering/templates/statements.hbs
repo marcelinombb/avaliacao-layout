@@ -1,23 +1,25 @@
 {{#if object}}
-{{#each object}}
-<div class="coluna-sm-12">
-    <div class="linha-alternativa">
-        <span class="media-esq">{{{this.item}}}</span>
-        <span class="media-corpo">{{{this.descricao}}}</span>
-    </div>
-    {{#if ../justificarFalsas}}
-    <table class="class-table">
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    {{/if}}
-</div>
-{{/each}}
+<ul class="lista-sem-estilo">
+    {{#each object}}
+    <li class="coluna-sm-12">
+        <div class="linha-alternativa">
+            <span class="media-esq">{{{this.item}}}</span>
+            <span class="media-corpo">{{{this.descricao}}}</span>
+        </div>
+        {{#if ../justificarFalsas}}
+        <table class="class-table">
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        {{/if}}
+    </li>
+    {{/each}}
+</ul>
 {{/if}}
