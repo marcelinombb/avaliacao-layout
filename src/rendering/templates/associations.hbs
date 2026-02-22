@@ -1,21 +1,21 @@
 {{#if object}}
-<div class="duas-colunas">
-    <div>
+<div class="grid-cols-2">
+    <ul class="lista-sem-estilo">
         {{#each object.coluna1}}
-        <div class="linha-alternativa">
+        <li class="linha-alternativa">
             <span class="media-esq">{{{this.item}}}</span>
             <span class="media-corpo">{{{this.descricao}}}</span>
-        </div>
+        </li>
         {{/each}}
-    </div>
-    <div>
+    </ul>
+    <ul class="lista-sem-estilo">
         {{#each object.coluna2}}
-        <div class="linha-alternativa">
+        <li class="linha-alternativa">
             <span class="media-esq">{{{this.item}}}</span>
             <span class="media-corpo">{{{this.descricao}}}</span>
-        </div>
+        </li>
         {{/each}}
-    </div>
+    </ul>
 </div>
 <div style="padding-bottom: 12px;"></div>
 {{/if}}
