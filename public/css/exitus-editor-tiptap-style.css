@@ -167,15 +167,6 @@ p {
   outline-color: var(--active-blue) !important;
 }
 
-.tiptap-widget {
-  position: relative;
-  outline-color: transparent;
-  outline-style: solid;
-  outline-width: var(--widget-outline-width);
-  user-select: auto;
-  transition: outline-color 200ms ease;
-}
-
 .ex-toolbar-button {
   display: flex;
   position: relative;

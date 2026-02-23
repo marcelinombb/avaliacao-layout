@@ -1,0 +1,745 @@
+@charset "UTF-8";
+/* Estilos para redimensionamento de imagem */
+.resizers-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Estilos para redimensionamento de imagem */
+.resize-handle {
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border: 1px solid white;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 20;
+  display: none;
+}
+
+/* Show handles only when the node (wrapper) is selected */
+.ex-selected .resize-handle,
+.ex-selected .insert-paragraph-btn,
+.ex-image-wrapper:hover .insert-paragraph-btn {
+  display: flex;
+}
+
+.ex-image-wrapper.ex-image-grayscale img {
+  filter: grayscale(100%) saturate(300%);
+}
+
+.resize-handle-tl {
+  top: -6px;
+  left: -6px;
+  cursor: nwse-resize;
+}
+
+.resize-handle-tr {
+  top: -6px;
+  right: -6px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-bl {
+  bottom: -6px;
+  left: -6px;
+  cursor: nesw-resize;
+}
+
+.resize-handle-br {
+  bottom: -6px;
+  right: -6px;
+  cursor: nwse-resize;
+}
+
+.ex-image-wrapper + br.ProseMirror-trailingBreak {
+  display: none;
+}
+
+/* Estilos para wrapper de imagem */
+.ex-image-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 10px 0;
+  max-width: 100%;
+}
+
+.ex-image-wrapper img {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ex-image-wrapper:not([style*=width]) {
+  width: 400px;
+}
+
+.ex-image-wrapper.ex-selected .resizers-container {
+  display: block;
+}
+
+.ex-image-wrapper:not(.ex-selected) .resizers-container {
+  display: none;
+}
+
+/* Estilos para alinhamento */
+.ex-image-block-middle {
+  display: block;
+  margin: 10px auto;
+}
+
+.ex-image-block-align-left {
+  display: block;
+  margin: 10px auto 10px 0;
+}
+
+.ex-image-block-align-right {
+  display: block;
+  margin: 10px 0 10px auto;
+}
+
+.ex-image-float-left {
+  float: left;
+  margin: 0 15px 15px 0;
+}
+
+.ex-image-float-right {
+  float: right;
+  margin: 0 0 15px 15px;
+}
+
+.ex-image-wrapper figcaption.ex-hidden {
+  display: none;
+}
+
+.ex-image-wrapper figcaption.figcaption-is-empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+}
+
+figure,
+figcaption {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+.ex-image-wrapper {
+  clear: both;
+  display: table;
+  padding: 0.08em;
+  max-width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.ex-image-wrapper figcaption {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  font-style: italic;
+}
+
+.ex-image-wrapper figcaption {
+  background-color: #f7f7f7;
+  caption-side: bottom;
+  color: #333;
+  /* display: table-caption; */
+  font-size: 14px;
+  outline-offset: -1px;
+  padding: 0.6em;
+  word-break: break-word;
+}
+
+.ex-image-wrapper figcaption.figcaption-is-empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+}
+
+/* Utilitários */
+.ex-hidden {
+  display: none !important;
+}
+
+.ex-mr-0 {
+  margin-right: 0 !important;
+}
+
+/* Estilos para dropdown de tamanho personalizado */
+.ex-custom-size-dropdown {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.ex-custom-size-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ex-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ex-input-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+}
+
+.ex-input-group input {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  transition: border-color 0.2s;
+}
+
+.ex-input-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.ex-custom-size-buttons {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ex-apply-size {
+  padding: 6px 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ex-apply-size:hover {
+  background: #2563eb;
+}
+
+.ex-custom-size-separator {
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0;
+}
+
+.ex-saved-size {
+  margin-top: 8px;
+}
+
+.ex-saved-size-button {
+  width: 100%;
+  padding: 6px 8px;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ex-saved-size-button:hover {
+  background: #e9ecef;
+  color: #3b82f6;
+}
+
+/* Remover estilos do modal que não são mais necessários */
+.ex-custom-size-modal,
+.ex-custom-size-content,
+.ex-custom-size-title,
+.ex-modal-buttons,
+.ex-modal-button,
+.ex-saved-sizes,
+.ex-saved-size-item,
+.ex-saved-size-label,
+.ex-delete-size {
+  display: none;
+}
+
+/* Styles for Insert Paragraph Buttons */
+.insert-paragraph-btn {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: #ffc83d;
+  color: white;
+  border-radius: 50%;
+  display: none;
+  z-index: 30;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+}
+
+.ex-selected .insert-paragraph-btn {
+  background-color: #3b82f6;
+}
+
+.insert-paragraph-btn:hover {
+  background-color: #3b82f6;
+}
+
+.insert-paragraph-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.insert-paragraph-before {
+  top: -12px;
+  left: 20px;
+}
+
+.insert-paragraph-after {
+  bottom: -12px;
+  right: 20px;
+}
+
+/* 
+.ex-image-wrapper+p:has(> br) {
+  display: none;
+} */
+/* Image Cropper Styles */
+.ex-crop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+  backdrop-filter: blur(2px);
+  transition: opacity 0.3s ease;
+}
+
+.ex-crop-area {
+  position: absolute;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  border: 2px solid #3b82f6;
+  box-sizing: border-box;
+  cursor: move;
+  z-index: 101;
+}
+
+.ex-crop-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #3b82f6;
+  border: 1px solid white;
+  z-index: 102;
+}
+
+.ex-crop-handle-topLeft {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+
+.ex-crop-handle-topRight {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+
+.ex-crop-handle-bottomLeft {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+
+.ex-crop-handle-bottomRight {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+
+.ex-crop-handle-top {
+  top: -5px;
+  left: 50%;
+  margin-left: -5px;
+  cursor: ns-resize;
+}
+
+.ex-crop-handle-bottom {
+  bottom: -5px;
+  left: 50%;
+  margin-left: -5px;
+  cursor: ns-resize;
+}
+
+.ex-crop-handle-left {
+  left: -5px;
+  top: 50%;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+
+.ex-crop-handle-right {
+  right: -5px;
+  top: 50%;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+
+.ex-crop-actions {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 103;
+  padding: 5px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ex-crop-action {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.ex-crop-apply {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.ex-crop-apply:hover {
+  background-color: #2563eb;
+}
+
+.ex-crop-cancel {
+  background-color: #ef4444;
+  color: white;
+}
+
+.ex-crop-cancel:hover {
+  background-color: #dc2626;
+}
+
+.ex-image-cropping img {
+  filter: brightness(0.7);
+}
+
+.colar-questao {
+  border: 2px solid #009688;
+  border-radius: 0.5rem;
+  margin: 0.9em 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.colar-questao label {
+  background-color: #009688;
+  border-radius: 0 0 0.5rem 0;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+}
+
+.colar-questao .close-colar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #009688;
+  border-radius: 50%;
+  border: none;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  position: absolute;
+  margin: 0.25rem;
+  top: 0;
+  right: 0;
+}
+
+.colar-questao > .colar-content {
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.colar-questao > .colar-content.is-editable {
+  border: 2px dashed #909294;
+  border-radius: 0.5rem;
+  margin: 2.5rem 1rem 1rem;
+  padding: 0.5rem;
+  cursor: auto;
+}
+
+.exitus-tiptap-editor .tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+.exitus-tiptap-editor .tiptap table[data-no-outer-border] {
+  border-style: hidden;
+}
+.exitus-tiptap-editor .tiptap table[data-no-vertical-border] td,
+.exitus-tiptap-editor .tiptap table[data-no-vertical-border] th {
+  border-left: hidden;
+  border-right: hidden;
+}
+.exitus-tiptap-editor .tiptap table[data-no-borders] {
+  border-style: dotted;
+  border-color: #bfbfbf;
+  border-width: 1px;
+}
+.exitus-tiptap-editor .tiptap table[data-no-borders] td,
+.exitus-tiptap-editor .tiptap table[data-no-borders] th {
+  border: dashed;
+  border-color: #bfbfbf;
+  border-width: 1px;
+}
+.exitus-tiptap-editor .tiptap table td,
+.exitus-tiptap-editor .tiptap table th {
+  min-width: 2em;
+  border: 1px solid #bfbfbf;
+  padding: 0.4em;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+.exitus-tiptap-editor .tiptap table td > *,
+.exitus-tiptap-editor .tiptap table th > * {
+  margin-bottom: 0;
+}
+.exitus-tiptap-editor .tiptap table th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f1f3f5;
+}
+.exitus-tiptap-editor .tiptap table .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+.exitus-tiptap-editor .tiptap table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: #adf;
+  pointer-events: none;
+}
+.exitus-tiptap-editor .tiptap table p {
+  margin: 0;
+}
+.exitus-tiptap-editor .tableWrapper {
+  display: table;
+  margin: 0.9em auto;
+  /* Styles for Insert Paragraph Buttons */
+}
+.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: #ffc83d;
+  color: white;
+  border-radius: 50%;
+  display: none;
+  z-index: 30;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+}
+.exitus-tiptap-editor .tableWrapper.ex-selected .insert-paragraph-btn, .exitus-tiptap-editor .tableWrapper:hover .insert-paragraph-btn {
+  display: flex;
+}
+.exitus-tiptap-editor .tableWrapper .ex-selected .insert-paragraph-btn {
+  background-color: #3b82f6;
+}
+.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn:hover {
+  background-color: #3b82f6;
+}
+.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.exitus-tiptap-editor .tableWrapper .insert-paragraph-before {
+  top: -12px;
+  left: 20px;
+}
+.exitus-tiptap-editor .tableWrapper .insert-paragraph-after {
+  bottom: -12px;
+  right: 20px;
+}
+.exitus-tiptap-editor .resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+.preview-paper table[data-no-borders] {
+  border-style: none !important;
+}
+.preview-paper table[data-no-borders] td,
+.preview-paper table[data-no-borders] th {
+  border-style: none !important;
+}
+
+.ex-answer-box {
+  border: 1px solid #ccc;
+  /* padding: 10px; */
+  margin: 10px 0;
+  /* border-radius: 4px; */
+  position: relative;
+  background-color: #fff;
+}
+.ex-answer-box.ex-answer-box-no-border {
+  border: 1px dashed #eee;
+  border-color: transparent;
+}
+.ex-answer-box.ex-answer-box-no-border:hover {
+  border-color: #eee;
+}
+.ex-answer-box .ex-answer-box-header {
+  font-weight: bold;
+  /* margin-bottom: 8px; */
+  min-height: 1.2em;
+  outline: none;
+  background-color: #a9a9a9;
+  text-align: center;
+  padding: 3px 0px 3px 0px;
+}
+.ex-answer-box .ex-answer-box-header:empty::before {
+  content: "Header...";
+  color: #999;
+  font-style: italic;
+}
+.ex-answer-box .ex-answer-box-visuals {
+  display: block;
+}
+.ex-answer-box .ex-answer-line {
+  border-bottom: 1px solid #ddd;
+  height: 30px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.ex-answer-box .ex-answer-line .ex-answer-number {
+  margin-left: 10px;
+  color: #666;
+  font-size: 0.9em;
+  user-select: none;
+}
+.ex-answer-box:not(.ex-answer-box-no-border) .ex-answer-line:last-child {
+  border-bottom: none;
+}
+.ex-answer-box[data-style=box] .ex-answer-box-visuals {
+  height: auto;
+  border: 1px solid #eee;
+  background: #fafafa;
+}
+.ex-answer-box .insert-paragraph-btn {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: #ffc83d;
+  color: white;
+  border-radius: 50%;
+  display: none;
+  z-index: 30;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+}
+.ex-answer-box .insert-paragraph-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.ex-answer-box .insert-paragraph-btn:hover {
+  background-color: #3b82f6;
+}
+.ex-answer-box.ex-selected .insert-paragraph-btn, .ex-answer-box:hover .insert-paragraph-btn {
+  display: flex;
+}
+.ex-answer-box.ex-selected .insert-paragraph-btn {
+  background-color: #3b82f6;
+}
+.ex-answer-box .insert-paragraph-before {
+  top: -12px;
+  left: 20px;
+}
+.ex-answer-box .insert-paragraph-after {
+  bottom: -12px;
+  right: 20px;
+}
+
+:root {
+  --active-blue: hsl(218, 81.8%, 56.9%);
+  --color-success: #008a00;
+  --color-cancel: #db3700;
+  --color-base-text: #333;
+  --image-caption-background: #f7f7f7;
+  --ex-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+  --ex-font-size-tiny: 0.7em;
+  --ex-font-size-small: 0.75em;
+  --ex-font-size-base: 13px;
+  --ex-font-size-normal: 1em;
+  --ex-font-size-big: 1.4em;
+  --ex-font-size-large: 1.8em;
+  --ex-line-height-base: 1.84615;
+}
+
+.tiptap {
+  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  color: var(--color-base-text) !important;
+  font-size: 14px;
+  line-height: 1.3em;
+}
+.tiptap blockquote {
+  border-left: 3px solid rgba(13, 13, 13, 0.1);
+  padding-left: 1rem;
+}
+.tiptap p {
+  margin: 0 0 9px;
+}
+
+/*# sourceMappingURL=preview.css.map */
