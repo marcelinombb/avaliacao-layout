@@ -66,11 +66,20 @@ ul.lista-sem-estilo {
   margin-bottom: 0;
 }
 
+.questao-completa {
+  margin-bottom: 10px;
+}
+
 .linha-alternativa {
-  display: flex !important;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
   padding-top: 10px;
   word-break: break-word;
+  /* display: flex !important;
+  flex-direction: row;
+  padding-top: 10px;
+  word-break: break-word; */
   /* Movido do seletor genérico via :has */
 }
 
@@ -86,7 +95,7 @@ ul.lista-sem-estilo {
 }
 
 
-.media-esq {
+/* .media-esq {
   padding-right: 10px;
   white-space: nowrap;
 }
@@ -100,7 +109,7 @@ ul.lista-sem-estilo {
 .media-corpo {
   width: auto;
   display: inline-block;
-}
+} */
 
 .display-block {
   display: block;

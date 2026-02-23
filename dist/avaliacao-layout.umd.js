@@ -1,5 +1,5 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1976,7 +1976,7 @@
       return "<div class='tiptap' data-questao-id=\""
         + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? lookupProperty(depth0,"question") : depth0)) != null ? lookupProperty(stack1,"id") : stack1), depth0))
         + "\">\n    <div class='questao-completa "
-        + ((stack1 = lookupProperty(helpers,"unless").call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"assessmentLayout") : depth0)) != null ? lookupProperty(stack1,"quebraQuestao") : stack1),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":2,"column":33},"end":{"line":2,"column":95}}})) != null ? stack1 : "")
+        + ((stack1 = lookupProperty(helpers,"unless").call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"options") : depth0)) != null ? lookupProperty(stack1,"quebraQuestao") : stack1),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":2,"column":33},"end":{"line":2,"column":86}}})) != null ? stack1 : "")
         + "'>\n"
         + ((stack1 = container.invokePartial(lookupProperty(partials,"reference"),depth0,{"name":"reference","data":data,"indent":"        ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
         + "        <div class='cabecalho-questao dontend'>\n"
@@ -2621,6 +2621,7 @@
                 folhaDeRosto: this._folhaDeRosto.content,
                 quantidadeFolhasRascunho: this.quantidadeFolhasRascunho,
                 quantidadeColunas: this.quantidadeColunas,
+                quebraQuestao: provaModelo.prova.quebraQuestao,
                 gabarito: this._gabarito,
                 paginacaoAtiva: this.paginacaoAtiva,
             });

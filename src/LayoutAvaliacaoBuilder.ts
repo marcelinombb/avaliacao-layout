@@ -159,6 +159,7 @@ export class LayoutAvaliacaoBuilder {
       folhaDeRosto: this._folhaDeRosto.content,
       quantidadeFolhasRascunho: this.quantidadeFolhasRascunho,
       quantidadeColunas: this.quantidadeColunas,
+      quebraQuestao: provaModelo.prova.quebraQuestao,
       gabarito: this._gabarito,
       paginacaoAtiva: this.paginacaoAtiva,
     });

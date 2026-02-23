@@ -72,6 +72,8 @@
 
     replacePlaceholders(provaModelo3);
 
+    console.log(provaModelo3)
+
     const { cabecalho, cabecalhoPagina, folhaRosto, paginacao, rodape, rodapeRosto, marcaDagua } = provaModelo3.prova.layout;
 
     //provaModelo3.listaProvaQuestao = [...provaModelo3.listaProvaQuestao].slice(0, 10);
@@ -133,7 +135,7 @@
       //sideMenu.classList.remove('open');
     }
 
-    //const listaQuestoes = listaQuestao
+
 
     // onde a avaliação será renderizada
     const pagesContainer = document.getElementById('pages-container');
@@ -158,12 +160,12 @@
 
       // Adicionar funcionalidade ao botão de imprimir
       const printButton = document.getElementById('printButton');
-      
+
       printButton.addEventListener('click', () => {
         renderizarAvaliacao()
-        .then(() => {
-          window.print();
-        });
+          .then(() => {
+            window.print();
+          });
       });
 
       // Aplicar configurações e renderizar o layout

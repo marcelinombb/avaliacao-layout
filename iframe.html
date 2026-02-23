@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
   <title>Multi-Page Layout</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css" integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+    integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous">
   <link rel="stylesheet" href="public/css/exitus-questao-style.css">
   <link rel="stylesheet" href="public/css/exitus-editor-tiptap-style.css">
   <link rel="stylesheet" href="public/css/linhas-resposta.css">
@@ -23,7 +24,7 @@
     <h3>Configurações</h3>
     <label for="fontSize">Tamanho da Fonte</label>
     <input type="number" id="fontSize" value="14">
-<!--
+    <!--
     <div class="checkbox-container">
       <input type="checkbox" id="estender" checked>
       <label for="estender">Estender Paginas</label>
@@ -88,9 +89,9 @@
       const addInstitutionWatermark = document.getElementById('institutionWatermark').checked;
 
       const quebraQuestao = document.getElementById('quebraquestao').checked;
-    /*   const estender = document.getElementById('estender').checked; */
+      /*   const estender = document.getElementById('estender').checked; */
 
-     /*  pagesContainer.classList.toggle("pages_pages_one_page", !estender) */
+      /*  pagesContainer.classList.toggle("pages_pages_one_page", !estender) */
 
       provaModelo3.prova.quebraQuestao = quebraQuestao
 
@@ -131,8 +132,6 @@
       //sideMenu.classList.remove('open');
     }
 
-    //const listaQuestoes = listaQuestao
-
     // onde a avaliação será renderizada
     const pagesContainer = document.getElementById('pages-container');
 
@@ -159,9 +158,9 @@
 
       printButton.addEventListener('click', () => {
         renderizarAvaliacao()
-        .then(() => {
-          window.print();
-        });
+          .then(() => {
+            window.print();
+          });
       });
 
       // Aplicar configurações e renderizar o layout
@@ -188,7 +187,7 @@
 
     window.addEventListener('message', (event) => {
 
-      if(event.data.name ===  'render') {
+      if (event.data.name === 'render') {
         const layoutResult = event.data.data(new AvaliacaoLayout.LayoutAvaliacaoBuilder());
 
         const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
@@ -198,9 +197,9 @@
         pagesContainer.innerHTML = "";
 
         AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
-        .then(() => {
+          .then(() => {
 
-        });
+          });
       }
     });
 
