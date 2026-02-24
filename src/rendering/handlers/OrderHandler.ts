@@ -64,7 +64,20 @@ export default class OrderHandler extends Handler {
 
     obterWidth(element: any) {
         const conteudo = element.querySelector(".media-corpo");
-        return (conteudo || element).getBoundingClientRect().width;
+
+        const originalWidth = element.style.width;
+        const originalMaxWidth = element.style.maxWidth;
+
+        element.style.width = 'max-content';
+        element.style.maxWidth = '100%';
+
+        const target = conteudo || element;
+        const width = target.getBoundingClientRect().width;
+
+        element.style.width = originalWidth;
+        element.style.maxWidth = originalMaxWidth;
+
+        return width;
     }
 
     aplicarOrdenacao(alternativas: any[], tipo: number) {
