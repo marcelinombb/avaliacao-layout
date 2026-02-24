@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layout Builder - Avaliação Layout</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+        integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi" crossorigin="anonymous" />
+    <link rel="stylesheet" href="public/css/exitus-questao-style.css" />
+    <link rel="stylesheet" href="public/css/linhas-resposta.css" />
+    <link rel="stylesheet" href="public/css/layout-builder.css" />
+    <link rel="stylesheet" href="public/css/preview.css" />
+    <link rel="stylesheet" href="public/css/preview-editor.css" />
+</head>
+
+<body>
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Renderizando Layout...</p>
+    </div>
+
+    <div class="layout-builder-container">
+        <!-- Painel Lateral: Configurações do JSON -->
+        <aside class="config-panel">
+            <div class="config-header">
+                <h2>Layout Builder</h2>
+                <div class="config-actions">
+                    <button type="button" id="btn-render-preview" class="btn btn-primary">Atualizar Preview</button>
+                    <button type="button" id="btn-export-json" class="btn btn-secondary">Exportar JSON</button>
+                </div>
+            </div>
+
+            <div class="config-content">
+                <form id="layout-form">
+                    <div class="form-group">
+                        <label for="layout-nome">Nome do Layout</label>
+                        <input type="text" id="layout-nome" name="nome"
+                            value="Atividade/Teste - Olímpica (Sem valor da questão)">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="layout-codigo">Código</label>
+                            <input type="number" id="layout-codigo" name="codigo" value="151">
+                        </div>
+                        <div class="form-group half">
+                            <label for="layout-colunas">Colunas</label>
+                            <select id="layout-colunas" name="colunas">
+                                <option value="1" selected>1 Coluna</option>
+                                <option value="2">2 Colunas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="layout-tipoFolha">Tipo de Folha</label>
+                            <select id="layout-tipoFolha" name="tipoFolha">
+                                <option value="A4" selected>A4</option>
+                                <option value="Letter">Letter</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="layout-orientacao">Orientação</label>
+                            <select id="layout-orientacao" name="orientacaoFolha">
+                                <option value="portrait" selected>Retrato (Portrait)</option>
+                                <option value="landscape">Paisagem (Landscape)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="layout-fonte">Fonte Padrão</label>
+                            <input type="text" id="layout-fonte" name="fonte" value="Arial">
+                        </div>
+                        <div class="form-group half">
+                            <label for="layout-fonteTamanho">Tamanho Fonte</label>
+                            <input type="number" id="layout-fonteTamanho" name="fonteTamanho" value="14">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-cabecalho">Cabeçalho (HTML)</label>
+                        <textarea id="layout-cabecalho" name="cabecalho" rows="6"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-rodape">Rodapé (HTML)</label>
+                        <textarea id="layout-rodape" name="rodape" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-folhaRosto">Folha de Rosto (HTML)</label>
+                        <textarea id="layout-folhaRosto" name="folhaRosto" rows="8"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-cabecalhoPagina">Cabeçalho de Página (HTML)</label>
+                        <textarea id="layout-cabecalhoPagina" name="cabecalhoPagina" rows="6"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-cabecalhoQuestao">Cabeçalho da Questão (HTML)</label>
+                        <textarea id="layout-cabecalhoQuestao" name="cabecalhoQuestao" rows="3"></textarea>
+                        <small>Use <code>#ORDEM#</code> para a numeração.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-cabecalhoPrimeiraQuestao">Cabeçalho da Primeira Questão (HTML)</label>
+                        <textarea id="layout-cabecalhoPrimeiraQuestao" name="cabecalhoPrimeiraQuestao"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-rascunho">Página de Rascunho (HTML)</label>
+                        <textarea id="layout-rascunho" name="rascunho" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-paginacao">Paginação (HTML)</label>
+                        <textarea id="layout-paginacao" name="paginacao" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="layout-marcaDagua">URL Marca D'água</label>
+                        <input type="text" id="layout-marcaDagua" name="marcaDagua"
+                            value="https://storage.googleapis.com/exitus-institucional-christus/1/logo/Christus%20-%20px.png">
+                    </div>
+
+                </form>
+            </div>
+        </aside>
+
+        <!-- Painel de Preview -->
+        <main class="preview-panel">
+            <div id="pages-container">
+                <!-- Paged.js renderizará aqui -->
+            </div>
+        </main>
+    </div>
+
+    <script src="dist/avaliacao-layout.umd.js"></script>
+    <script src="public/js/layout-builder.js" type="module"></script>
+</body>
+
+</html>
