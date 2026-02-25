@@ -9,7 +9,6 @@
     "dist/**/*",
     "types/**/*",
     "public/**/*",
-    "iframe.html",
     "pdf.html"
   ],
   "scripts": {

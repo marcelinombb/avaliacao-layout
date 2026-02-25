@@ -1,5 +1,269 @@
 // layout-builder.js
 
+/**
+ * Utilitário para debounce
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * Manager para instâncias do Monaco Editor
+ */
+class MonacoManager {
+    constructor() {
+        this.editors = {};
+        this.isInitialized = false;
+        this.isInitializing = false;
+        this.onReadyCallbacks = [];
+        this.onChangeCallbacks = [];
+
+        // Controle de colapso de Base64
+        this.decorationsMap = {}; // editorId -> base64DecoIds
+        this.expandedRangesMap = {}; // editorId -> Set(rangeKey)
+    }
+
+    init() {
+        if (this.isInitialized || this.isInitializing) return;
+
+        if (typeof require === 'undefined') {
+            console.error('Monaco loader (loader.min.js) não foi encontrado no global scope.');
+            return;
+        }
+
+        this.isInitializing = true;
+
+        try {
+            require.config({
+                paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }
+            });
+
+            require(['vs/editor/editor.main'], () => {
+                this.createEditors();
+                this.isInitialized = true;
+                this.isInitializing = false;
+
+                this.onReadyCallbacks.forEach(cb => cb());
+                this.onReadyCallbacks = [];
+            }, (err) => {
+                console.error('Erro ao carregar os módulos do Monaco:', err);
+                this.isInitializing = false;
+            });
+        } catch (e) {
+            console.error('Erro crítico na inicialização do MonacoManager:', e);
+            this.isInitializing = false;
+        }
+    }
+
+    onReady(callback) {
+        if (this.isInitialized) {
+            callback();
+        } else {
+            this.onReadyCallbacks.push(callback);
+        }
+    }
+
+    onChange(callback) {
+        this.onChangeCallbacks.push(callback);
+        if (this.isInitialized) {
+            Object.values(this.editors).forEach(editor => {
+                editor.onDidChangeModelContent(() => callback());
+            });
+        }
+    }
+
+    createEditors() {
+        const editorConfigs = [
+            { id: 'layout-cabecalho', container: 'container-cabecalho' },
+            { id: 'layout-rodape', container: 'container-rodape' },
+            { id: 'layout-folhaRosto', container: 'container-folhaRosto' },
+            { id: 'layout-cabecalhoPagina', container: 'container-cabecalhoPagina' },
+            { id: 'layout-cabecalhoQuestao', container: 'container-cabecalhoQuestao' },
+            { id: 'layout-cabecalhoPrimeiraQuestao', container: 'container-cabecalhoPrimeiraQuestao' },
+            { id: 'layout-rascunho', container: 'container-rascunho' },
+            { id: 'layout-paginacao', container: 'container-paginacao' }
+        ];
+
+        editorConfigs.forEach(config => {
+            const container = document.getElementById(config.container);
+            const textarea = document.getElementById(config.id);
+            if (container && textarea) {
+                const editor = monaco.editor.create(container, {
+                    value: textarea.value,
+                    language: 'html',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on'
+                });
+                this.editors[config.id] = editor;
+                this.decorationsMap[config.id] = [];
+                this.expandedRangesMap[config.id] = new Set();
+
+                // Live Preview
+                editor.onDidChangeModelContent(() => {
+                    this.onChangeCallbacks.forEach(cb => cb());
+                    this.updateBase64Decorations(config.id);
+                });
+
+                // Expande ao clicar no placeholder
+                editor.onMouseDown((e) => {
+                    if (e.target.element && e.target.element.classList.contains('base64-placeholder')) {
+                        const position = e.target.position;
+                        // Encontra qual range foi clicado
+                        const currentDecos = editor.getLineDecorations(position.lineNumber);
+                        const base64Deco = currentDecos.find(d => d.options.inlineClassName === 'base64-hidden' || d.options.afterContentClassName === 'base64-placeholder');
+
+                        if (base64Deco) {
+                            const range = base64Deco.range;
+                            const key = `${range.startLineNumber}-${range.startColumn}-${range.endLineNumber}-${range.endColumn}`;
+                            this.expandedRangesMap[config.id].add(key);
+                            this.updateBase64Decorations(config.id);
+                        }
+                    }
+                });
+
+                // Inicializa decorações
+                this.updateBase64Decorations(config.id);
+            }
+        });
+
+        this.initFullscreenButtons();
+    }
+
+    /**
+     * Identifica e colapsa strings base64 longas
+     */
+    /**
+     * Identifica e colapsa a tag <img> INTEIRA se contiver base64 longo
+     */
+    updateBase64Decorations(id) {
+        const editor = this.editors[id];
+        if (!editor) return;
+
+        const model = editor.getModel();
+        const text = model.getValue();
+
+        // Regex para capturar a tag <img> inteira que contém um base64 longo
+        // Procura por <img ... src="data:image/...;base64, ... >
+        const regex = /<img[\s\S]+?src=["']data:image\/[^;]+;base64,[\s\S]+?["'][\s\S]*?>/g;
+
+        const newDecorations = [];
+        const hiddenAreas = [];
+        let match;
+
+        while ((match = regex.exec(text)) !== null) {
+            // Verifica se a parte do Base64 dentro do match é realmente longa (fail-safe)
+            if (match[0].length < 100) continue;
+
+            const startPos = model.getPositionAt(match.index);
+            const endPos = model.getPositionAt(match.index + match[0].length);
+            const range = new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column);
+            const rangeKey = `${range.startLineNumber}-${range.startColumn}-${range.endLineNumber}-${range.endColumn}`;
+
+            if (!this.expandedRangesMap[id].has(rangeKey)) {
+                // 1. Esconde a tag inteira (CSS cuida das linhas que sobrarem)
+                newDecorations.push({
+                    range: range,
+                    options: {
+                        inlineClassName: 'base64-hidden',
+                        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+                    }
+                });
+
+                // 2. Coloca o marcador no início de onde a tag começaria
+                newDecorations.push({
+                    range: new monaco.Range(startPos.lineNumber, startPos.column, startPos.lineNumber, startPos.column),
+                    options: {
+                        beforeContentClassName: 'base64-placeholder',
+                        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+                    }
+                });
+
+                // 3. Colapsa fisicamente as linhas para remover a altura
+                if (range.endLineNumber > range.startLineNumber) {
+                    hiddenAreas.push(new monaco.Range(
+                        range.startLineNumber + 1, 1,
+                        range.endLineNumber, model.getLineMaxColumn(range.endLineNumber)
+                    ));
+
+                    // Se a tag ocupa múltiplas linhas e começa após o início da primeira linha,
+                    // o Monaco ainda mostra a primeira linha. O inlineClassName cuida dela.
+                }
+            }
+        }
+
+        this.decorationsMap[id] = editor.deltaDecorations(this.decorationsMap[id], newDecorations);
+
+        if (typeof editor.setHiddenAreas === 'function') {
+            editor.setHiddenAreas(hiddenAreas);
+        }
+    }
+
+    initFullscreenButtons() {
+        document.querySelectorAll('.btn-toggle-fullscreen').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const targetId = btn.getAttribute('data-target');
+                this.toggleFullscreen(targetId);
+            };
+        });
+    }
+
+    toggleFullscreen(id) {
+        const wrapper = document.getElementById(`wrapper-${id}`);
+        if (!wrapper) return;
+
+        const isFullscreen = wrapper.classList.toggle('fullscreen-wrapper');
+        const iconBtn = wrapper.querySelector('.btn-toggle-fullscreen');
+
+        if (isFullscreen) {
+            iconBtn.innerHTML = '✕';
+            iconBtn.title = 'Fechar';
+            document.body.style.overflow = 'hidden';
+        } else {
+            iconBtn.innerHTML = '⛶';
+            iconBtn.title = 'Tela Cheia';
+            document.body.style.overflow = '';
+        }
+
+        if (this.editors[id]) {
+            setTimeout(() => {
+                this.editors[id].layout();
+                this.editors[id].focus();
+            }, 50);
+        }
+    }
+
+    syncToTextareas() {
+        Object.keys(this.editors).forEach(id => {
+            const textarea = document.getElementById(id);
+            if (textarea) {
+                textarea.value = this.editors[id].getValue();
+            }
+        });
+    }
+
+    setValue(id, value) {
+        if (this.editors[id]) {
+            this.editors[id].setValue(value || '');
+            this.updateBase64Decorations(id);
+        }
+    }
+}
+
+const monacoManager = new MonacoManager();
+
 const LOREM_IPSUM_TEXT = `
 <p style="text-align: justify;"><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Aliquam efficitur velit vitae dui tempor, quis vulputate ipsum congue. Phasellus nec lacinia tortor. Suspendisse potenti. Integer ut magna tincidunt, congue nisl non, interdum dui.</p>
 <p style="text-align: justify;">Vestibulum finibus nulla at lectus ultricies commodo. Maecenas a eros in metus malesuada rhoncus vel et felis. Suspendisse sodales tellus sed ante aliquet, et facilisis est lacinia. Nunc ac accumsan erat. Praesent eu quam diam.</p>
@@ -13,7 +277,6 @@ const LOREM_IPSUM_ALTERNATIVES = [
     `<p style="text-align: justify;">Aenean et libero in massa ultrices vehicula quis ac sapien.</p>`
 ];
 
-// Gera questões longas para testar quebra de página e colunas.
 function generateMockQuestions(count) {
     const questions = [];
     for (let i = 1; i <= count; i++) {
@@ -65,17 +328,17 @@ const mockProva = {
     nome: "Mock Avaliação"
 };
 
-
-// Retorna um objeto com todos os valores atuais dos inputs do form
 function getLayoutConfigFromForm() {
+    monacoManager.syncToTextareas();
+
     return {
-        codigo: parseInt(document.getElementById('layout-codigo').value, 10),
+        codigo: parseInt(document.getElementById('layout-codigo').value, 10) || 0,
         nome: document.getElementById('layout-nome').value,
-        colunas: parseInt(document.getElementById('layout-colunas').value, 10),
+        colunas: parseInt(document.getElementById('layout-colunas').value, 10) || 1,
         tipoFolha: document.getElementById('layout-tipoFolha').value,
         orientacaoFolha: document.getElementById('layout-orientacao').value,
         fonte: document.getElementById('layout-fonte').value,
-        fonteTamanho: parseInt(document.getElementById('layout-fonteTamanho').value, 10),
+        fonteTamanho: parseInt(document.getElementById('layout-fonteTamanho').value, 10) || 12,
         cabecalho: document.getElementById('layout-cabecalho').value,
         rodape: document.getElementById('layout-rodape').value,
         folhaRosto: document.getElementById('layout-folhaRosto').value,
@@ -101,28 +364,24 @@ function getLayoutConfigFromForm() {
 
 
 function renderizarPreview() {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) overlay.style.display = 'flex';
+    if (typeof AvaliacaoLayout === 'undefined') {
+        setTimeout(renderizarPreview, 500);
+        return;
+    }
 
     const pagesContainer = document.getElementById('pages-container');
-    pagesContainer.innerHTML = '';
+    if (!pagesContainer) return;
 
-    // Obter config
     const layoutConfig = getLayoutConfigFromForm();
 
-    // Montar o objeto root (similar ao return da API) para injeção na biblioteca
-    // A biblioteca aceita a prova inteira para fazer os merges ("replacePlaceholders", etc)
     const formSubmitObj = {
         ...mockProva,
-        listaProvaQuestao: generateMockQuestions(15) // Gera 15 questoes de mock
+        listaProvaQuestao: generateMockQuestions(15)
     };
 
     formSubmitObj.prova.layout = layoutConfig;
-
-    // Configura a class do wrapper
     pagesContainer.classList.toggle("pages_pages_one_page", true);
 
-    // Usa a biblioteca para montar o HTML
     try {
         AvaliacaoLayout.replacePlaceholders(formSubmitObj);
 
@@ -136,9 +395,9 @@ function renderizarPreview() {
             })
             .pageFooter(layoutConfig.rodape)
             .colunas(layoutConfig.colunas)
-            .rascunho(0)   // Forcando 0 rascunhos para simplificar preview
+            .rascunho(0)
             .ordemAlternativa(0)
-            .tipoAlternativa(4) // 4 = A., B., C...
+            .tipoAlternativa(4)
             .paginacao();
 
         if (layoutConfig.marcaDagua) {
@@ -146,24 +405,23 @@ function renderizarPreview() {
         }
 
         let layoutResult = builder.build(formSubmitObj);
-
         let layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+
+        pagesContainer.innerHTML = '';
 
         AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
             .then(() => {
-                if (overlay) overlay.style.display = 'none';
                 resizer();
             })
             .catch(err => {
-                console.error("Erro na renderização Paged.js", err);
-                if (overlay) overlay.style.display = 'none';
+                console.error("Erro na renderização Paged.js:", err);
             });
     } catch (err) {
         console.error("Erro preparando layout builder:", err);
-        if (overlay) overlay.style.display = 'none';
-        alert("Erro ao montar layout. Verifique o console.");
     }
 }
+
+const debouncedRender = debounce(renderizarPreview, 500);
 
 function exportarJSON() {
     const layoutConfig = getLayoutConfigFromForm();
@@ -185,8 +443,7 @@ function resizer() {
     let container = document.querySelector(".preview-panel");
 
     if (pages && container) {
-        // Reduz levemente o scale para caber bem no painel da direita
-        let scale = (container.clientWidth * 0.9) / pages.offsetWidth;
+        let scale = (container.clientWidth * 0.95) / pages.offsetWidth;
         if (scale < 1) {
             pages.style.transform = `scale(${scale})`;
             pages.style.transformOrigin = "top center";
@@ -199,21 +456,23 @@ function resizer() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Binding dos botoes
     document.getElementById('btn-render-preview').addEventListener('click', renderizarPreview);
     document.getElementById('btn-export-json').addEventListener('click', exportarJSON);
 
-    // Ajusta zoom quando janela é esticada
     window.addEventListener('resize', resizer);
 
-    // Carregar o JSON inicial (layout-output.json que ja estava na pasta)
+    const inputs = document.querySelectorAll('#layout-form input, #layout-form select');
+    inputs.forEach(input => {
+        input.addEventListener('input', debouncedRender);
+    });
+
     fetch('./layout-output.json')
         .then(res => res.json())
         .then(data => {
-            // Popula os campos com os dados lidos
             const setVal = (id, val) => {
-                if (val !== null && val !== undefined && document.getElementById(id)) {
-                    document.getElementById(id).value = val;
+                const element = document.getElementById(id);
+                if (val !== null && val !== undefined && element) {
+                    element.value = val;
                 }
             };
             setVal('layout-codigo', data.codigo);
@@ -233,12 +492,19 @@ document.addEventListener('DOMContentLoaded', () => {
             setVal('layout-paginacao', data.paginacao);
             setVal('layout-marcaDagua', data.marcaDagua);
 
-            // Depois de popular, já renderiza pela primeira vez
-            renderizarPreview();
+            monacoManager.init();
+            monacoManager.onChange(debouncedRender);
+
+            monacoManager.onReady(() => {
+                renderizarPreview();
+            });
         })
         .catch(err => {
-            console.error("Erro ao carregar layout-output.json", err);
-            // Mesmo com erro, tenta renderizar usando os values padrão do HTML
-            renderizarPreview();
+            console.error("Erro ao carregar layout-output.json:", err);
+            monacoManager.init();
+            monacoManager.onChange(debouncedRender);
+            monacoManager.onReady(() => {
+                renderizarPreview();
+            });
         });
 });

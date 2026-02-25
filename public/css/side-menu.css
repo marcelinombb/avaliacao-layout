@@ -1,6 +1,6 @@
 /* Botão flutuante */
 @media print {
-
+  #configButton,
   .floating-button,
   .floating-button-left {
     display: none;

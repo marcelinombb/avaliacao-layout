@@ -103,10 +103,8 @@ function replacePlaceholders(provaModelo) {
     "#DISCIPLINA#": provaModelo.prova.turma?.disciplina,
     "#TURMA#": provaModelo.prova.turma?.codigoTurma,
     "#CODIGO_TURMA#": provaModelo.prova.turma?.codigoTurma,
-    "#PERIODO#":
-      provaModelo.prova.tipoProva.notaParcial +
-      " - " +
-      (provaModelo.prova.turma?.periodoLetivo.nome ?? "&nbsp;"),
+    "#TIPOPROVA#": provaModelo.prova.tipoProva.notaParcial,
+    "#PERIODO#": provaModelo.prova.turma?.periodoLetivo.nome ?? "&nbsp;",
     "#MODELO#": " - Modelo " + provaModelo.nome,
     "#PROFESSOR#":
       provaModelo.prova.turma?.listaTurmaDisciplina?.[0]?.nomeProfessor == null &&
