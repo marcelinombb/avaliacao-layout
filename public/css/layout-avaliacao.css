@@ -2,14 +2,16 @@
     size: A4 portrait;
     margin: 10mm;
 
-    @bottom-right {
-        font-size: 13px !important;
-        content: counter(page) "/" var(--total-pages, counter(pages));
-    }
-
     @bottom-left {
         font-size: 13px !important;
         content: var(--layout-identificacao, none);
+    }
+}
+
+@page {
+    @bottom-right {
+        font-size: 13px !important;
+        content: counter(page) "/" var(--total-pages, counter(pages));
     }
 }
 
@@ -40,39 +42,11 @@
     break-before: page;
 }
 
-.two-column {
-    display: flex;
-    flex-direction: row;
-    height: 100% !important;
-}
-
-.column {
-    width: 50%;
-    height: 100% !important;
-}
-
-.column:first-child {
-    padding-right: 9px;
-    border-right: solid 1px rgb(66, 65, 65);
-}
-
-.column:last-child {
-    padding-left: 10px;
-}
-
 @page folhaDeRosto {}
 
 #folha-rosto {
     page: folhaDeRosto;
 }
-
-/* @page duasColunas {
-
-}
-
-#duas-colunas {
-    page: duasColunas;
-} */
 
 @page duasColunas {
     --pagedjs-column-count: 2;
@@ -84,7 +58,6 @@
     page: duasColunas;
 }
 
-
 @page rascunho {
     @top-center {
         content: "Rascunho";
@@ -95,7 +68,7 @@
     page: rascunho;
 }
 
-.pagedjs_headernote_area {
+.pagedjs_headernote_area:not(:empty) {
     margin-bottom: 10px;
 }
 
