@@ -1,5 +1,3 @@
-/* layout-builder.css */
-
 :root {
     --primary-color: #007bff;
     --primary-hover: #0056b3;
@@ -12,10 +10,6 @@
     --border-color: #444;
     --panel-width: 50%;
 }
-#pages-container {
-    background-color: #f0f0f0;
-    min-height: 100%;
-}
 
 body,
 html {
@@ -24,7 +18,11 @@ html {
     height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     overflow: hidden;
-    /* Prevent body scroll, let panels handle it */
+}
+
+#pages-container {
+    background-color: #f0f0f0;
+    min-height: 100%;
 }
 
 .layout-builder-container {
@@ -32,10 +30,9 @@ html {
     height: 100vh;
     width: 100vw;
     background-color: #e9ecef;
-    /* Fundo cinza claro para o preview (papel) */
 }
 
-/* Painel de Configuração (Esquerda) */
+/* Painel de Configuração */
 .config-panel {
     width: var(--panel-width);
     min-width: var(--panel-width);
@@ -101,7 +98,6 @@ html {
     padding: 20px;
 }
 
-/* Custom Scrollbar for dark theme */
 .config-content::-webkit-scrollbar {
     width: 8px;
 }
@@ -183,7 +179,6 @@ small code {
     border-radius: 3px;
 }
 
-/* Painel de Preview (Direita) */
 .preview-panel {
     flex: 1;
     height: 100%;
@@ -193,7 +188,6 @@ small code {
     justify-content: center;
 }
 
-/* Loading Overlay */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -226,4 +220,119 @@ small code {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* ==============================================================
+   MONACO EDITOR STYLES (Anteriormente embutidos na tag <style>)
+============================================================== */
+
+.monaco-editor-container {
+    width: 100%;
+    height: 200px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.editor-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: flex-end;
+    background: #333;
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.btn-icon:hover {
+    color: #fff;
+}
+
+#container-folhaRosto {
+    height: 300px;
+}
+
+.hidden-textarea {
+    display: none;
+}
+
+.fullscreen-wrapper {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 10000;
+    background: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+}
+
+.fullscreen-wrapper .monaco-editor-container {
+    flex: 1;
+    height: auto !important;
+    border: none;
+    border-radius: 0;
+}
+
+.fullscreen-wrapper .editor-header {
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #444;
+    padding: 10px 20px;
+}
+
+.base64-hidden {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    display: inline-block !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    vertical-align: middle;
+    visibility: hidden !important;
+}
+
+.base64-placeholder {
+    background-color: #4a5568;
+    color: #edf2f7;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: monospace;
+    margin: 0 4px;
+    border: 1px solid #718096;
+    display: inline-block;
+    line-height: 1;
+    user-select: none;
+    vertical-align: middle;
+}
+
+.base64-placeholder:hover {
+    background-color: #2d3748;
+    border-color: #a0aec0;
+}
+
+.base64-placeholder::before {
+    content: "{base64}";
 }
