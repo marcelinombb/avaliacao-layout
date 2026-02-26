@@ -66,9 +66,7 @@ ul.lista-sem-estilo {
   margin-bottom: 0;
 }
 
-.questao-completa {
-  margin-bottom: 10px;
-}
+.questao-completa {}
 
 .linha-alternativa {
   display: grid;
@@ -313,4 +311,8 @@ figure.image {
 
 .cabecalho-questao div[style*="margin-top:15px"] {
   margin-top: 0 !important;
+}
+
+.cabecalho-questao {
+  margin-top: 10px;
 }

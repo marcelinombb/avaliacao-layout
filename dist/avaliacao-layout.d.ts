@@ -94,6 +94,7 @@ interface QuestionConstructor {
     afirmacoes?: any[];
     associacoes?: any;
     assercoes?: any;
+    title?: string | null;
     visualizaQuestaoRaw?: string | null;
     orderAlternative?: number;
 }
@@ -119,7 +120,8 @@ declare class Question {
     visualizaResposta?: string;
     tipoLinha?: string | null;
     numeroLinhas?: number;
-    constructor({ id, order, customOrder, value, type, content, reference, alternatives, afirmacoes, associacoes, assercoes, visualizaQuestaoRaw, orderAlternative }: QuestionConstructor);
+    title?: string | null;
+    constructor({ id, order, customOrder, value, type, content, reference, alternatives, afirmacoes, associacoes, assercoes, title, visualizaQuestaoRaw, orderAlternative }: QuestionConstructor);
     get displayOrder(): number;
 }
 

@@ -41,6 +41,7 @@ export class LayoutAvaliacao {
             const question = new Question({
                 id: q.questao.codigo,
                 order: q.ordem,
+                title: q.titulo,
                 customOrder: q.ordemPersonalizada,
                 value: q.valor,
                 type: q.questao.tipoQuestao,

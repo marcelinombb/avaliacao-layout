@@ -80,6 +80,13 @@ function diaDaSemana(dateStr) {
   return mapaSemana[date.getDay()];
 }
 
+function anoLetivo(dateStr) {
+  const [day, month, year] = dateStr.split('/').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed in JS
+
+  return date.getFullYear();
+}
+
 function replacer(string, placeholders) {
   if (!string) return "";
 
@@ -117,6 +124,8 @@ function replacePlaceholders(provaModelo) {
     "#NUM_QUESTOES#": provaModelo.listaProvaQuestao.length,
     "#PONTOS#": provaModelo.prova.totalPontos,
     "#INSTRUCAO#": provaModelo.prova.instrucaoEspecifica?.texto,
+    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
+    "#OBSERVACAO#": provaModelo.prova.observacao,
   };
 
   const cabecalhoPlaceholders = {
@@ -136,6 +145,7 @@ function replacePlaceholders(provaModelo) {
     "#INSTRUCAO#": provaModelo.prova.instrucaoEspecifica?.texto,
     "#PONTOS#": provaModelo.prova.totalPontos,
     "#DATA#": provaModelo.prova.dataRealizacao,
+    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
   };
 
   const cabecalhoPaginaPlaceholders = {
@@ -147,6 +157,7 @@ function replacePlaceholders(provaModelo) {
     "#PERIODOLET#": provaModelo.prova.turma?.periodoLetivo.nome,
     "#TIPOPROVA#": provaModelo.prova.tipoProva.notaParcial,
     "#TIPOPROVANOME#": provaModelo.prova.tipoProva.nome,
+    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
   };
 
   const footerPlaceholders = {

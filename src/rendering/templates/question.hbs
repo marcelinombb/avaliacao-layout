@@ -1,5 +1,10 @@
 <div class='tiptap' data-questao-id="{{question.id}}">
     <div class='questao-completa {{#unless options.quebraQuestao}}dontsplit{{/unless}}'>
+        {{#if question.title}}
+        <div
+            style="font-size: 16px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-align: center;">
+            {{question.title}}</div>
+        {{/if}}
         {{> reference }}
         <div class='cabecalho-questao dontend'>
             {{> header }}

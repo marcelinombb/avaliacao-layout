@@ -39,6 +39,7 @@ export interface QuestionConstructor {
     afirmacoes?: any[];
     associacoes?: any;
     assercoes?: any;
+    title?: string | null;
     visualizaQuestaoRaw?: string | null;
     orderAlternative?: number;
 }
@@ -67,6 +68,7 @@ export class Question {
     visualizaResposta?: string;
     tipoLinha?: string | null;
     numeroLinhas?: number;
+    title?: string | null;
 
     constructor({
         id,
@@ -80,6 +82,7 @@ export class Question {
         afirmacoes = [],
         associacoes = null,
         assercoes = null,
+        title,
         visualizaQuestaoRaw = null,
         orderAlternative = 0
     }: QuestionConstructor) {
@@ -88,6 +91,7 @@ export class Question {
         this.customOrder = customOrder;
         this.value = value;
         this.type = type;
+        this.title = title;
         this.content = content;
         this.reference = reference || null;
         this.alternatives = alternatives || [];

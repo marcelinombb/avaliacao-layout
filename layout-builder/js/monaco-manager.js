@@ -99,6 +99,30 @@ export class MonacoManager {
                     this.updateBase64Decorations(config.id);
                 });
 
+                // Intercepta Copiar para devolver o Base64 real em vez do token
+                const domElement = editor.getDomNode();
+                if (domElement) {
+                    domElement.addEventListener('copy', (e) => {
+                        const selection = editor.getSelection();
+                        if (selection && !selection.isEmpty()) {
+                            let selectedText = editor.getModel().getValueInRange(selection);
+
+                            // Verifica se há tokens no texto selecionado
+                            if (selectedText.includes('__BASE64_')) {
+                                const newText = selectedText.replace(/__BASE64_([a-zA-Z0-9]+)__/g, (match, base64Id) => {
+                                    return this.base64Map[base64Id] || match;
+                                });
+
+                                // Se o texto mudou, coloca no clipboard manualmente
+                                if (newText !== selectedText) {
+                                    e.clipboardData.setData('text/plain', newText);
+                                    e.preventDefault();
+                                }
+                            }
+                        }
+                    });
+                }
+
                 // Abre janela flutuante ao clicar no placeholder
                 editor.onMouseDown((e) => {
                     if (e.target.element && e.target.element.classList.contains('base64-placeholder')) {
@@ -124,6 +148,59 @@ export class MonacoManager {
         });
 
         this.initFullscreenButtons();
+        this.initResizers();
+    }
+
+    initResizers() {
+        const wrappers = document.querySelectorAll('.editor-wrapper');
+        wrappers.forEach(wrapper => {
+            // Se já tem resizer, ignora
+            if (wrapper.querySelector('.editor-resizer')) return;
+
+            const resizer = document.createElement('div');
+            resizer.className = 'editor-resizer';
+            resizer.title = 'Arraste para redimensionar';
+            wrapper.appendChild(resizer);
+
+            const container = wrapper.querySelector('.monaco-editor-container');
+            const editorId = container.id.replace('container-', 'layout-');
+            const editor = this.editors[editorId];
+
+            let isResizing = false;
+            let startY, startHeight;
+
+            resizer.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startY = e.pageY;
+                startHeight = container.offsetHeight;
+
+                // Previne seleção de texto durante o redimensionamento
+                document.body.style.userSelect = 'none';
+                document.body.style.cursor = 'ns-resize';
+
+                const onMouseMove = (e) => {
+                    if (!isResizing) return;
+                    const deltaY = e.pageY - startY;
+                    const newHeight = Math.max(100, startHeight + deltaY);
+                    container.style.height = `${newHeight}px`;
+
+                    if (editor) {
+                        editor.layout();
+                    }
+                };
+
+                const onMouseUp = () => {
+                    isResizing = false;
+                    document.body.style.userSelect = '';
+                    document.body.style.cursor = '';
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                };
+
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('mouseup', onMouseUp);
+            });
+        });
     }
 
     /**
@@ -256,6 +333,43 @@ export class MonacoManager {
         imgPreview.style.display = 'block';
         imgPreview.style.margin = '0 auto';
 
+        // Interface de Upload
+        const uploadContainer = document.createElement('div');
+        uploadContainer.style.display = 'flex';
+        uploadContainer.style.justifyContent = 'center';
+        uploadContainer.style.margin = '10px 0';
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
+        const btnUpload = document.createElement('button');
+        btnUpload.innerText = 'Converter Imagem para Base64';
+        btnUpload.style.padding = '8px 16px';
+        btnUpload.style.cursor = 'pointer';
+        btnUpload.style.backgroundColor = '#2c7a7b';
+        btnUpload.style.color = 'white';
+        btnUpload.style.border = 'none';
+        btnUpload.style.borderRadius = '4px';
+        btnUpload.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64 = event.target.result;
+                textarea.value = base64;
+                imgPreview.src = base64;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        uploadContainer.appendChild(fileInput);
+        uploadContainer.appendChild(btnUpload);
+
         textarea.addEventListener('input', () => {
             imgPreview.src = textarea.value;
         });
@@ -302,9 +416,7 @@ export class MonacoManager {
                 });
             }
             if (edits.length > 0) {
-                this.isInternalEdit = true;
                 editor.executeEdits("base64-editor", edits);
-                this.isInternalEdit = false;
             }
             document.body.removeChild(overlay);
         };
@@ -314,6 +426,7 @@ export class MonacoManager {
 
         modal.appendChild(title);
         modal.appendChild(imgPreview);
+        modal.appendChild(uploadContainer);
         modal.appendChild(textarea);
         modal.appendChild(btnContainer);
         overlay.appendChild(modal);

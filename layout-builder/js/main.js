@@ -41,6 +41,8 @@ function generateMockQuestions(count) {
             numeroLinhas: 1,
             quebraPagina: false,
             ordemAlternativa: 0,
+            titulo: i == 1 ? "lingua portuguesa" : null,
+            ordemPersonalizada: i == 1 ? "10" : null,
             questao: {
                 codigo: `MOCK-${1000 + i}`,
                 dificuldade: "Fácil",
@@ -75,6 +77,9 @@ const mockProva = {
         instituicao: {
             site: "www.example.com",
             logo: ""
+        },
+        instrucaoEspecifica: {
+            texto: `<ul><li><p style="margin-left: 0px !important;">Este caderno de Prova contém 85 (oitenta e cinco) questões com 4 (quatro) alternativas cada, distribuídas da</p><p style="margin-left: 0px !important;">seguinte forma:</p><p style="margin-left: 0px !important;">Língua Portuguesa (12 questões: 01 a 12);</p><p style="margin-left: 0px !important;">Matemática (10 questões: 13 a 22);</p><p style="margin-left: 0px !important;">História (08 questões: 23 a 30);</p><p style="margin-left: 0px !important;">Geografia (08 questões: 31 a 38);</p><p style="margin-left: 0px !important;">Física (08 questões: 39 a 46);</p><p style="margin-left: 0px !important;">Química (08 questões: 47 a 54);</p><p style="margin-left: 0px !important;">Biologia (08 questões: 55 a 62);</p><p style="margin-left: 0px !important;">Educação Física (05 questões: 63 a 67);</p><p style="margin-left: 0px !important;">Filosofia (05 questões: 68 a 72);</p><p style="margin-left: 0px !important;">Sociologia (05 questões: 73 a 77);</p><p style="margin-left: 0px !important;">Línguas Estrangeiras (08 questões: 78 a 85).</p></li><li><p style="margin-left: 0px !important;">Estão contidas neste Caderno de Prova as questões das duas línguas estrangeiras: Espanhola e Inglesa.</p></li><li><p style="margin-left: 0px !important;">Você deverá escolher as questões de Língua Estrangeira, numeradas de 78 a 85, de acordo com sua opção no</p><p style="margin-left: 0px !important;">ato da matrícula.</p></li></ul>`
         }
     },
     nome: "Mock Avaliação"
