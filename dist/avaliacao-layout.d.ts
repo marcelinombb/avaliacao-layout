@@ -13,6 +13,7 @@ declare class LayoutAvaliacaoBuilder {
     _gabarito: boolean;
     tipoOrdenacaoAlternativa: number;
     _tipoAlternativa: any;
+    _rascunhoHtml: string;
     comMarcaDaguaRascunho: any;
     quantidadeFolhasRascunho: any;
     constructor();
@@ -24,6 +25,7 @@ declare class LayoutAvaliacaoBuilder {
     fonteTamanho(tamanho: any): this;
     gabarito(): this;
     rascunho(quantidadeFolhasRascunho: any): this;
+    rascunhoHtml(rascunhoHtml: any): this;
     folhaDeRosto({ header, content, footer }: {
         header: any;
         content: any;
@@ -194,6 +196,6 @@ declare function latexParser(text: any): any;
 declare function replacePlaceholders(provaModelo: any): any;
 declare function shuffleAndMultiply(arr: any, multiplier: any): any[];
 
-declare const createBuilder: () => LayoutAvaliacaoBuilder;
+declare const createLayout: () => LayoutAvaliacaoBuilder;
 
-export { LayoutAvaliacao, LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, createBuilder, latexParser, replacePlaceholders, shuffleAndMultiply };
+export { LayoutAvaliacao, PagedJsRenderer as LayoutRenderer, createLayout, latexParser, replacePlaceholders, shuffleAndMultiply };

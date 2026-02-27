@@ -22,7 +22,7 @@ export class LayoutAvaliacaoBuilder {
   _gabarito: boolean;
   tipoOrdenacaoAlternativa: number;
   _tipoAlternativa: any;
-
+  _rascunhoHtml: string;
   comMarcaDaguaRascunho: any;
   quantidadeFolhasRascunho: any;
 
@@ -40,6 +40,7 @@ export class LayoutAvaliacaoBuilder {
       footer: "",
     };
     this.numeroFolhasRascunho = null;
+    this._rascunhoHtml = "";
     this._marcaDaquaRascunho = null;
     this._marcaDaguaInstituicao = null;
     this.quantidadeColunas = 1;
@@ -93,6 +94,11 @@ export class LayoutAvaliacaoBuilder {
       throw new Error("O valor da rascunho deve ser um valor numerico.");
     }
     this.quantidadeFolhasRascunho = quantidadeFolhasRascunho;
+    return this;
+  }
+
+  rascunhoHtml(rascunhoHtml) {
+    this._rascunhoHtml = rascunhoHtml;
     return this;
   }
 
@@ -157,6 +163,7 @@ export class LayoutAvaliacaoBuilder {
     const layoutAvaliacao = new LayoutAvaliacao(provaModelo, {
       fontSize: this.fontSize,
       folhaDeRosto: this._folhaDeRosto.content,
+      rascunho: this._rascunhoHtml,
       quantidadeFolhasRascunho: this.quantidadeFolhasRascunho,
       quantidadeColunas: this.quantidadeColunas,
       quebraQuestao: provaModelo.prova.quebraQuestao,

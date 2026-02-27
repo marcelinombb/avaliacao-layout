@@ -13,6 +13,7 @@ export declare class LayoutAvaliacaoBuilder {
     _gabarito: boolean;
     tipoOrdenacaoAlternativa: number;
     _tipoAlternativa: any;
+    _rascunhoHtml: string;
     comMarcaDaguaRascunho: any;
     quantidadeFolhasRascunho: any;
     constructor();
@@ -24,6 +25,7 @@ export declare class LayoutAvaliacaoBuilder {
     fonteTamanho(tamanho: any): this;
     gabarito(): this;
     rascunho(quantidadeFolhasRascunho: any): this;
+    rascunhoHtml(rascunhoHtml: any): this;
     folhaDeRosto({ header, content, footer }: {
         header: any;
         content: any;

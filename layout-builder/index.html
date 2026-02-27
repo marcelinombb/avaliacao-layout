@@ -29,6 +29,7 @@
                 <div class="config-actions">
                     <button type="button" id="btn-render-preview" class="btn btn-primary">Atualizar Preview</button>
                     <button type="button" id="btn-export-json" class="btn btn-secondary">Exportar JSON</button>
+                    <button type="button" id="btn-help-placeholders" class="btn btn-info">Ver Placeholders</button>
                 </div>
             </div>
 
@@ -197,6 +198,60 @@
                 <!-- Paged.js renderizará aqui -->
             </div>
         </main>
+    </div>
+
+    <!-- Painel de Placeholders (Sidebar Oculta) -->
+    <div id="placeholders-sidebar" class="placeholders-sidebar">
+        <div class="sidebar-header">
+            <h3>Placeholders Disponíveis</h3>
+            <button id="close-placeholders" class="close-btn">&times;</button>
+        </div>
+        <div class="sidebar-content">
+            <div class="placeholder-group">
+                <h4>Folha de Rosto</h4>
+                <ul>
+                    <li><code>#DATA#</code> - Data de realização</li>
+                    <li><code>#DIASEMANA#</code> - Dia da semana</li>
+                    <li><code>#CURSO#</code> - Nome do curso</li>
+                    <li><code>#DISCIPLINA#</code> - Nome da disciplina</li>
+                    <li><code>#TURMA#</code> / <code>#CODIGO_TURMA#</code> - Código da turma</li>
+                    <li><code>#TIPOPROVA#</code> - Nota parcial / Tipo</li>
+                    <li><code>#PERIODO#</code> - Período letivo</li>
+                    <li><code>#MODELO#</code> - Nome do modelo</li>
+                    <li><code>#PROFESSOR#</code> - Nome do professor</li>
+                    <li><code>#TURNO#</code> - Turno</li>
+                    <li><code>#DURACAO#</code> - Duração da prova</li>
+                    <li><code>#TOTALQUEST#</code> / <code>#NUM_QUESTOES#</code> - Total de questões</li>
+                    <li><code>#PONTOS#</code> - Total de pontos</li>
+                    <li><code>#INSTRUCAO#</code> - Instrução específica</li>
+                    <li><code>#ANO#</code> - Ano letivo</li>
+                    <li><code>#OBSERVACAO#</code> - Observação / Frase</li>
+                </ul>
+            </div>
+            <div class="placeholder-group">
+                <h4>Cabeçalho (Principal e de Página)</h4>
+                <ul>
+                    <li><code>#LOGO#</code> - URL da logo da instituição</li>
+                    <li><code>#TIPOPROVANOME#</code> - Nome do tipo de prova</li>
+                    <li><code>#TURMANOME#</code> / <code>#NOME_TURMA#</code> - Nome da turma</li>
+                    <li><code>#LAYOUTNOME#</code> / <code>#NOMELAYOUT#</code> - Nome do layout</li>
+                    <li><code>#CURSONOME#</code> - Nome do curso</li>
+                    <li><code>#PERIODOLET#</code> - Período letivo</li>
+                </ul>
+            </div>
+            <div class="placeholder-group">
+                <h4>Rodapé</h4>
+                <ul>
+                    <li><code>#site#</code> - Site da instituição</li>
+                </ul>
+            </div>
+            <div class="placeholder-group">
+                <h4>Questões</h4>
+                <ul>
+                    <li><code>#ORDEM#</code> - Número de ordem da questão</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- Paged.js e AvaliacaoLayout dependem de estarem no escopo global ou ser módulos -->

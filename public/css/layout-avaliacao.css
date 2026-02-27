@@ -59,9 +59,7 @@
 }
 
 @page rascunho {
-    @top-center {
-        content: "Rascunho";
-    }
+    --pagedjs-column-count: 1;
 }
 
 #rascunho {

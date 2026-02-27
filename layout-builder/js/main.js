@@ -98,6 +98,7 @@ function getLayoutConfigFromForm() {
         fonteTamanho: parseInt(document.getElementById('layout-fonteTamanho').value, 10) || 12,
         cabecalho: document.getElementById('layout-cabecalho').value,
         rodape: document.getElementById('layout-rodape').value,
+        folhasRascunho: 1,
         folhaRosto: document.getElementById('layout-folhaRosto').value,
         cabecalhoPagina: document.getElementById('layout-cabecalhoPagina').value,
         cabecalhoQuestao: document.getElementById('layout-cabecalhoQuestao').value,
@@ -132,7 +133,7 @@ function renderizarPreview() {
 
     const formSubmitObj = {
         ...mockProva,
-        listaProvaQuestao: generateMockQuestions(30)
+        listaProvaQuestao: generateMockQuestions(10)
     };
 
     formSubmitObj.prova.layout = layoutConfig;
@@ -151,9 +152,10 @@ function renderizarPreview() {
             })
             .pageFooter(layoutConfig.rodape)
             .colunas(layoutConfig.colunas)
-            .rascunho(0)
             .ordemAlternativa(0)
             .tipoAlternativa(4)
+            .rascunho(1)
+            .rascunhoHtml(layoutConfig.rascunho)
             .paginacao();
 
         if (layoutConfig.marcaDagua) {
@@ -177,7 +179,7 @@ function renderizarPreview() {
     }
 }
 
-const debouncedRender = debounce(renderizarPreview, 500);
+const debouncedRender = debounce(renderizarPreview, 700);
 
 function exportarJSON() {
     const layoutConfig = getLayoutConfigFromForm();
@@ -221,6 +223,40 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', debouncedRender);
     });
 
+    // Placeholder Sidebar Logic
+    const sidebar = document.getElementById('placeholders-sidebar');
+    const btnHelp = document.getElementById('btn-help-placeholders');
+    const btnClose = document.getElementById('close-placeholders');
+
+    if (btnHelp && sidebar) {
+        btnHelp.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+    }
+
+    if (btnClose && sidebar) {
+        btnClose.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
+
+    // Click to copy placeholders
+    const placeholderCodes = document.querySelectorAll('.placeholder-group code');
+    placeholderCodes.forEach(code => {
+        code.addEventListener('click', () => {
+            const text = code.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = code.textContent;
+                code.textContent = 'Copiado!';
+                code.style.color = '#28a745';
+                setTimeout(() => {
+                    code.textContent = originalText;
+                    code.style.color = '';
+                }, 1000);
+            });
+        });
+    });
+
     fetch('../layout-output.json')
         .then(res => res.json())
         .then(data => {
@@ -248,9 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
             setVal('layout-marcaDagua', data.marcaDagua);
 
             monacoManager.init();
-            monacoManager.onChange(debouncedRender);
 
             monacoManager.onReady(() => {
+                monacoManager.onChange(debouncedRender);
                 renderizarPreview();
             });
         })

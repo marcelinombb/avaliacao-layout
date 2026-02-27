@@ -30,7 +30,6 @@ class ColumnHandler extends Handler {
         `;
         document.head.appendChild(style);
     }
-
     /**
      * Hook called before page layout.
      * Checks if the page is a named page that requires columnization.
@@ -40,8 +39,7 @@ class ColumnHandler extends Handler {
         const computedStyle = window.getComputedStyle(pageElement);
         const columnCountVal = computedStyle.getPropertyValue("--pagedjs-column-count").trim();
         const columnCount = parseInt(columnCountVal);
-        const columnGap = computedStyle.getPropertyValue("--pagedjs-column-gap").trim() || "0px";
-
+    
         // If no column count is defined, return and let Paged.js handle layout normally
         if (isNaN(columnCount) || columnCount < 2) {
             return;
@@ -51,7 +49,6 @@ class ColumnHandler extends Handler {
         page.layout = async (contents, breakToken, prevPage) => {
             page.clear();
             page.startToken = breakToken;
-
             // Clear existing content in page area
             page.area.innerHTML = '';
 
@@ -83,8 +80,13 @@ class ColumnHandler extends Handler {
             let currentBreakToken = breakToken;
 
             for (let i = 0; i < columnWrappers.length; i++) {
+
                 // If we ran out of content in previous iteration, stop
                 if (!currentBreakToken && i > 0) {
+                    break;
+                }
+
+                if(currentBreakToken.node.dataset.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
                     break;
                 }
 
