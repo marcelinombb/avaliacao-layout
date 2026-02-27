@@ -2,7 +2,7 @@ import { Previewer, registeredHandlers } from "pagedjs"
 import {
   WatermarkHandler,
   HeaderFooterHandler,
-  TwoColumnsHandler,
+  PreventEmptyPageHandler,
   OrderHandler
 } from "./handlers/index";
 import ColumnHandler from "./handlers/ColumnHandler";
@@ -24,6 +24,10 @@ export class PagedJsRenderer {
     });
 
     const defaultHandlers = [
+      {
+        MyHandler: PreventEmptyPageHandler,
+        config: {},
+      },
       {
         MyHandler: WatermarkHandler,
         config: { comMarcaDaguaRascunho: result.comMarcaDaguaRascunho },
@@ -52,11 +56,12 @@ export class PagedJsRenderer {
       ...result.handlers
     ];
 
-    // registra handlers
-    defaultHandlers.forEach((handler) => registerHandlersWithConfig(handler));
-
     // inicializa preview
     let paged = new Previewer();
+
+    // prepara handlers configurados e registra via paged.registerHandlers
+    const configuredHandlers = prepareHandlers(defaultHandlers);
+    paged.registerHandlers(...configuredHandlers);
 
     return paged.preview(
       contentContainer,
@@ -70,8 +75,8 @@ export class PagedJsRenderer {
   }
 }
 
-function registerHandlersWithConfig(...handlersWithConfig) {
-  handlersWithConfig.forEach(({ MyHandler, config }) => {
+function prepareHandlers(handlersWithConfig) {
+  return handlersWithConfig.map(({ MyHandler, config }) => {
     class ConfiguredHandler extends MyHandler {
       constructor(chunker, polisher, caller) {
         super(chunker, polisher, caller, config);
@@ -79,7 +84,6 @@ function registerHandlersWithConfig(...handlersWithConfig) {
     }
 
     ConfiguredHandler.__originalHandler = MyHandler;
-
 
     const existingIndex = registeredHandlers.findIndex(
       (h) => h.__originalHandler === MyHandler
@@ -89,6 +93,6 @@ function registerHandlersWithConfig(...handlersWithConfig) {
       registeredHandlers.splice(existingIndex, 1);
     }
 
-    registeredHandlers.push(ConfiguredHandler);
+    return ConfiguredHandler;
   });
 }

@@ -21,8 +21,6 @@ export class QuestionRenderer {
             useRaw: false
         };
 
-        console.log(this.question);
-
         try {
             const questaoObj = this.question.visualizaQuestaoParsed;
             if (!questaoObj) {

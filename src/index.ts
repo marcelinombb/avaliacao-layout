@@ -1,13 +1,15 @@
 import { LayoutAvaliacaoBuilder } from './LayoutAvaliacaoBuilder';
-import { PagedJsRenderer } from './rendering/PagedJsRenderer';
 import { LayoutAvaliacao } from './LayoutAvaliacao';
+import { PagedJsRenderer } from './rendering/PagedJsRenderer';
 import latexParser from './rendering/utils/latexParser';
 import { replacePlaceholders, shuffleAndMultiply } from './rendering/utils/util'
 
+const createLayout = () => new LayoutAvaliacaoBuilder();
+
 export {
     LayoutAvaliacao,
-    LayoutAvaliacaoBuilder,
-    PagedJsRenderer as LayoutRenderer, // Alias for backward compatibility if needed, or just export PagedJsRenderer
+    createLayout,
+    PagedJsRenderer as LayoutRenderer,
     latexParser,
     replacePlaceholders,
     shuffleAndMultiply

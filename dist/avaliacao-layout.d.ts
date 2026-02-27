@@ -52,10 +52,6 @@ declare class LayoutAvaliacaoBuilder {
     }>;
 }
 
-declare class PagedJsRenderer {
-    static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
-}
-
 interface ReferenceSource {
     codigo: number;
     descricao: string;
@@ -189,9 +185,15 @@ declare class LayoutAvaliacao {
     _mapToEntity(rawData: any): Assessment;
 }
 
+declare class PagedJsRenderer {
+    static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
+}
+
 declare function latexParser(text: any): any;
 
 declare function replacePlaceholders(provaModelo: any): any;
 declare function shuffleAndMultiply(arr: any, multiplier: any): any[];
 
-export { LayoutAvaliacao, LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, latexParser, replacePlaceholders, shuffleAndMultiply };
+declare const createBuilder: () => LayoutAvaliacaoBuilder;
+
+export { LayoutAvaliacao, LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, createBuilder, latexParser, replacePlaceholders, shuffleAndMultiply };

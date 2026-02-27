@@ -132,7 +132,7 @@ function renderizarPreview() {
 
     const formSubmitObj = {
         ...mockProva,
-        listaProvaQuestao: generateMockQuestions(3)
+        listaProvaQuestao: generateMockQuestions(30)
     };
 
     formSubmitObj.prova.layout = layoutConfig;
@@ -141,7 +141,7 @@ function renderizarPreview() {
     try {
         window.AvaliacaoLayout.replacePlaceholders(formSubmitObj);
 
-        const builder = new window.AvaliacaoLayout.LayoutAvaliacaoBuilder()
+        const builder = window.AvaliacaoLayout.createLayout()
             .pageHeader(layoutConfig.cabecalhoPagina)
             .fonteTamanho(layoutConfig.fonteTamanho)
             .folhaDeRosto({
