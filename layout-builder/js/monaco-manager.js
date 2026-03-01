@@ -282,76 +282,20 @@ export class MonacoManager {
 
         const base64Content = this.base64Map[base64Id] || "";
 
-        // Cria a janela flutuante
-        const overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100vw';
-        overlay.style.height = '100vh';
-        overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
-        overlay.style.zIndex = '99999';
+        const overlay = document.getElementById('base64-overlay');
+        const textarea = document.getElementById('base64-textarea');
+        const imgPreview = document.getElementById('base64-img-preview');
+        const fileInput = document.getElementById('base64-file-input');
+        const btnUpload = document.getElementById('base64-btn-upload');
+        const btnCancel = document.getElementById('base64-btn-cancel');
+        const btnSave = document.getElementById('base64-btn-save');
 
-        const modal = document.createElement('div');
-        modal.style.backgroundColor = '#1e1e1e';
-        modal.style.padding = '20px';
-        modal.style.borderRadius = '8px';
-        modal.style.width = '80%';
-        modal.style.maxWidth = '800px';
-        modal.style.display = 'flex';
-        modal.style.flexDirection = 'column';
-        modal.style.gap = '15px';
-        modal.style.boxShadow = '0 4px 6px rgba(0,0,0,0.3)';
+        if (!overlay || !textarea || !imgPreview) return;
 
-        const title = document.createElement('h3');
-        title.innerText = 'Editar Imagem Base64';
-        title.style.margin = '0';
-        title.style.color = '#fff';
-        title.style.fontFamily = 'sans-serif';
-
-        const textarea = document.createElement('textarea');
         textarea.value = base64Content;
-        textarea.style.width = '100%';
-        textarea.style.height = '150px';
-        textarea.style.fontFamily = 'monospace';
-        textarea.style.backgroundColor = '#2d2d2d';
-        textarea.style.color = '#d4d4d4';
-        textarea.style.border = '1px solid #3c3c3c';
-        textarea.style.padding = '10px';
-        textarea.style.resize = 'vertical';
-        textarea.style.boxSizing = 'border-box';
-
-        const imgPreview = document.createElement('img');
         imgPreview.src = base64Content;
-        imgPreview.style.maxWidth = '100%';
-        imgPreview.style.maxHeight = '250px';
-        imgPreview.style.objectFit = 'contain';
-        imgPreview.style.border = '1px dashed #555';
-        imgPreview.style.display = 'block';
-        imgPreview.style.margin = '0 auto';
 
         // Interface de Upload
-        const uploadContainer = document.createElement('div');
-        uploadContainer.style.display = 'flex';
-        uploadContainer.style.justifyContent = 'center';
-        uploadContainer.style.margin = '10px 0';
-
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-
-        const btnUpload = document.createElement('button');
-        btnUpload.innerText = 'Converter Imagem para Base64';
-        btnUpload.style.padding = '8px 16px';
-        btnUpload.style.cursor = 'pointer';
-        btnUpload.style.backgroundColor = '#2c7a7b';
-        btnUpload.style.color = 'white';
-        btnUpload.style.border = 'none';
-        btnUpload.style.borderRadius = '4px';
         btnUpload.onclick = () => fileInput.click();
 
         fileInput.onchange = (e) => {
@@ -363,42 +307,19 @@ export class MonacoManager {
                 const base64 = event.target.result;
                 textarea.value = base64;
                 imgPreview.src = base64;
+                fileInput.value = ''; // Reseta para permitir upload do mesmo arquivo
             };
             reader.readAsDataURL(file);
         };
 
-        uploadContainer.appendChild(fileInput);
-        uploadContainer.appendChild(btnUpload);
-
-        textarea.addEventListener('input', () => {
+        textarea.oninput = () => {
             imgPreview.src = textarea.value;
-        });
-
-        const btnContainer = document.createElement('div');
-        btnContainer.style.display = 'flex';
-        btnContainer.style.justifyContent = 'flex-end';
-        btnContainer.style.gap = '10px';
-
-        const btnCancel = document.createElement('button');
-        btnCancel.innerText = 'Cancelar';
-        btnCancel.style.padding = '8px 16px';
-        btnCancel.style.cursor = 'pointer';
-        btnCancel.style.backgroundColor = '#444';
-        btnCancel.style.color = 'white';
-        btnCancel.style.border = 'none';
-        btnCancel.style.borderRadius = '4px';
-        btnCancel.onclick = () => {
-            document.body.removeChild(overlay);
         };
 
-        const btnSave = document.createElement('button');
-        btnSave.innerText = 'Salvar';
-        btnSave.style.padding = '8px 16px';
-        btnSave.style.cursor = 'pointer';
-        btnSave.style.backgroundColor = '#0e639c';
-        btnSave.style.color = 'white';
-        btnSave.style.border = 'none';
-        btnSave.style.borderRadius = '4px';
+        btnCancel.onclick = () => {
+            overlay.style.display = 'none';
+        };
+
         btnSave.onclick = () => {
             const newValue = textarea.value;
             const model = editor.getModel();
@@ -418,20 +339,10 @@ export class MonacoManager {
             if (edits.length > 0) {
                 editor.executeEdits("base64-editor", edits);
             }
-            document.body.removeChild(overlay);
+            overlay.style.display = 'none';
         };
 
-        btnContainer.appendChild(btnCancel);
-        btnContainer.appendChild(btnSave);
-
-        modal.appendChild(title);
-        modal.appendChild(imgPreview);
-        modal.appendChild(uploadContainer);
-        modal.appendChild(textarea);
-        modal.appendChild(btnContainer);
-        overlay.appendChild(modal);
-
-        document.body.appendChild(overlay);
+        overlay.style.display = 'flex';
         textarea.focus();
     }
 
