@@ -64,7 +64,7 @@ const mockProva = {
         totalPontos: 10,
         duracao: "02:00",
         dataRealizacao: "01/01/2026",
-        tipoProva: { nome: "SIMULADO UNICHRISTUS IV" },
+        tipoProva: { nome: "SIMULADO X I" },
         turma: {
             nome: "TURMA A",
             disciplina: "MOCK",
