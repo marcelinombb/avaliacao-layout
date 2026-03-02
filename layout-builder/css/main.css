@@ -494,8 +494,10 @@ small code {
 
     body,
     html {
-        overflow: visible;
-        height: auto;
+        overflow: visible !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .config-panel,
@@ -504,29 +506,43 @@ small code {
     .sidebar-content,
     .placeholders-sidebar,
     #base64-overlay,
-    .btn-toggle-fullscreen {
+    .btn-toggle-fullscreen,
+    .floating-button,
+    button {
         display: none !important;
     }
 
     .layout-builder-container {
-        display: block;
-        height: auto;
+        display: block !important;
+        height: auto !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+        background-color: transparent !important;
     }
 
     .preview-panel {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: visible;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        position: static !important;
+        background-color: transparent !important;
     }
 
     #pages-container {
-        background-color: white;
+        background-color: white !important;
+        overflow: visible !important;
+        height: auto !important;
     }
 
-    /* Remove Paged.js transform for printing */
+    /* Paged.js handles its own print styles, but we must ensure its root container is unconstrained */
     .pagedjs_pages {
         transform: none !important;
-        width: 100% !important;
+        width: auto !important;
+        position: static !important;
     }
 }
