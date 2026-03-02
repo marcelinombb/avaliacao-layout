@@ -41,8 +41,8 @@ function generateMockQuestions(count) {
             numeroLinhas: 1,
             quebraPagina: false,
             ordemAlternativa: 0,
-            titulo: i == 1 ? "lingua portuguesa" : null,
-            ordemPersonalizada: i == 1 ? "10" : null,
+            titulo: null,
+            ordemPersonalizada: null,
             questao: {
                 codigo: `MOCK-${1000 + i}`,
                 dificuldade: "Fácil",
@@ -64,7 +64,7 @@ const mockProva = {
         totalPontos: 10,
         duracao: "02:00",
         dataRealizacao: "01/01/2026",
-        tipoProva: { nome: "SIMULADO" },
+        tipoProva: { nome: "SIMULADO UNICHRISTUS IV" },
         turma: {
             nome: "TURMA A",
             disciplina: "MOCK",
@@ -130,10 +130,11 @@ function renderizarPreview() {
     if (!pagesContainer) return;
 
     const layoutConfig = getLayoutConfigFromForm();
+    const mockCount = parseInt(document.getElementById('layout-mockQuestoes')?.value, 10) || 3;
 
     const formSubmitObj = {
         ...mockProva,
-        listaProvaQuestao: generateMockQuestions(10)
+        listaProvaQuestao: generateMockQuestions(mockCount)
     };
 
     formSubmitObj.prova.layout = layoutConfig;
@@ -181,19 +182,42 @@ function renderizarPreview() {
 
 const debouncedRender = debounce(renderizarPreview, 700);
 
-function exportarJSON() {
+async function exportarJSON() {
     const layoutConfig = getLayoutConfigFromForm();
     const jsonString = JSON.stringify(layoutConfig, null, 4);
 
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    // Modern browsers: File System Access API
+    if ('showSaveFilePicker' in window) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: 'layout-output.json',
+                types: [{
+                    description: 'JSON File',
+                    accept: { 'application/json': ['.json'] },
+                }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(jsonString);
+            await writable.close();
+        } catch (err) {
+            // User cancelled or error occurred
+            if (err.name !== 'AbortError') {
+                console.error("Erro ao salvar o arquivo:", err);
+                alert("Ocorreu um erro ao salvar o arquivo.");
+            }
+        }
+    } else {
+        // Fallback for older browsers
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `layout-output.json`;
-    a.click();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `layout-output.json`;
+        a.click();
 
-    URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
+    }
 }
 
 function resizer() {
@@ -214,6 +238,7 @@ function resizer() {
 document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-render-preview').addEventListener('click', renderizarPreview);
+    document.getElementById('btn-print-preview').addEventListener('click', () => window.print());
     document.getElementById('btn-export-json').addEventListener('click', exportarJSON);
 
     window.addEventListener('resize', resizer);

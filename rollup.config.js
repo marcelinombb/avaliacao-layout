@@ -91,7 +91,7 @@ const umdConfig = {
 };
 
 const dtsConfig = {
-  input: "types/index.d.ts", // gerado pelo tsc (via plugin typescript no primeiro passo)
+  input: "src/index.ts",
   output: {
     file: "dist/avaliacao-layout.d.ts",
     format: "es",

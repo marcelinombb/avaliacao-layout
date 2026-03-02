@@ -64,25 +64,37 @@ function conversorDeIndicesParaAlternativas(indice, tipoColuna) {
 }
 
 function diaDaSemana(dateStr) {
-  const [day, month, year] = dateStr.split('/').map(Number);
-  const date = new Date(year, month - 1, day); // month is 0-indexed in JS
+  if (!dateStr || typeof dateStr !== "string") return "";
+  const parts = dateStr.split("/");
+  if (parts.length !== 3) return "";
+
+  const [day, month, year] = parts.map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (isNaN(date.getTime())) return "";
 
   const mapaSemana = {
-    0: 'domingo',
-    1: 'segunda-feira',
-    2: 'terça-feira',
-    3: 'quarta-feira',
-    4: 'quinta-feira',
-    5: 'sexta-feira',
-    6: 'sábado'
+    0: "domingo",
+    1: "segunda-feira",
+    2: "terça-feira",
+    3: "quarta-feira",
+    4: "quinta-feira",
+    5: "sexta-feira",
+    6: "sábado",
   };
 
   return mapaSemana[date.getDay()];
 }
 
 function anoLetivo(dateStr) {
-  const [day, month, year] = dateStr.split('/').map(Number);
-  const date = new Date(year, month - 1, day); // month is 0-indexed in JS
+  if (!dateStr || typeof dateStr !== "string") return "";
+  const parts = dateStr.split("/");
+  if (parts.length !== 3) return "";
+
+  const [day, month, year] = parts.map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (isNaN(date.getTime())) return "";
 
   return date.getFullYear();
 }
@@ -102,85 +114,88 @@ function replacer(string, placeholders) {
 }
 
 function replacePlaceholders(provaModelo) {
+  if (!provaModelo || !provaModelo.prova) {
+    return provaModelo;
+  }
+
+  const prova = provaModelo.prova;
+  const turma = prova.turma;
+  const instituicao = prova.instituicao;
+  const tipoProva = prova.tipoProva;
+  const instrucaoEspecifica = prova.instrucaoEspecifica;
+  const layout = prova.layout;
+  const dataRealizacao = prova.dataRealizacao ?? "";
+  const totalQuestoes = provaModelo.listaProvaQuestao?.length ?? 0;
 
   const folhaDeRostoPlaceholder = {
-    "#DATA#": provaModelo.prova.dataRealizacao,
-    "#DIASEMANA#": diaDaSemana(provaModelo.prova.dataRealizacao),
-    "#CURSO#": provaModelo.prova.turma?.cursoUnidade.curso.nome,
-    "#DISCIPLINA#": provaModelo.prova.turma?.disciplina,
-    "#TURMA#": provaModelo.prova.turma?.codigoTurma,
-    "#CODIGO_TURMA#": provaModelo.prova.turma?.codigoTurma,
-    "#TIPOPROVA#": provaModelo.prova.tipoProva.notaParcial,
-    "#PERIODO#": provaModelo.prova.turma?.periodoLetivo.nome ?? "&nbsp;",
-    "#MODELO#": " - Modelo " + provaModelo.nome,
+    "#DATA#": dataRealizacao || "&nbsp;",
+    "#DIASEMANA#": diaDaSemana(dataRealizacao) || "&nbsp;",
+    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
+    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
+    "#CODIGO_TURMA#": turma?.codigoTurma ?? "&nbsp;",
+    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
+    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#MODELO#": " - Modelo " + (provaModelo.nome ?? ""),
     "#PROFESSOR#":
-      provaModelo.prova.turma?.listaTurmaDisciplina?.[0]?.nomeProfessor == null &&
-        provaModelo.prova.usuario != null
-        ? provaModelo.prova.usuario.nome
-        : provaModelo.prova.turma?.listaTurmaDisciplina?.[0]?.nomeProfessor,
-    "#TURNO#": provaModelo.prova.turma?.cursoUnidade.turno.nome,
-    "#DURACAO#": provaModelo.prova.duracao,
-    "#TOTALQUEST#": provaModelo.listaProvaQuestao.length,
-    "#NUM_QUESTOES#": provaModelo.listaProvaQuestao.length,
-    "#PONTOS#": provaModelo.prova.totalPontos,
-    "#INSTRUCAO#": provaModelo.prova.instrucaoEspecifica?.texto,
-    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
-    "#OBSERVACAO#": provaModelo.prova.observacao,
+      (turma?.listaTurmaDisciplina?.[0]?.nomeProfessor ??
+        prova.usuario?.nome) ??
+      "&nbsp;",
+    "#TURNO#": turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
+    "#DURACAO#": prova.duracao ?? "&nbsp;",
+    "#TOTALQUEST#": totalQuestoes,
+    "#NUM_QUESTOES#": totalQuestoes,
+    "#PONTOS#": prova.totalPontos ?? "&nbsp;",
+    "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
+    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
+    "#OBSERVACAO#": prova.observacao ?? "&nbsp;",
   };
 
   const cabecalhoPlaceholders = {
-    "#LOGO#": provaModelo.prova.instituicao.linkFile,
-    "#TIPOPROVA#": provaModelo.prova.tipoProva.notaParcial,
-    "#TIPOPROVANOME#": provaModelo.prova.tipoProva.nome,
-    "#DISCIPLINA#": provaModelo.prova.turma?.disciplina,
-    "#CURSO#": provaModelo.prova.turma?.cursoUnidade.curso.nome,
-    "#TURMA#": provaModelo.prova.turma?.codigoTurma,
-    "#TURMANOME#": provaModelo.prova.turma?.nome,
-    "#NOME_TURMA#": provaModelo.prova.turma?.nome,
-    "#TURNO#": provaModelo.prova.turma?.cursoUnidade.turno.nome,
-    "#PERIODO#": provaModelo.prova.turma?.periodoLetivo.nome,
-    "#TOTALQUEST#": provaModelo.listaProvaQuestao.length,
-    "#LAYOUTNOME#": provaModelo.prova.layout.nome,
-    "#NOMELAYOUT#": provaModelo.prova.layout.nome,
-    "#INSTRUCAO#": provaModelo.prova.instrucaoEspecifica?.texto,
-    "#PONTOS#": provaModelo.prova.totalPontos,
-    "#DATA#": provaModelo.prova.dataRealizacao,
-    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
+    "#LOGO#": instituicao?.linkFile ?? "",
+    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
+    "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
+    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
+    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
+    "#TURMANOME#": turma?.nome ?? "&nbsp;",
+    "#NOME_TURMA#": turma?.nome ?? "&nbsp;",
+    "#TURNO#": turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
+    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#TOTALQUEST#": totalQuestoes,
+    "#LAYOUTNOME#": layout?.nome ?? "&nbsp;",
+    "#NOMELAYOUT#": layout?.nome ?? "&nbsp;",
+    "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
+    "#PONTOS#": prova.totalPontos ?? "&nbsp;",
+    "#DATA#": dataRealizacao || "&nbsp;",
+    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
   };
 
   const cabecalhoPaginaPlaceholders = {
-    "#LOGO#": provaModelo.prova.instituicao.linkFile,
-    "#DISCIPLINA#": provaModelo.prova.turma?.disciplina,
-    "#CURSO#": provaModelo.prova.turma?.cursoUnidade.curso.nome,
-    "#CURSONOME#": provaModelo.prova.turma?.cursoUnidade.curso.nome,
-    "#PERIODO#": provaModelo.prova.turma?.periodoLetivo.nome,
-    "#PERIODOLET#": provaModelo.prova.turma?.periodoLetivo.nome,
-    "#TIPOPROVA#": provaModelo.prova.tipoProva.notaParcial,
-    "#TIPOPROVANOME#": provaModelo.prova.tipoProva.nome,
-    "#ANO#": anoLetivo(provaModelo.prova.dataRealizacao),
+    "#LOGO#": instituicao?.linkFile ?? "",
+    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
+    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    "#CURSONOME#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#PERIODOLET#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
+    "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
+    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
   };
 
   const footerPlaceholders = {
-    "#site#": provaModelo.prova.instituicao.site,
+    "#site#": instituicao?.site ?? "&nbsp;",
   };
 
-  provaModelo.prova.layout.cabecalho = replacer(
-    provaModelo.prova.layout.cabecalho,
-    cabecalhoPlaceholders
-  );
-  provaModelo.prova.layout.folhaRosto = replacer(
-    provaModelo.prova.layout.folhaRosto,
-    folhaDeRostoPlaceholder
-  );
-  provaModelo.prova.layout.cabecalhoPagina = replacer(
-    provaModelo.prova.layout.cabecalhoPagina,
-    cabecalhoPaginaPlaceholders
-  );
-
-  provaModelo.prova.layout.rodape = replacer(
-    provaModelo.prova.layout.rodape,
-    footerPlaceholders
-  );
+  if (layout) {
+    layout.cabecalho = replacer(layout.cabecalho, cabecalhoPlaceholders);
+    layout.folhaRosto = replacer(layout.folhaRosto, folhaDeRostoPlaceholder);
+    layout.cabecalhoPagina = replacer(
+      layout.cabecalhoPagina,
+      cabecalhoPaginaPlaceholders
+    );
+    layout.rodape = replacer(layout.rodape, footerPlaceholders);
+  }
 
   return provaModelo;
 }

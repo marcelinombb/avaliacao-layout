@@ -1,11 +1,19 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "types",
-    "module": "ESNext",
-    "target": "ES2019"
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false
   },
-  "include": ["src/index.js"]
+  "include": [
+    "src/index.ts",
+    "src/LayoutAvaliacaoBuilder.ts",
+    "src/declarations.d.ts"
+  ]
 }

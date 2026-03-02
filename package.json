@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/avaliacao-layout.cjs",
   "module": "dist/avaliacao-layout.esm.js",
-  "types": "dist/avaliacao-layout.d.ts",
+  "types": "dist/index.d.ts",
   "type": "module",
   "files": [
     "dist/**/*",
@@ -12,7 +12,7 @@
     "pdf.html"
   ],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly --declarationDir types && rollup -c",
+    "build": "rollup -c && echo \"export * from './avaliacao-layout';\" > dist/index.d.ts && echo \"export * from './avaliacao-layout';\" > dist/LayoutAvaliacaoBuilder.d.ts",
     "dev": "rollup -c -w"
   },
   "keywords": [],

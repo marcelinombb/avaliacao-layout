@@ -11,6 +11,8 @@
     --panel-width: 50%;
     --info-color: #17a2b8;
     --info-hover: #138496;
+    --success-color: #28a745;
+    --success-hover: #218838;
 }
 
 body,
@@ -92,6 +94,15 @@ html {
 
 .btn-secondary:hover {
     background-color: var(--secondary-hover);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: var(--success-hover);
 }
 
 .config-content {
@@ -467,4 +478,55 @@ small code {
 
 .placeholder-group code:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: var(--success-hover);
+}
+
+/* Print Rules */
+@media print {
+
+    body,
+    html {
+        overflow: visible;
+        height: auto;
+    }
+
+    .config-panel,
+    .loading-overlay,
+    .sidebar-header,
+    .sidebar-content,
+    .placeholders-sidebar,
+    #base64-overlay,
+    .btn-toggle-fullscreen {
+        display: none !important;
+    }
+
+    .layout-builder-container {
+        display: block;
+        height: auto;
+    }
+
+    .preview-panel {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+    }
+
+    #pages-container {
+        background-color: white;
+    }
+
+    /* Remove Paged.js transform for printing */
+    .pagedjs_pages {
+        transform: none !important;
+        width: 100% !important;
+    }
 }
