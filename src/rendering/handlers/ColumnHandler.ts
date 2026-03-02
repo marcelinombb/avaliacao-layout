@@ -45,6 +45,7 @@ class ColumnHandler extends Handler {
             return;
         }
 
+        const pageContentHeight = page.area.clientHeight;
         // Override the page layout method
         page.layout = async (contents, breakToken, prevPage) => {
             page.clear();
@@ -67,7 +68,7 @@ class ColumnHandler extends Handler {
                 col.style.flex = "1";
                 col.style.flexBasis = "0"; // Ensure equal distribution
                 col.style.minWidth = "0"; // Allow shrinking if needed
-                col.style.height = "100%";
+                col.style.height = "99%";
 
                 columnContainer.appendChild(col);
                 columnWrappers.push(col);
