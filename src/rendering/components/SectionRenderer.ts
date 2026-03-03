@@ -13,16 +13,18 @@ export class SectionRenderer {
     }
 
     render(): string {
+        let colunas = this.options.quantidadeColunas; // default
+        //prevent nested sections from being rendered as 2 columns
+        const childOptions = { ...this.options, quantidadeColunas: 1 };
         const renderedChildren = this.node.children
             .map(child => {
-                const renderer = NodeRendererFactory.create(child, this.assessmentLayout, this.options);
+                const renderer = NodeRendererFactory.create(child, this.assessmentLayout, childOptions);
                 return renderer.render();
             })
             .join("");
 
         let classes = ["sessao-wrapper"];
         let innerClasses = ["sessao-conteudo"];
-        let colunas = this.options.quantidadeColunas; // default
 
         // Seção pode forçar colchetes ou outras definições CSS
         if (this.node.layoutOverride?.colunas) {
@@ -43,8 +45,6 @@ export class SectionRenderer {
 
         // Vamos emular o comportamento do div id='duas-colunas' original
         const idAttr = colunas == 2 ? `id="duas-colunas"` : "";
-
-        console.log(idAttr, colunas, this.node.titulo, colunas == 2 && !this.node.titulo);
 
         return `<div class="${classes.join(" ")}" ${idAttr}>
             ${headerHtml}

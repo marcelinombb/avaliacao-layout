@@ -56,6 +56,8 @@
 
 #duas-colunas {
     page: duasColunas;
+    break-before: page;
+    break-after: page;
 }
 
 @page rascunho {
