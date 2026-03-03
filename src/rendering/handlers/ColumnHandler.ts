@@ -39,7 +39,7 @@ class ColumnHandler extends Handler {
         const computedStyle = window.getComputedStyle(pageElement);
         const columnCountVal = computedStyle.getPropertyValue("--pagedjs-column-count").trim();
         const columnCount = parseInt(columnCountVal);
-    
+
         // If no column count is defined, return and let Paged.js handle layout normally
         if (isNaN(columnCount) || columnCount < 2) {
             return;
@@ -68,7 +68,7 @@ class ColumnHandler extends Handler {
                 col.style.flex = "1";
                 col.style.flexBasis = "0"; // Ensure equal distribution
                 col.style.minWidth = "0"; // Allow shrinking if needed
-                col.style.height = "99%";
+                col.style.height = "100%";
 
                 columnContainer.appendChild(col);
                 columnWrappers.push(col);
@@ -87,7 +87,7 @@ class ColumnHandler extends Handler {
                     break;
                 }
 
-                if(currentBreakToken.node?.dataset.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
+                if (currentBreakToken.node?.dataset.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
                     break;
                 }
 
@@ -97,7 +97,19 @@ class ColumnHandler extends Handler {
                 // This ensures 'this.bounds' in Layout refers to the column dimensions, not the full page.
                 let layout = new Layout(wrapper, page.hooks, page.settings);
 
-                let renderResult = await layout.renderTo(wrapper, contents, currentBreakToken);
+                // Workaround for paged.js subpixel rounding errors that suppress overflow detection
+                // We create a strict bounding box that is slightly smaller (by 2px) at the bottom.
+                let layoutBounds = wrapper.getBoundingClientRect();
+                let strictBounds = {
+                    left: layoutBounds.left,
+                    top: layoutBounds.top,
+                    right: layoutBounds.right,
+                    bottom: layoutBounds.bottom - 2, // Shrink by 2px to guarantee overflow detection
+                    width: layoutBounds.width,
+                    height: layoutBounds.height - 2
+                };
+
+                let renderResult = await layout.renderTo(wrapper, contents, currentBreakToken, strictBounds);
 
                 currentBreakToken = renderResult.breakToken;
             }
