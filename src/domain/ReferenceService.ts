@@ -1,10 +1,27 @@
+import { RenderableNode } from "./RenderableNode";
+import { Question } from "./Question";
+import { SectionNode } from "./SectionNode";
+
 export class ReferenceService {
+    static extractQuestions(nodes: RenderableNode[]): Question[] {
+        let questions: Question[] = [];
+        for (const node of nodes) {
+            if (node.nodeType === 'questao') {
+                questions.push(node as Question);
+            } else if (node.nodeType === 'sessao') {
+                questions.push(...this.extractQuestions((node as SectionNode).children));
+            }
+        }
+        return questions;
+    }
+
     /**
      * Group questions by reference and set metadata
-     * @param {Question[]} questions 
+     * @param {RenderableNode[]} nodes 
      */
-    static processReferences(questions) {
-        const formatLista = (indices) =>
+    static processReferences(nodes: RenderableNode[]) {
+        const questions = this.extractQuestions(nodes);
+        const formatLista = (indices: number[]) =>
             indices.map((i) => i + 1).join(", ").replace(/,([^,]*)$/, " e$1");
 
         const questaoReferencia = questions.reduce((map, question, index) => {
@@ -22,6 +39,6 @@ export class ReferenceService {
             primeira.showReference = true;
         }
 
-        return questions;
+        return nodes;
     }
 }

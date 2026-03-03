@@ -44,7 +44,10 @@ export interface QuestionConstructor {
     orderAlternative?: number;
 }
 
-export class Question {
+import { RenderableNode } from "./RenderableNode";
+
+export class Question implements RenderableNode {
+    nodeType: string = 'questao';
     id?: number | string;
     order: number;
     customOrder?: number | null;

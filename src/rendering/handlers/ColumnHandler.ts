@@ -87,7 +87,7 @@ class ColumnHandler extends Handler {
                     break;
                 }
 
-                if (currentBreakToken.node?.dataset.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
+                if (currentBreakToken.node?.dataset?.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
                     break;
                 }
 

@@ -1,4 +1,4 @@
-import { QuestionRenderer } from "./components/QuestionRenderer";
+import { NodeRendererFactory } from "./components/NodeRendererFactory";
 
 export class AssessmentHtmlRenderer {
     assessment: any;
@@ -11,23 +11,25 @@ export class AssessmentHtmlRenderer {
 
     render() {
         const folhaDeRostoHtml = this.options.folhaDeRosto ? `<div id="folha-rosto">${this.options.folhaDeRosto}</div>` : "";
-        const questionsHtml = this.renderQuestions();
+        const nodesHtml = this.renderNodes();
         const attachmentsHtml = this.renderAttachments();
         const draftsHtml = `<div class="rascunho">${this.options.rascunho}</div>`.repeat(this.options.quantidadeFolhasRascunho || 0);
-        return folhaDeRostoHtml + questionsHtml + attachmentsHtml + draftsHtml;
+        return folhaDeRostoHtml + nodesHtml + attachmentsHtml + draftsHtml;
     }
 
-    renderQuestions() {
-        const questionsHtml = this.assessment.questions
-            .map(question => {
-                const presenter = new QuestionRenderer(question, this.assessment.layout, this.options);
+    renderNodes() {
+        const nodesHtml = this.assessment.nodes
+            .map((node: any) => {
+                const presenter = NodeRendererFactory.create(node, this.assessment.layout, this.options);
                 return presenter.render();
             })
             .join("");
 
-        return this.options.quantidadeColunas == 2
-            ? `<div id='duas-colunas'>${questionsHtml}</div>`
-            : questionsHtml;
+        const isLegacyFallback = this.assessment.nodes.length > 0 && this.assessment.nodes[0].nodeType === 'questao';
+
+        return isLegacyFallback && this.options.quantidadeColunas == 2
+            ? `<div id='duas-colunas'>${nodesHtml}</div>`
+            : nodesHtml;
     }
 
     renderAttachments() {

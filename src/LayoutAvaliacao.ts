@@ -2,6 +2,9 @@ import { Assessment } from "./domain/Assessment";
 import { Question } from "./domain/Question";
 import { ReferenceService } from "./domain/ReferenceService";
 import { AssessmentHtmlRenderer } from "./rendering/AssessmentHtmlRenderer";
+import { RenderableNode } from "./domain/RenderableNode";
+import { SectionNode } from "./domain/SectionNode";
+import { TextNode } from "./domain/TextNode";
 
 export class LayoutAvaliacao {
     provaModelo: any;
@@ -17,7 +20,7 @@ export class LayoutAvaliacao {
         const assessment = this._mapToEntity(this.provaModelo);
 
         // 2. Domain Logic: Process References
-        ReferenceService.processReferences(assessment.questions);
+        ReferenceService.processReferences(assessment.nodes);
 
         // 3. Prepare for Presentation
         const renderer = new AssessmentHtmlRenderer(assessment, this.layoutOptions);
@@ -27,27 +30,29 @@ export class LayoutAvaliacao {
         return renderer.render();
     }
 
-    _mapToEntity(rawData) {
-        const { prova, listaProvaQuestao, listaProvaAnexo } = rawData;
+    _mapToEntity(rawData: any) {
+        const { prova, listaProvaQuestao, listaProvaAnexo, blocos } = rawData;
 
-        const questions = (listaProvaQuestao || []).map(q => {
+        const mapQuestion = (q: any) => {
             let parsedContent = {};
             try {
-                parsedContent = JSON.parse(q.questao.visualizaQuestao);
+                if (q.questao && q.questao.visualizaQuestao) {
+                    parsedContent = JSON.parse(q.questao.visualizaQuestao);
+                }
             } catch (e) {
                 console.error("Error parsing question content", e);
             }
 
             const question = new Question({
-                id: q.questao.codigo,
+                id: q.questao?.codigo,
                 order: q.ordem,
                 title: q.titulo,
                 customOrder: q.ordemPersonalizada,
                 value: q.valor,
-                type: q.questao.tipoQuestao,
-                reference: q.questao.referencia,
+                type: q.questao?.tipoQuestao,
+                reference: q.questao?.referencia,
                 orderAlternative: q.ordemAlternativa,
-                visualizaQuestaoRaw: q.questao.visualizaQuestao
+                visualizaQuestaoRaw: q.questao?.visualizaQuestao
             });
 
             // Flatten parsed content into the entity for easier access in presenters
@@ -56,19 +61,41 @@ export class LayoutAvaliacao {
             // Map other fields used in rendering
             question.linhasBranco = q.linhasBranco;
             question.quebraPagina = q.quebraPagina;
-            question.visualizaResposta = q.questao.visualizaResposta;
+            question.visualizaResposta = q.questao?.visualizaResposta;
 
             // Map fields used by QuadroResposta
             question.tipoLinha = q.tipoLinha;
             question.numeroLinhas = q.numeroLinhas;
 
             return question;
-        });
+        };
+
+        let nodes: RenderableNode[] = [];
+
+        if (blocos && blocos.length > 0) {
+            const mapNode = (bloco: any): RenderableNode => {
+                if (bloco.tipo === 'sessao') {
+                    return new SectionNode({
+                        titulo: bloco.titulo,
+                        layoutOverride: bloco.layoutOverride,
+                        children: (bloco.filhos || []).map(mapNode)
+                    });
+                } else if (bloco.tipo === 'texto_informativo') {
+                    return new TextNode({ conteudo: bloco.conteudo });
+                } else if (bloco.tipo === 'questao') {
+                    return mapQuestion(bloco);
+                }
+                return mapQuestion(bloco);
+            };
+            nodes = blocos.map(mapNode);
+        } else {
+            nodes = (listaProvaQuestao || []).map(mapQuestion);
+        }
 
         return new Assessment({
             id: prova?.id,
             title: prova?.descricao,
-            questions: questions,
+            nodes: nodes,
             attachments: listaProvaAnexo || [],
             layout: prova?.layout || {}
         });

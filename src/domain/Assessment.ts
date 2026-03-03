@@ -1,4 +1,5 @@
 import { Question } from "./Question";
+import { RenderableNode } from "./RenderableNode";
 
 export interface Attachment {
     ordem?: number;
@@ -45,7 +46,7 @@ export interface AssessmentLayout {
 export interface AssessmentConstructor {
     id?: number | string;
     title?: string;
-    questions?: Question[];
+    nodes?: RenderableNode[];
     attachments?: Attachment[];
     layout?: AssessmentLayout;
 }
@@ -53,14 +54,14 @@ export interface AssessmentConstructor {
 export class Assessment {
     id?: number | string;
     title?: string;
-    questions: Question[];
+    nodes: RenderableNode[];
     attachments: Attachment[];
     layout: AssessmentLayout;
 
-    constructor({ id, title, questions = [], attachments = [], layout = {} }: AssessmentConstructor) {
+    constructor({ id, title, nodes = [], attachments = [], layout = {} }: AssessmentConstructor) {
         this.id = id;
         this.title = title;
-        this.questions = questions;
+        this.nodes = nodes;
         this.attachments = attachments;
         this.layout = layout;
     }
