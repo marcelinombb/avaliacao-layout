@@ -61,6 +61,7 @@ export class Question {
 
     referenceInfo: string | null = null;
     showReference: boolean = false;
+    showTitle: boolean = true;
     visualizaQuestaoParsed: QuestionContent | null = null;
 
     linhasBranco?: number;

@@ -30,6 +30,8 @@ export class LayoutAvaliacao {
     _mapToEntity(rawData) {
         const { prova, listaProvaQuestao, listaProvaAnexo } = rawData;
 
+        const seenTitles = new Set<string>();
+
         const questions = (listaProvaQuestao || []).map(q => {
             let parsedContent = {};
             try {
@@ -61,6 +63,18 @@ export class LayoutAvaliacao {
             // Map fields used by QuadroResposta
             question.tipoLinha = q.tipoLinha;
             question.numeroLinhas = q.numeroLinhas;
+
+            if (question.title) {
+                const normalizedTitle = question.title.trim().toLowerCase();
+                if (seenTitles.has(normalizedTitle)) {
+                    question.showTitle = false;
+                } else {
+                    seenTitles.add(normalizedTitle);
+                    question.showTitle = true;
+                }
+            } else {
+                question.showTitle = false;
+            }
 
             return question;
         });

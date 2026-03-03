@@ -41,7 +41,7 @@ function generateMockQuestions(count) {
             numeroLinhas: 1,
             quebraPagina: false,
             ordemAlternativa: 0,
-            titulo: null,
+            titulo: "TESTE",
             ordemPersonalizada: null,
             questao: {
                 codigo: `MOCK-${1000 + i}`,
