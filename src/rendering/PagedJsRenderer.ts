@@ -16,7 +16,8 @@ export class PagedJsRenderer {
 
     // aplica o HTML
     const contentContainer = document.createElement('div');
-    contentContainer.innerHTML = result.layoutHtml;
+    // Regex `>\s+<` remove espaços em branco entre tags para evitar erros de layout de #text do Paged.js
+    contentContainer.innerHTML = result.layoutHtml.replace(/>\s+</g, '><');
 
     // aplica CSS vars
     Object.entries(result.cssVars).forEach(([key, value]) => {
