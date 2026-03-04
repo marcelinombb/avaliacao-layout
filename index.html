@@ -292,7 +292,7 @@
 
       const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
 
-      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
+      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, [], pagesContainer).then(() => {
         resizer();
         if (overlay) {
           overlay.style.display = "none";

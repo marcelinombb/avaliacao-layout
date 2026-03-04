@@ -6,6 +6,7 @@ import {
   OrderHandler
 } from "./handlers/index";
 import ColumnHandler from "./handlers/ColumnHandler";
+import internalCss from "./layout-avaliacao.css";
 
 export class PagedJsRenderer {
   static async render(result, stylesheets = null, pagesContainer) {
@@ -63,13 +64,23 @@ export class PagedJsRenderer {
     const configuredHandlers = prepareHandlers(defaultHandlers);
     paged.registerHandlers(...configuredHandlers);
 
+    // injetar o CSS interno na renderização
+    const blob = new Blob([internalCss], { type: 'text/css' });
+    const internalCssUrl = URL.createObjectURL(blob);
+
+    let finalStylesheets = stylesheets ? [...stylesheets] : [];
+    // Opcional: remover a referência ao layout-avaliacao.css antigo caso o usuário passe
+    finalStylesheets = finalStylesheets.filter(s => typeof s !== 'string' || !s.includes('layout-avaliacao.css'));
+    finalStylesheets.push(internalCssUrl);
+
     return paged.preview(
       contentContainer,
-      stylesheets,
+      finalStylesheets,
       pagesContainer
     ).then(chunker => {
       chunker.pages.forEach(page => page.removeListeners());
       contentContainer.remove();
+      URL.revokeObjectURL(internalCssUrl); // liberar a memória da GPU do navegador
       return chunker;
     })
   }

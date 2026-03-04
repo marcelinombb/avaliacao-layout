@@ -25,6 +25,18 @@ const hbsPlugin = () => ({
   }
 });
 
+// Plugin to import CSS as string
+const cssPlugin = () => ({
+  name: 'css-string',
+  transform(code, id) {
+    if (!id.endsWith('.css')) return null;
+    return {
+      code: `export default ${JSON.stringify(code)};`,
+      map: { mappings: '' }
+    };
+  }
+});
+
 const isWatch = process.env.ROLLUP_WATCH === "true";
 
 const esmConfig = {
@@ -43,6 +55,7 @@ const esmConfig = {
       compilerOptions: { declaration: false, declarationMap: false, declarationDir: undefined }
     }),
     hbsPlugin(),
+    cssPlugin(),
     !isWatch && terser(),
   ],
 };
@@ -61,6 +74,7 @@ const cjsConfig = {
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
     hbsPlugin(),
+    cssPlugin(),
     !isWatch && terser(),
   ],
 };
@@ -79,6 +93,7 @@ const umdConfig = {
     json(),
     typescript({ tsconfig: "./tsconfig.json" }),
     hbsPlugin(),
+    cssPlugin(),
     !isWatch && terser(),
     isWatch &&
     serve({
