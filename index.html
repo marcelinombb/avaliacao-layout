@@ -290,9 +290,7 @@
 
       let layoutResult = layoutBuilder.build(provaModelo3);
 
-      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
-
-      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, [], pagesContainer).then(() => {
+      return AvaliacaoLayout.LayoutRenderer.render(layoutResult, [], pagesContainer).then(() => {
         resizer();
         if (overlay) {
           overlay.style.display = "none";

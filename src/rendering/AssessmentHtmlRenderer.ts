@@ -1,4 +1,5 @@
 import { NodeRendererFactory } from "./components/NodeRendererFactory";
+import latexParser from "./utils/latexParser";
 
 export class AssessmentHtmlRenderer {
     assessment: any;
@@ -14,7 +15,8 @@ export class AssessmentHtmlRenderer {
         const nodesHtml = this.renderNodes();
         const attachmentsHtml = this.renderAttachments();
         const draftsHtml = `<div class="rascunho">${this.options.rascunho}</div>`.repeat(this.options.quantidadeFolhasRascunho || 0);
-        return folhaDeRostoHtml + nodesHtml + attachmentsHtml + draftsHtml;
+        const fullHtml = folhaDeRostoHtml + nodesHtml + attachmentsHtml + draftsHtml;
+        return latexParser(fullHtml);
     }
 
     renderNodes() {

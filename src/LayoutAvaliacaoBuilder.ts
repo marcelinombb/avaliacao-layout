@@ -171,7 +171,7 @@ export class LayoutAvaliacaoBuilder {
       paginacaoAtiva: this.paginacaoAtiva,
     });
 
-    return Object.freeze({
+    return {
       layoutHtml: layoutAvaliacao.avalicaoHtml(),
       cssVars: {
         "--layout-font-size": this.fontSize + "px",
@@ -192,6 +192,6 @@ export class LayoutAvaliacaoBuilder {
       ordemAlternativa: this.tipoOrdenacaoAlternativa,
       tipoAlternativa: this._tipoAlternativa,
       handlers: [],
-    });
+    };
   }
 }

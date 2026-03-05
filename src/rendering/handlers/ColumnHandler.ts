@@ -42,6 +42,23 @@ class ColumnHandler extends Handler {
 
         // If no column count is defined, return and let Paged.js handle layout normally
         if (isNaN(columnCount) || columnCount < 2) {
+
+            const originalGetBoundingClientRect = page.area.getBoundingClientRect.bind(page.area);
+            page.area.getBoundingClientRect = () => {
+                const layoutBounds = originalGetBoundingClientRect();
+                return {
+                    left: layoutBounds.left,
+                    top: layoutBounds.top,
+                    right: layoutBounds.right,
+                    bottom: layoutBounds.bottom - 2,
+                    width: layoutBounds.width,
+                    height: layoutBounds.height - 2,
+                    x: layoutBounds.x,
+                    y: layoutBounds.y,
+                    toJSON: () => layoutBounds.toJSON()
+                };
+            };
+
             return;
         }
 
@@ -123,4 +140,3 @@ class ColumnHandler extends Handler {
 }
 
 export default ColumnHandler;
-

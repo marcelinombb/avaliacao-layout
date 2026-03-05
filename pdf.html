@@ -69,9 +69,7 @@
 
             let layoutResult = layoutBuilder.build(provaModelo);
 
-            const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
-
-            return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer)
+            return AvaliacaoLayout.LayoutRenderer.render(layoutResult, ["public/css/layout-avaliacao.css"], pagesContainer)
                     .then(() => {
                         document.body.classList.add('renderDone');
                     });

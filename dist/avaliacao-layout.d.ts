@@ -36,8 +36,8 @@ declare class LayoutAvaliacaoBuilder {
     paginacao(): this;
     ordemAlternativa(tipoOrdenacao: any): this;
     tipoAlternativa(tipoAlternativa: any): this;
-    build(provaModelo: any): Readonly<{
-        layoutHtml: string;
+    build(provaModelo: any): {
+        layoutHtml: any;
         cssVars: {
             "--layout-font-size": string;
             "--layout-watermark-rascunho": string;
@@ -51,7 +51,7 @@ declare class LayoutAvaliacaoBuilder {
         ordemAlternativa: number;
         tipoAlternativa: any;
         handlers: any[];
-    }>;
+    };
 }
 
 declare class PagedJsRenderer {

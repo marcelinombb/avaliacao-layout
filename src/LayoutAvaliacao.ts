@@ -73,21 +73,22 @@ export class LayoutAvaliacao {
         let nodes: RenderableNode[] = [];
 
         if (blocos && blocos.length > 0) {
-            const mapNode = (bloco: any): RenderableNode => {
+            const mapNode = (bloco: any): RenderableNode | null => {
                 if (bloco.tipo === 'sessao') {
                     return new SectionNode({
                         titulo: bloco.titulo,
                         layoutOverride: bloco.layoutOverride,
-                        children: (bloco.filhos || []).map(mapNode)
+                        children: (bloco.filhos || []).map(mapNode).filter(Boolean) as RenderableNode[]
                     });
                 } else if (bloco.tipo === 'texto_informativo') {
                     return new TextNode({ conteudo: bloco.conteudo });
                 } else if (bloco.tipo === 'questao') {
                     return mapQuestion(bloco);
                 }
-                return mapQuestion(bloco);
+                console.warn(`Bloco com tipo não mapeado não será renderizado: ${bloco.tipo}`);
+                return null;
             };
-            nodes = blocos.map(mapNode);
+            nodes = blocos.map(mapNode).filter(Boolean) as RenderableNode[];
         } else {
             nodes = (listaProvaQuestao || []).map(mapQuestion);
         }
