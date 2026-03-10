@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "refactoring-patterns": {
+      "source": "wondelai/skills",
+      "sourceType": "github",
+      "computedHash": "db96f6f1953645be6d318aeef537e239ee496e80b5f96cc5884fec9b93c47f7a"
+    }
+  }
+}

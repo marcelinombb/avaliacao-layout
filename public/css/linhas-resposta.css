@@ -1,71 +1,71 @@
   .answer-table {
-    max-width: 100%;
-    width: 100%;
-    margin: 10px 0;
-    border-collapse: collapse;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 10px 0 !important;
+    border-collapse: collapse !important;
   }
 
   .answer-table td {
-    border: 1px solid black;
+    border: 1px solid black !important;
     /* Creates the horizontal lines */
-    height: 30px;
+    height: 30px !important;
     /* Adjust height for line spacing */
   }
 
   .box {
-    width: 100%;
-    border: 1px solid black;
-    box-sizing: border-box;
-    margin: 10px 0;
+    width: 100% !important;
+    border: 1px solid black !important;
+    box-sizing: border-box !important;
+    margin: 10px 0 !important;
   }
 
   .box-header {
-    background-color: #d3d3d3;
-    color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    padding: 10px;
-    border-bottom: 1px solid black;
-    height: 30px;
-    box-sizing: border-box;
+    background-color: #d3d3d3 !important;
+    color: black !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: bold !important;
+    padding: 10px !important;
+    border-bottom: 1px solid black !important;
+    height: 30px !important;
+    box-sizing: border-box !important;
   }
 
   .box-content {
-    min-height: 30px;
-    max-height: 700px;
-    background: white;
+    min-height: 30px !important;
+    max-height: 700px !important;
+    background: white !important;
   }
 
   .side-number-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid black;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1px solid black !important;
   }
 
   .side-number-table td {
-    border: 1px solid black;
-    height: 30px;
-    box-sizing: border-box;
+    border: 1px solid black !important;
+    height: 30px !important;
+    box-sizing: border-box !important;
   }
 
   .side-number-header {
-    background-color: #d3d3d3;
-    text-align: center;
-    font-weight: bold;
+    background-color: #d3d3d3 !important;
+    text-align: center !important;
+    font-weight: bold !important;
   }
 
   .side-number {
-    text-align: center;
-    vertical-align: top;
-    padding: 5px;
-    width: 50px;
+    text-align: center !important;
+    vertical-align: top !important;
+    padding: 5px !important;
+    width: 50px !important;
   }
 
   .side-number-content {
-    min-height: 30px;
-    background: white;
+    min-height: 30px !important;
+    background: white !important;
   }
 
   /* Classes para linhas sem borda superior */
@@ -138,9 +138,9 @@
 
   .quadro-resposta-tabela td,
   .quadro-resposta-tabela>div {
-    border-bottom: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 1px solid black !important;
+    border-left: 1px solid black !important;
+    border-right: 1px solid black !important;
   }
 
   .quadro-resposta-tabela>div~div {

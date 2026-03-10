@@ -175,6 +175,7 @@ function replacePlaceholders(provaModelo) {
     "#LOGO#": instituicao?.linkFile ?? "",
     "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
     "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#CURSONOME#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
     "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
     "#PERIODOLET#": turma?.periodoLetivo?.nome ?? "&nbsp;",
@@ -184,6 +185,7 @@ function replacePlaceholders(provaModelo) {
   };
 
   const footerPlaceholders = {
+    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#site#": instituicao?.site ?? "&nbsp;",
   };
 
