@@ -65,6 +65,7 @@ const mockProva = {
         duracao: "02:00",
         dataRealizacao: "01/01/2026",
         tipoProva: { nome: "SIMULADO X I" },
+        observacao: "TESTE OBSERVAÇÃO",
         turma: {
             nome: "TURMA A",
             disciplina: "MOCK",

@@ -20,6 +20,10 @@ class ColumnHandler extends Handler {
                 page-break-before: auto !important;
                 break-inside: auto !important;
             }
+            .pagedjs_column img, .pagedjs_column figure, .pagedjs_column table {
+                max-width: 100% !important;
+                height: auto !important;
+            }
             .pagedjs_column_1 {
                 padding-right: 10px;
                 border-right: solid 1px rgb(66, 65, 65);
@@ -104,7 +108,7 @@ class ColumnHandler extends Handler {
                     break;
                 }
 
-                if (currentBreakToken.node?.dataset.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
+                if (currentBreakToken.node?.dataset?.page !== undefined && currentBreakToken.node.dataset.page !== "duasColunas") {
                     break;
                 }
 
