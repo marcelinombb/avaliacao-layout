@@ -82,14 +82,11 @@ export class QuadroRespostaRenderer {
 
   linhaComCalculo(numberOfLines) {
     if (!numberOfLines) return "";
-    const lines = Array.from(
-      { length: numberOfLines },
-      () => `
-                <div class="quadro-resposta-linha-custom dontsplit">
-                <td>&nbsp;</td>
+    const height = numberOfLines * 30;
+    const lines = `
+                <div class="dontsplit" style="height: ${height}px; border: 1px solid black;">
                 </div>
-            `
-    ).join("");
+              `;
 
     return `
                 <div class="quadro-resposta-tabela quadro-resposta-container" >
@@ -110,37 +107,47 @@ export class QuadroRespostaRenderer {
             `;
   }
 
-  quadroDeLinhasComCorrecao(numberOfLines) {
-    if (!numberOfLines) return "";
+quadroDeLinhasComCorrecao(numberOfLines: number): string {
+  if (!numberOfLines) return "";
 
-    const header = `
-                <header class="dontsplit">
-                <strong class="quadro-resposta-coluna" style="width:85%;border-right: 1px solid black;">Resposta</strong>
-                <strong class="quadro-resposta-coluna" style="width:5%;border-right: 1px solid black;">E</strong>
-                <strong class="quadro-resposta-coluna" style="width:5%;border-right: 1px solid black;">G</strong>
-                <strong class="quadro-resposta-coluna" style="width:5%">T</strong>
-                </header>
-            `;
+  const header = `
+    <tr>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">#</th>
+      <th style="width:80%;border:1px solid black;padding:4px; background-color: #a9a9a9;">Resposta</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">E</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">G</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">T</th>
+    </tr>
+  `;
 
-    const rows = Array.from(
-      { length: numberOfLines },
-      (_, index) => `<div>
-            <span class="quadro-resposta-coluna" style="width: 5%; border-right: 1px solid black;">${index + 1
-        }</span>
-            <span class="quadro-resposta-coluna" style="width: 80%;border-right: 1px solid black;">&nbsp;</span>
-            <span class="quadro-resposta-coluna" style="width: 5%;border-right: 1px solid black;">&nbsp;</span>
-            <span class="quadro-resposta-coluna" style="width: 5%;border-right: 1px solid black;">&nbsp;</span>
-            <span class="quadro-resposta-coluna" style="width: 5%;">&nbsp;</span>
-            </div>`
-    ).join("");
+  const rows = Array.from({ length: numberOfLines }, (_, i) => `
+    <tr>
+      <td style="border:1px solid black;text-align:center;padding:4px;">${i + 1}</td>
+      <td style="border:1px solid black;padding:4px;">&nbsp;</td>
+      <td style="border:1px solid black;padding:4px;">&nbsp;</td>
+      <td style="border:1px solid black;padding:4px;">&nbsp;</td>
+      <td style="border:1px solid black;padding:4px;">&nbsp;</td>
+    </tr>
+  `).join("");
 
-    return `
-                <div class="quadro-resposta-tabela w100 dontsplit tablelike">
-                ${header}
-                ${rows}
-                </div>
-            `;
-  }
+  return `
+    <table 
+      style="
+        width:100%;
+        border-collapse:collapse;
+        table-layout:fixed;
+        border:1px solid black;
+      "
+    >
+      <thead>
+        ${header}
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
 
   static tipoQuadroRespostaHtml(tipoLinha: number, numeroLinhas: number) {
 
