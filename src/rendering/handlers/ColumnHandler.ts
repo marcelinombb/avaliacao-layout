@@ -21,7 +21,7 @@ class ColumnHandler extends Handler {
                 break-inside: auto !important;
             }
             .pagedjs_column img, .pagedjs_column figure, .pagedjs_column table {
-                max-width: 100% !important;
+                max-width: fit-content !important;
                 height: auto !important;
             }
             .pagedjs_column_1 {
@@ -66,7 +66,6 @@ class ColumnHandler extends Handler {
             return;
         }
 
-        const pageContentHeight = page.area.clientHeight;
         // Override the page layout method
         page.layout = async (contents, breakToken, prevPage) => {
             page.clear();

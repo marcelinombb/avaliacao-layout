@@ -1,24 +1,56 @@
 export class QuadroRespostaRenderer {
-  linhasTabelaNumeradas(numberOfLines, withHeader = true) {
-    const header = `<tr class='dontsplit'>
-                      <td class="side-number-header" colspan="2">Resposta</td>
-                    </tr>`;
 
-    let rows = Array.from(
-      { length: numberOfLines },
-      (_, index) => `
-          <tr class='dontsplit'>
-            <td class="side-number">${index + 1}</td>
-            <td class="side-number-content"></td>
-          </tr>
-        `
-    ).join("");
+  linhasTabelaNumeradas(numberOfLines: number): string {
+    if (!numberOfLines) return "";
+
+    const header = `
+    <tr>
+      <th 
+        colspan="2"
+        style="
+          width:100%;
+          border:1px solid black;
+          padding:4px;
+          background-color:#a9a9a9;
+          text-align:center;
+        "
+      >
+        Resposta
+      </th>
+    </tr>
+  `;
+
+    const rows = Array.from({ length: numberOfLines }, (_, i) => `
+    <tr>
+      <td style="width:5%;border:1px solid black;text-align:center;padding:4px;">
+        ${i + 1}
+      </td>
+      <td style="width:95%;border:1px solid black;padding:4px;">
+        &nbsp;
+      </td>
+    </tr>
+  `).join("");
 
     return `
-      <table class="side-number-table">
-        ${withHeader ? header : ""}
+    <table
+      style="
+        width:100%;
+        border-collapse:collapse;
+        table-layout:fixed;
+        border:1px solid black;
+      "
+    >
+      <colgroup>
+        <col style="width:5%">
+        <col style="width:95%">
+      </colgroup>
+      <thead>
+        ${header}
+      </thead>
+      <tbody>
         ${rows}
-      </table>
+      </tbody>
+    </table>
   `;
   }
 
@@ -107,20 +139,20 @@ export class QuadroRespostaRenderer {
             `;
   }
 
-quadroDeLinhasComCorrecao(numberOfLines: number): string {
-  if (!numberOfLines) return "";
+  quadroDeLinhasComCorrecao(numberOfLines: number): string {
+    if (!numberOfLines) return "";
 
-  const header = `
+    const header = `
     <tr>
-      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">#</th>
-      <th style="width:80%;border:1px solid black;padding:4px; background-color: #a9a9a9;">Resposta</th>
-      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">E</th>
-      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">G</th>
-      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9;">T</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9; text-align: center;">#</th>
+      <th style="width:80%;border:1px solid black;padding:4px; background-color: #a9a9a9; text-align: center;">Resposta</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9; text-align: center;">E</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9; text-align: center;">G</th>
+      <th style="width:5%;border:1px solid black;padding:4px; background-color: #a9a9a9; text-align: center;">T</th>
     </tr>
   `;
 
-  const rows = Array.from({ length: numberOfLines }, (_, i) => `
+    const rows = Array.from({ length: numberOfLines }, (_, i) => `
     <tr>
       <td style="border:1px solid black;text-align:center;padding:4px;">${i + 1}</td>
       <td style="border:1px solid black;padding:4px;">&nbsp;</td>
@@ -130,7 +162,7 @@ quadroDeLinhasComCorrecao(numberOfLines: number): string {
     </tr>
   `).join("");
 
-  return `
+    return `
     <table 
       style="
         width:100%;
@@ -147,7 +179,7 @@ quadroDeLinhasComCorrecao(numberOfLines: number): string {
       </tbody>
     </table>
   `;
-}
+  }
 
   static tipoQuadroRespostaHtml(tipoLinha: number, numeroLinhas: number) {
 

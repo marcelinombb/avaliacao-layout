@@ -11,15 +11,15 @@ class PreventEmptyPageHandler extends Handler {
         if (isEmpty && el.offsetHeight === 0) {
             // When Paged.js successfully identifies an overflow and creates a breakToken,
             // we intercept it here. If the element causing the break is genuinely empty and 0 height,
-            // we want to cancel the page break. 
-            // 
+            // we want to cancel the page break.
             // We cannot return `null` because `layout.js` calls `breakToken.equals()`.
             // Instead, we override `.equals()` to mathematically return `true`. 
             // `layout.js` interprets `breakToken.equals(prevBreakToken) === true` as an infinite loop 
             // and gracefully aborts the layout for this node, preventing the blank page creation
             // without ever hiding or deleting the user's anchors!
-            breakToken.equals = function () { return true; };
-            return breakToken;
+            //breakToken.equals = function () { return true; };
+            console.log("PreventEmptyPageHandler", overflow)
+            //return breakToken;
         }
     }
 }
