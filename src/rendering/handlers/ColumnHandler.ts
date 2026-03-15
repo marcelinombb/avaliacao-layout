@@ -1,6 +1,6 @@
 import { Handler } from "pagedjs";
 // @ts-ignore
-import Layout from "../../../node_modules/pagedjs/src/chunker/layout.js";
+import Layout from "../../../node_modules/pagedjs/src/chunker/layout.js"; // nosonar
 
 
 /**
@@ -20,6 +20,10 @@ class ColumnHandler extends Handler {
                 page-break-before: auto !important;
                 break-inside: auto !important;
             }
+            .pagedjs_column img, .pagedjs_column figure, .pagedjs_column table {
+                max-width: fit-content !important;
+                height: auto !important;
+            }
             .pagedjs_column_1 {
                 padding-right: 10px;
                 border-right: solid 1px rgb(66, 65, 65);
@@ -36,12 +40,12 @@ class ColumnHandler extends Handler {
      */
     beforePageLayout(page, contents, breakToken, chunker) {
         const pageElement = page.element;
-        const computedStyle = window.getComputedStyle(pageElement);
+        const computedStyle = globalThis.getComputedStyle(pageElement);
         const columnCountVal = computedStyle.getPropertyValue("--pagedjs-column-count").trim();
-        const columnCount = parseInt(columnCountVal);
+        const columnCount = Number.parseInt(columnCountVal);
 
         // If no column count is defined, return and let Paged.js handle layout normally
-        if (isNaN(columnCount) || columnCount < 2) {
+        if (Number.isNaN(columnCount) || columnCount < 2) {
 
             const originalGetBoundingClientRect = page.area.getBoundingClientRect.bind(page.area);
             page.area.getBoundingClientRect = () => {
@@ -62,7 +66,6 @@ class ColumnHandler extends Handler {
             return;
         }
 
-        const pageContentHeight = page.area.clientHeight;
         // Override the page layout method
         page.layout = async (contents, breakToken, prevPage) => {
             page.clear();
@@ -75,7 +78,6 @@ class ColumnHandler extends Handler {
             columnContainer.style.display = "flex";
             columnContainer.style.height = "100%";
             columnContainer.style.width = "100%";
-            //columnContainer.style.gap = columnGap;
             page.area.appendChild(columnContainer);
 
             const columnWrappers = [];

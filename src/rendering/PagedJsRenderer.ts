@@ -9,18 +9,43 @@ import ColumnHandler from "./handlers/ColumnHandler";
 import internalCss from "./layout-avaliacao.css";
 
 export class PagedJsRenderer {
-  static async render(result, stylesheets = null, pagesContainer) {
+  static async render(html: string, stylesheets = null, pagesContainer: HTMLElement, customHandlers = []) {
 
-    if (!result || pagesContainer === undefined) {
+    if (!html || pagesContainer === undefined) {
       throw new Error("Parâmetros inválidos para renderização do layout de avaliação.");
     }
 
     // aplica o HTML
     const contentContainer = document.createElement('div');
-    contentContainer.innerHTML = result.layoutHtml;
+    contentContainer.innerHTML = html;
+
+    // Extrai metadados
+    const metadataContainer = contentContainer.querySelector('#avaliacao-metadata');
+    let cssVars = {};
+    let config: any = {};
+    let header = "";
+    let footer = "";
+    let folhaDeRostoHeader = "";
+    let folhaDeRostoFooter = "";
+
+    if (metadataContainer) {
+      const cssVarsEl = metadataContainer.querySelector('#layout-css-vars');
+      if (cssVarsEl) cssVars = JSON.parse(cssVarsEl.textContent || "{}");
+
+      const configEl = metadataContainer.querySelector('#layout-config');
+      if (configEl) config = JSON.parse(configEl.textContent || "{}");
+
+      header = metadataContainer.querySelector('#layout-header')?.innerHTML || "";
+      footer = metadataContainer.querySelector('#layout-footer')?.innerHTML || "";
+      folhaDeRostoHeader = metadataContainer.querySelector('#layout-folha-rosto-header')?.innerHTML || "";
+      folhaDeRostoFooter = metadataContainer.querySelector('#layout-folha-rosto-footer')?.innerHTML || "";
+
+      // Remove os metadados do container visual
+      metadataContainer.remove();
+    }
 
     // aplica CSS vars
-    Object.entries(result.cssVars).forEach(([key, value]) => {
+    Object.entries(cssVars).forEach(([key, value]) => {
       if (value) document.documentElement.style.setProperty(key, String(value));
     });
 
@@ -31,18 +56,18 @@ export class PagedJsRenderer {
       },
       {
         MyHandler: WatermarkHandler,
-        config: { comMarcaDaguaRascunho: result.comMarcaDaguaRascunho },
+        config: { comMarcaDaguaRascunho: config.comMarcaDaguaRascunho },
       },
       {
         MyHandler: HeaderFooterHandler,
         config: {
-          cabecalhoPagina: result.header,
-          cabecalhoFolhaDeRosto: result.folhaDeRosto.header,
-          footer: result.footer
-            ? `<div class="footer-avaliacao">${result.footer}</div>`
+          cabecalhoPagina: header,
+          cabecalhoFolhaDeRosto: folhaDeRostoHeader,
+          footer: footer
+            ? `<div class="footer-avaliacao">${footer}</div>`
             : "",
-          footerFolhaDeRosto: result.folhaDeRosto.footer
-            ? `<div class="footer-avaliacao">${result.folhaDeRosto.footer}</div>`
+          footerFolhaDeRosto: folhaDeRostoFooter
+            ? `<div class="footer-avaliacao">${folhaDeRostoFooter}</div>`
             : "",
         },
       },
@@ -52,9 +77,9 @@ export class PagedJsRenderer {
       },
       {
         MyHandler: OrderHandler,
-        config: { ordemAlternativa: result.ordemAlternativa, tipoAlternativa: result.tipoAlternativa }
+        config: { ordemAlternativa: config.ordemAlternativa, tipoAlternativa: config.tipoAlternativa }
       },
-      ...result.handlers
+      ...customHandlers
     ];
 
     // inicializa preview

@@ -36,26 +36,11 @@ declare class LayoutAvaliacaoBuilder {
     paginacao(): this;
     ordemAlternativa(tipoOrdenacao: any): this;
     tipoAlternativa(tipoAlternativa: any): this;
-    build(provaModelo: any): {
-        layoutHtml: any;
-        cssVars: {
-            "--layout-font-size": string;
-            "--layout-watermark-rascunho": string;
-            "--layout-watermark-instituicao": string;
-            "--layout-identificacao": string;
-        };
-        folhaDeRosto: any;
-        header: string;
-        footer: string;
-        comMarcaDaguaRascunho: any;
-        ordemAlternativa: number;
-        tipoAlternativa: any;
-        handlers: any[];
-    };
+    build(provaModelo: any): string;
 }
 
 declare class PagedJsRenderer {
-    static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
+    static render(html: string, stylesheets: any, pagesContainer: HTMLElement, customHandlers?: any[]): Promise<any>;
 }
 
 declare function latexParser(text: any): any;

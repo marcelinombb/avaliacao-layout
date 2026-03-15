@@ -1,4 +1,5 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao";
+import { replacePlaceholders } from "./rendering/utils/util";
 
 const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,
@@ -171,27 +172,38 @@ export class LayoutAvaliacaoBuilder {
       paginacaoAtiva: this.paginacaoAtiva,
     });
 
-    return {
-      layoutHtml: layoutAvaliacao.avalicaoHtml(),
-      cssVars: {
-        "--layout-font-size": this.fontSize + "px",
-        "--layout-watermark-rascunho": this._marcaDaquaRascunho
-          ? `url("${this._marcaDaquaRascunho}")`
-          : "none",
-        "--layout-watermark-instituicao": this._marcaDaguaInstituicao
-          ? `url("${this._marcaDaguaInstituicao}")`
-          : "none",
-        "--layout-identificacao": this._identificacao
-          ? `"${this._identificacao}"`
-          : "none",
-      },
-      folhaDeRosto: this._folhaDeRosto,
-      header: this.header,
-      footer: this.footer,
+    const layoutHtml = layoutAvaliacao.avalicaoHtml();
+
+    const cssVars = {
+      "--layout-font-size": this.fontSize + "px",
+      "--layout-watermark-rascunho": this._marcaDaquaRascunho
+        ? `url("${this._marcaDaquaRascunho}")`
+        : "none",
+      "--layout-watermark-instituicao": this._marcaDaguaInstituicao
+        ? `url("${this._marcaDaguaInstituicao}")`
+        : "none",
+      "--layout-identificacao": this._identificacao
+        ? `"${this._identificacao}"`
+        : "none",
+    };
+
+    const config = {
       comMarcaDaguaRascunho: this.comMarcaDaguaRascunho,
       ordemAlternativa: this.tipoOrdenacaoAlternativa,
       tipoAlternativa: this._tipoAlternativa,
-      handlers: [],
     };
+
+    const metadataHtml = `
+      <div id="avaliacao-metadata" style="display: none;">
+        <template id="layout-header">${this.header || ""}</template>
+        <template id="layout-footer">${this.footer || ""}</template>
+        <template id="layout-folha-rosto-header">${this._folhaDeRosto?.header || ""}</template>
+        <template id="layout-folha-rosto-footer">${this._folhaDeRosto?.footer || ""}</template>
+        <script type="application/json" id="layout-css-vars">${JSON.stringify(cssVars)}</script>
+        <script type="application/json" id="layout-config">${JSON.stringify(config)}</script>
+      </div>
+    `;
+
+    return replacePlaceholders(metadataHtml + layoutHtml, provaModelo.prova.placeholders);
   }
 }
