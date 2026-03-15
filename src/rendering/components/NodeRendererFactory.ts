@@ -9,7 +9,12 @@ import { TextRenderer } from "./TextRenderer";
 export class NodeRendererFactory {
     static create(node: RenderableNode, assessmentLayout: any, options: any): any {
         if (node.nodeType === 'sessao') {
-            return new SectionRenderer(node as SectionNode, assessmentLayout, options);
+            return new SectionRenderer(
+                node as SectionNode,
+                assessmentLayout,
+                options,
+                (child: any, layout: any, opts: any) => NodeRendererFactory.create(child, layout, opts).render()
+            );
         } else if (node.nodeType === 'texto_informativo') {
             return new TextRenderer(node as TextNode);
         } else if (node.nodeType === 'questao') {

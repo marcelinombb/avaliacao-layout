@@ -43,10 +43,6 @@ declare class PagedJsRenderer {
     static render(html: string, stylesheets: any, pagesContainer: HTMLElement, customHandlers?: any[]): Promise<any>;
 }
 
-declare function latexParser(text: any): any;
-
-declare function replacePlaceholders(provaModelo: any): any;
-
 declare const createLayout: () => LayoutAvaliacaoBuilder;
 
-export { LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, createLayout, latexParser, replacePlaceholders };
+export { LayoutAvaliacaoBuilder, PagedJsRenderer as LayoutRenderer, createLayout };

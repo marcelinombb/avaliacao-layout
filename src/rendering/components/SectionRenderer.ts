@@ -1,15 +1,16 @@
 import { SectionNode } from "../../domain/SectionNode";
-import { NodeRendererFactory } from "./NodeRendererFactory";
 
 export class SectionRenderer {
     node: SectionNode;
     assessmentLayout: any;
     options: any;
+    renderChild: (child: any, layout: any, opts: any) => string;
 
-    constructor(node: SectionNode, assessmentLayout: any, options: any) {
+    constructor(node: SectionNode, assessmentLayout: any, options: any, renderChild?: (child: any, layout: any, opts: any) => string) {
         this.node = node;
         this.assessmentLayout = assessmentLayout;
         this.options = options;
+        this.renderChild = renderChild || (() => "");
     }
 
     render(): string {
@@ -18,8 +19,7 @@ export class SectionRenderer {
         const childOptions = { ...this.options, quantidadeColunas: 1 };
         const renderedChildren = this.node.children
             .map(child => {
-                const renderer = NodeRendererFactory.create(child, this.assessmentLayout, childOptions);
-                return renderer.render();
+                return this.renderChild(child, this.assessmentLayout, childOptions);
             })
             .join("");
 
