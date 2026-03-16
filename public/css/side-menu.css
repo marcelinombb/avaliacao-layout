@@ -361,3 +361,110 @@
   pointer-events: none;
   /* simple feedback state */
 }
+
+/* --- Novas Estilizações de Hierarquia de Blocos --- */
+
+.block-list-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.block-list-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.level-0 { margin-left: 0; }
+.level-1 { margin-left: 12px; border-left: 3px solid #3b82f6; }
+.level-2 { margin-left: 24px; border-left: 3px solid #10b981; }
+.level-3 { margin-left: 36px; border-left: 3px solid #f59e0b; }
+.level-4 { margin-left: 48px; border-left: 3px solid #8b5cf6; }
+
+.block-header {
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.block-header:hover {
+  background-color: #f8fafc;
+}
+
+.block-header.active {
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.block-title-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.block-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.badge-sessao { background-color: #eff6ff; color: #1d4ed8; }
+.badge-texto { background-color: #f0fdf4; color: #047857; }
+.badge-questao { background-color: #fef3c7; color: #b45309; }
+
+.block-title {
+  font-weight: 600;
+  font-size: 0.90rem;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.block-code {
+  font-weight: 500;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.block-body {
+  display: none;
+  background-color: #fafafa;
+  padding: 15px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.block-body.show {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.empty-message {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+  padding: 10px 0;
+}

@@ -21,8 +21,9 @@ class ColumnHandler extends Handler {
                 break-inside: auto !important;
             }
             .pagedjs_column img, .pagedjs_column figure, .pagedjs_column table {
-                max-width: fit-content !important;
+                max-width: 100% !important;
                 height: auto !important;
+                object-fit: contain !important;
             }
             .pagedjs_column_1 {
                 padding-right: 10px;

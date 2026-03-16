@@ -204,6 +204,6 @@ export class LayoutAvaliacaoBuilder {
       </div>
     `;
 
-    return replacePlaceholders(metadataHtml + layoutHtml, provaModelo.prova.placeholders);
+    return replacePlaceholders(metadataHtml + layoutHtml, provaModelo.placeholders || provaModelo.prova?.placeholders);
   }
 }

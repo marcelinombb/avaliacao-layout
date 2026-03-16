@@ -385,7 +385,7 @@
         const el = document.querySelector(`[data-questao-id="${id}"]`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Highlight effect?
+          // Highlight effect
           el.style.transition = "background-color 0.5s";
           el.style.backgroundColor = "#fff3cd";
           setTimeout(() => {
@@ -397,9 +397,11 @@
       };
 
       // Add toggle function
-      window.toggleQuestionOptions = (index) => {
-        const body = document.getElementById(`q-body-${index}`);
-        const header = document.getElementById(`q-header-${index}`);
+      window.toggleBlockOptions = (blockId) => {
+        const body = document.getElementById(`b-body-${blockId}`);
+        const header = document.getElementById(`b-header-${blockId}`);
+        if (!body || !header) return;
+
         const isVisible = body.classList.contains("show");
 
         if (!isVisible) {
@@ -413,126 +415,223 @@
         }
       };
 
-      provaModelo3.listaProvaQuestao.forEach((questao, index) => {
-        const questionId = questao.questao?.codigo || questao.id || questao.codigo || index + 1;
+      const createControlGroup = (labelStr, inputEl) => {
+        const group = document.createElement("div");
+        group.className = "control-group";
+        const label = document.createElement("label");
+        label.innerText = labelStr;
+        group.appendChild(label);
+        group.appendChild(inputEl);
+        return group;
+      };
 
+      let blockCounter = 0;
+
+      function renderBlock(bloco, parentContainer, level = 0) {
         const div = document.createElement("div");
-        div.className = "question-list-item";
+        div.className = `block-list-item level-${Math.min(level, 4)}`;
 
-        // Create Header
+        const currentBlockId = blockCounter++;
+
+        // Determine Badge & Title
+        let badgeClass = "";
+        let badgeText = "";
+        let titleText = "";
+        let codeText = "";
+        let scrollTargetId = null;
+
+        if (bloco.tipo === "sessao") {
+          badgeClass = "badge-sessao";
+          badgeText = "Ses";
+          titleText = bloco.titulo || "Sessão";
+        } else if (bloco.tipo === "texto_informativo") {
+          badgeClass = "badge-texto";
+          badgeText = "Txt";
+          titleText = bloco.titulo || "Texto Informativo";
+        } else if (bloco.tipo === "questao") {
+          badgeClass = "badge-questao";
+          badgeText = "Q";
+          titleText = `Questão ${bloco.questao?.ordem || ''}`;
+          codeText = `(${bloco.questao?.codigo || 's/n'})`;
+          scrollTargetId = bloco.questao?.codigo;
+        }
+
+        // Header
         const header = document.createElement("div");
-        header.className = "question-header";
-        header.id = `q-header-${index}`;
-
-        const titleText = `Questão ${questao.ordem} <span class="q-code">(${questao.codigo || 'sem código'})</span>`;
+        header.className = "block-header";
+        header.id = `b-header-${currentBlockId}`;
         header.innerHTML = `
-          <div class="q-title">${titleText}</div>
+          <div class="block-title-wrapper">
+            <span class="block-badge ${badgeClass}">${badgeText}</span>
+            <span class="block-title" title="${titleText}">${titleText}</span>
+            ${codeText ? `<span class="block-code">${codeText}</span>` : ''}
+          </div>
           <div class="toggle-icon">▼</div>
         `;
 
         header.onclick = (e) => {
-          window.scrollToQuestion(questionId);
-          window.toggleQuestionOptions(index);
+          if (scrollTargetId) {
+            window.scrollToQuestion(scrollTargetId);
+          }
+          window.toggleBlockOptions(currentBlockId);
         };
         div.appendChild(header);
 
-        // Create Body (Options)
+        // Body
         const body = document.createElement("div");
-        body.className = "question-body";
-        body.id = `q-body-${index}`;
+        body.className = "block-body";
+        body.id = `b-body-${currentBlockId}`;
 
-        // Helper to create control groups
-        const createControlGroup = (labelStr, inputEl) => {
-          const group = document.createElement("div");
-          group.className = "control-group";
-          const label = document.createElement("label");
-          label.innerText = labelStr;
-          group.appendChild(label);
-          group.appendChild(inputEl);
-          return group;
-        };
+        let hasSettings = false;
 
-        const h4 = document.createElement("h4");
-        h4.innerText = "Configurações";
-        body.appendChild(h4);
+        // Configurations based on type
+        if (bloco.tipo === "sessao") {
+          hasSettings = true;
+          const h4 = document.createElement("h4");
+          h4.innerText = "Configurações da Sessão";
+          body.appendChild(h4);
 
-        // Tipo Linha
-        const select = document.createElement("select");
-        TIPO_LINHA_OPTIONS.forEach(opt => {
-          const o = document.createElement("option");
-          o.value = opt.code;
-          o.innerText = opt.name;
-          if (questao.tipoLinha && questao.tipoLinha.codigo === opt.code) o.selected = true;
-          select.appendChild(o);
-        });
-        select.onchange = (e) => {
-          const val = parseInt(e.target.value);
-          const name = TIPO_LINHA_OPTIONS.find(x => x.code === val).name;
-          questao.tipoLinha = { codigo: val, nome: name };
-        };
-        body.appendChild(createControlGroup("Tipo de Linha", select));
+          if (!bloco.layoutOverride) bloco.layoutOverride = {};
 
-        // Numero Linhas
-        const inputNum = document.createElement("input");
-        inputNum.type = "number";
-        inputNum.value = questao.numeroLinhas || 0;
-        inputNum.onchange = (e) => {
-          questao.numeroLinhas = parseInt(e.target.value);
-        };
-        body.appendChild(createControlGroup("Número de Linhas", inputNum));
+          // Colunas (select 1 ou 2)
+          const selectColunas = document.createElement("select");
+          [1, 2].forEach(val => {
+            const o = document.createElement("option");
+            o.value = val;
+            o.innerText = `${val} Coluna${val > 1 ? 's' : ''}`;
+            if (bloco.layoutOverride.colunas === val) o.selected = true;
+            selectColunas.appendChild(o);
+          });
+          selectColunas.onchange = (e) => {
+            bloco.layoutOverride.colunas = parseInt(e.target.value);
+          };
+          body.appendChild(createControlGroup("Colunas", selectColunas));
 
-        // Linhas em Branco
-        const inputBranco = document.createElement("input");
-        inputBranco.type = "number";
-        inputBranco.value = questao.linhasBranco || 0;
-        inputBranco.onchange = (e) => {
-          questao.linhasBranco = parseInt(e.target.value);
-        };
-        body.appendChild(createControlGroup("Linhas em Branco", inputBranco));
+          // Quebra de Página Antes
+          const divCheck = document.createElement("div");
+          divCheck.className = "checkbox-container";
+          const check = document.createElement("input");
+          check.type = "checkbox";
+          check.id = `sessao_qp_${currentBlockId}`;
+          check.checked = bloco.layoutOverride.quebraPaginaAntes || false;
+          check.onchange = (e) => {
+            bloco.layoutOverride.quebraPaginaAntes = e.target.checked;
+          };
+          const labelCheck = document.createElement("label");
+          labelCheck.htmlFor = `sessao_qp_${currentBlockId}`;
+          labelCheck.innerText = "Quebra de Pág. (Antes)";
+          divCheck.appendChild(check);
+          divCheck.appendChild(labelCheck);
+          body.appendChild(divCheck);
 
-        // Quebra Pagina
-        const divCheck = document.createElement("div");
-        divCheck.className = "checkbox-container";
-        const check = document.createElement("input");
-        check.type = "checkbox";
-        check.id = `qp_${index}`;
-        check.checked = questao.quebraPagina || false;
-        check.onchange = (e) => {
-          questao.quebraPagina = e.target.checked;
-        };
-        const labelCheck = document.createElement("label");
-        labelCheck.htmlFor = `qp_${index}`;
-        labelCheck.innerText = "Quebra Página";
-        divCheck.appendChild(check);
-        divCheck.appendChild(labelCheck);
-        body.appendChild(divCheck);
+        } else if (bloco.tipo === "questao") {
+          hasSettings = true;
+          const h4 = document.createElement("h4");
+          h4.innerText = "Configurações da Questão";
+          body.appendChild(h4);
 
-        // Action Buttons
-        const actionsDiv = document.createElement("div");
-        actionsDiv.className = "question-actions";
+          // Tipo de Linha
+          const selectTipoLinha = document.createElement("select");
+          TIPO_LINHA_OPTIONS.forEach(opt => {
+            const o = document.createElement("option");
+            o.value = opt.code;
+            o.innerText = opt.name;
+            if (bloco.questao?.tipoLinha && bloco.questao.tipoLinha.codigo === opt.code) o.selected = true;
+            selectTipoLinha.appendChild(o);
+          });
+          selectTipoLinha.onchange = (e) => {
+            const val = parseInt(e.target.value);
+            const name = TIPO_LINHA_OPTIONS.find(x => x.code === val).name;
+            if (!bloco.questao) bloco.questao = {};
+            bloco.questao.tipoLinha = { codigo: val, nome: name };
+          };
+          body.appendChild(createControlGroup("Tipo de Linha", selectTipoLinha));
 
-        const applyBtn = document.createElement("button");
-        applyBtn.innerText = "Aplicar Alterações";
-        applyBtn.className = "btn-apply";
-        applyBtn.onclick = () => {
-          renderizarAvaliacao(questionId);
+          // Número Linhas
+          const inputNum = document.createElement("input");
+          inputNum.type = "number";
+          inputNum.value = bloco.questao?.numeroLinhas || 0;
+          inputNum.onchange = (e) => {
+            if (!bloco.questao) bloco.questao = {};
+            bloco.questao.numeroLinhas = parseInt(e.target.value);
+          };
+          body.appendChild(createControlGroup("Número de Linhas", inputNum));
 
-          // Visual feedback
-          const originalText = applyBtn.innerText;
-          applyBtn.innerText = "Aplicado!";
-          applyBtn.classList.add("btn-success");
-          setTimeout(() => {
-            applyBtn.innerText = originalText;
-            applyBtn.classList.remove("btn-success");
-          }, 1500);
-        };
+          // Linhas em Branco
+          const inputBranco = document.createElement("input");
+          inputBranco.type = "number";
+          inputBranco.value = bloco.questao?.linhasBranco || 0;
+          inputBranco.onchange = (e) => {
+            if (!bloco.questao) bloco.questao = {};
+            bloco.questao.linhasBranco = parseInt(e.target.value);
+          };
+          body.appendChild(createControlGroup("Linhas em Branco", inputBranco));
 
-        actionsDiv.appendChild(applyBtn);
-        body.appendChild(actionsDiv);
+          // Quebra Página
+          const divCheck = document.createElement("div");
+          divCheck.className = "checkbox-container";
+          const check = document.createElement("input");
+          check.type = "checkbox";
+          check.id = `qp_${currentBlockId}`;
+          check.checked = bloco.questao?.quebraPagina || false;
+          check.onchange = (e) => {
+            if (!bloco.questao) bloco.questao = {};
+            bloco.questao.quebraPagina = e.target.checked;
+          };
+          const labelCheck = document.createElement("label");
+          labelCheck.htmlFor = `qp_${currentBlockId}`;
+          labelCheck.innerText = "Quebra Página";
+          divCheck.appendChild(check);
+          divCheck.appendChild(labelCheck);
+          body.appendChild(divCheck);
+
+        } else if (bloco.tipo === "texto_informativo") {
+          hasSettings = true;
+          const msg = document.createElement("div");
+          msg.className = "empty-message";
+          msg.innerText = "Bloco de texto informativo. Sem configurações específicas no nível do formato.";
+          body.appendChild(msg);
+        }
+
+        if (hasSettings) {
+          const actionsDiv = document.createElement("div");
+          actionsDiv.className = "question-actions";
+
+          const applyBtn = document.createElement("button");
+          applyBtn.innerText = "Aplicar Alterações";
+          applyBtn.className = "btn-apply";
+          applyBtn.onclick = () => {
+            renderizarAvaliacao(scrollTargetId);
+            const originalText = applyBtn.innerText;
+            applyBtn.innerText = "Aplicado!";
+            applyBtn.classList.add("btn-success");
+            setTimeout(() => {
+              applyBtn.innerText = originalText;
+              applyBtn.classList.remove("btn-success");
+            }, 1500);
+          };
+
+          actionsDiv.appendChild(applyBtn);
+          body.appendChild(actionsDiv);
+        }
 
         div.appendChild(body);
-        container.appendChild(div);
-      });
+        parentContainer.appendChild(div);
+
+        // Renderização recursiva (tree flattened no DOM para não empilhar UI boxes indesejadamente)
+        if (bloco.filhos && bloco.filhos.length > 0) {
+          bloco.filhos.forEach(child => {
+            renderBlock(child, parentContainer, level + 1);
+          });
+        }
+      }
+
+      // Inicia a renderização caso existam blocos
+      if (provaModelo3.blocos && provaModelo3.blocos.length > 0) {
+        provaModelo3.blocos.forEach(bloco => {
+          renderBlock(bloco, container, 0);
+        });
+      }
     }
 
     renderQuestionConfig();
