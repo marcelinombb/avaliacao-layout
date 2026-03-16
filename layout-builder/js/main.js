@@ -69,11 +69,15 @@ const mockProva = {
         turma: {
             nome: "TURMA A",
             disciplina: "MOCK",
-            periodoLetivo: { nome: "1ª ETAPA" },
+            periodoLetivo: { nome: "2026" },
             cursoUnidade: {
                 curso: { nome: "ENSINO MÉDIO" },
                 turno: { nome: "Manhã" }
             }
+        },
+        etapa: {
+            codigo: 1,
+            nome: "1º ETAPA"
         },
         instituicao: {
             site: "www.example.com",

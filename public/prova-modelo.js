@@ -34,6 +34,10 @@ const provaModelo3 = {
             "identificado": null,
             "totalRegistros": null
         },
+        "etapa": {
+            "codigo": 1,
+            "nome": "1º ETAPA"
+        },
         "observacao": null,
         "totalPontos": 4,
         "listaProvaAnexo": [],

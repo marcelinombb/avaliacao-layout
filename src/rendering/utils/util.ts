@@ -126,6 +126,7 @@ function replacePlaceholders(provaModelo) {
   const layout = prova.layout;
   const dataRealizacao = prova.dataRealizacao ?? "";
   const totalQuestoes = provaModelo.listaProvaQuestao?.length ?? 0;
+  const periodoEtapa = (turma?.periodoLetivo?.nome ?? "&nbsp;") + " - " + (prova.etapa?.nome ?? "&nbsp;");
 
   const folhaDeRostoPlaceholder = {
     "#DATA#": dataRealizacao || "&nbsp;",
@@ -135,7 +136,7 @@ function replacePlaceholders(provaModelo) {
     "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#CODIGO_TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
-    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#PERIODO#": periodoEtapa,
     "#MODELO#": " - Modelo " + (provaModelo.nome ?? ""),
     "#PROFESSOR#":
       (turma?.listaTurmaDisciplina?.[0]?.nomeProfessor ??
@@ -161,7 +162,7 @@ function replacePlaceholders(provaModelo) {
     "#TURMANOME#": turma?.nome ?? "&nbsp;",
     "#NOME_TURMA#": turma?.nome ?? "&nbsp;",
     "#TURNO#": turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
-    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#PERIODO#": periodoEtapa,
     "#TOTALQUEST#": totalQuestoes,
     "#LAYOUTNOME#": layout?.nome ?? "&nbsp;",
     "#NOMELAYOUT#": layout?.nome ?? "&nbsp;",
@@ -177,8 +178,8 @@ function replacePlaceholders(provaModelo) {
     "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
     "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#CURSONOME#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
-    "#PERIODO#": turma?.periodoLetivo?.nome ?? "&nbsp;",
-    "#PERIODOLET#": turma?.periodoLetivo?.nome ?? "&nbsp;",
+    "#PERIODO#": periodoEtapa,
+    "#PERIODOLET#": periodoEtapa,
     "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
     "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
     "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
