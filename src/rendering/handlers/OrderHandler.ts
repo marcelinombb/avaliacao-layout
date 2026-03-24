@@ -10,33 +10,48 @@ export const TIPO_ORDENACAO = Object.freeze({
 
 export default class OrderHandler extends Handler {
 
-    orderCache = new Map<string, number>();
     config: any;
+    measureRoot: HTMLElement | null;
+    processedRefs: Set<string>;
+    processedNodes: WeakSet<Element>;
 
     constructor(chunker: any, polisher: any, caller: any, config: any = {}) {
         super(chunker, polisher, caller);
         this.config = config;
+        this.measureRoot = null;
+        this.processedRefs = new Set<string>();
+        this.processedNodes = new WeakSet<Element>();
     }
 
-    afterPageLayout(pageElement: any) {
-        const blocos = pageElement.querySelectorAll(".avaliacao-alternativas");
+    layoutNode(node: any) {
+        if (!node || node.nodeType !== 1) return;
+        if (!node.classList?.contains("avaliacao-alternativas")) return;
 
-        for (const bloco of blocos) {
-            this.processarBloco(bloco);
+        const ref = node.dataset?.ref;
+        if (typeof ref === "string") {
+            if (this.processedRefs.has(ref)) return;
+        } else if (this.processedNodes.has(node)) {
+            return;
         }
+
+        this.processarBloco(node);
+
+        if (typeof ref === "string") {
+            this.processedRefs.add(ref);
+            return;
+        }
+
+        this.processedNodes.add(node);
     }
 
     processarBloco(bloco: any) {
 
-        const { ref, splitFrom, ordemAlternativa: rawOrdem } = bloco.dataset;
+        if (bloco.dataset.ordemAlternativaProcessada === "true") return;
+
+        const { ordemAlternativa: rawOrdem } = bloco.dataset;
 
         const filhos = Array.from(bloco.querySelectorAll(".linha-alternativa")) as HTMLElement[];
         if (!filhos.length) return;
-
-        // guarda tamanho original apenas na primeira renderização
-        if (!splitFrom) {
-            this.orderCache.set(ref, filhos.length);
-        }
 
         const ordem = this.resolverTipoOrdenacao(rawOrdem);
 
@@ -47,7 +62,7 @@ export default class OrderHandler extends Handler {
 
         this.aplicarOrdenacao(alternativas, ordem);
 
-        this.reRenderizar(bloco, alternativas, ref, splitFrom);
+        this.reRenderizar(bloco, alternativas);
     }
 
     resolverTipoOrdenacao(rawOrdem: any) {
@@ -63,21 +78,32 @@ export default class OrderHandler extends Handler {
     }
 
     obterWidth(element: any) {
-        const conteudo = element.querySelector(".media-corpo");
+        const root = this.getMeasureRoot();
+        const clone = element.cloneNode(true) as HTMLElement;
 
-        const originalWidth = element.style.width;
-        const originalMaxWidth = element.style.maxWidth;
+        clone.style.width = "max-content";
+        clone.style.maxWidth = "none";
 
-        element.style.width = 'max-content';
-        element.style.maxWidth = '100%';
-
-        const target = conteudo || element;
+        root.appendChild(clone);
+        const target = clone.querySelector(".media-corpo") || clone;
         const width = target.getBoundingClientRect().width;
+        root.removeChild(clone);
 
-        element.style.width = originalWidth;
-        element.style.maxWidth = originalMaxWidth;
+        if (width > 0) return width;
 
-        return width;
+        const fallbackText = (target.textContent || "").trim();
+        return fallbackText.length;
+    }
+
+    getMeasureRoot() {
+        if (this.measureRoot) return this.measureRoot;
+
+        const root = document.createElement("div");
+        root.style.cssText = "position:absolute;left:-99999px;top:0;visibility:hidden;pointer-events:none;";
+        document.body.appendChild(root);
+        this.measureRoot = root;
+
+        return root;
     }
 
     aplicarOrdenacao(alternativas: any[], tipo: number) {
@@ -102,19 +128,16 @@ export default class OrderHandler extends Handler {
         }
     }
 
-    reRenderizar(bloco: any, alternativas: any[], ref: string, splitFrom: any) {
+    reRenderizar(bloco: any, alternativas: any[]) {
 
         const fragment = document.createDocumentFragment();
-        const baseIndex = splitFrom ? (this.orderCache.get(ref) ?? 0) : 0;
 
         alternativas.forEach(({ element }, index) => {
-
-            const indiceFinal: number = baseIndex + index;
 
             const label = element.querySelector(".media-esq");
             if (label) {
                 label.innerHTML = conversorDeIndicesParaAlternativas(
-                    indiceFinal,
+                    index,
                     this.config.tipoAlternativa
                 );
             }
