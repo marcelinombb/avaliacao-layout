@@ -155,4 +155,15 @@ export default class OrderHandler extends Handler {
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
+
+    afterRendered() {
+        this.cleanup();
+    }
+
+    cleanup() {
+        if (this.measureRoot && this.measureRoot.parentElement) {
+            this.measureRoot.parentElement.removeChild(this.measureRoot);
+        }
+        this.measureRoot = null;
+    }
 }
