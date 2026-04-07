@@ -32,7 +32,7 @@ const esmConfig = {
   output: {
     file: "dist/avaliacao-layout.esm.js",
     format: "esm", // gera um bundle ESM
-    sourcemap: true,
+    sourcemap: isWatch,
   },
   plugins: [
     resolve(),
@@ -53,7 +53,7 @@ const cjsConfig = {
     file: "dist/avaliacao-layout.cjs",
     format: "cjs", // CommonJS
     exports: "auto",
-    sourcemap: true,
+    sourcemap: isWatch,
   },
   plugins: [
     resolve(),
@@ -71,7 +71,7 @@ const umdConfig = {
     file: "dist/avaliacao-layout.umd.js",
     format: "umd", // ou "iife"
     name: "AvaliacaoLayout", // nome global no browser
-    sourcemap: true,
+    sourcemap: isWatch,
   },
   plugins: [
     resolve(),
