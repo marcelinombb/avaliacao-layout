@@ -72,7 +72,7 @@ ul.lista-sem-estilo {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px;
-  padding-top: 10px;
+  padding-top: 8px;
   word-break: break-word;
   /* display: flex !important;
   flex-direction: row;

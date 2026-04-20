@@ -3,6 +3,17 @@ import { Question } from "./domain/Question";
 import { ReferenceService } from "./domain/ReferenceService";
 import { AssessmentHtmlRenderer } from "./rendering/AssessmentHtmlRenderer";
 
+/**
+ * Retorna string vazia se o HTML contiver apenas parágrafos vazios (ex: <p ...><br></p>).
+ * Caso contrário, retorna o HTML original.
+ */
+function sanitizeEmptyHtml(html: string): string {
+    if (!html || typeof html !== 'string') return html;
+    // Remove todas as tags <p> que contêm apenas <br> ou espaços em branco (com qualquer atributo)
+    const stripped = html.replace(/<p[^>]*>(\s*<br\s*\/?>?\s*)<\/p>/gi, '').trim();
+    return stripped === '' ? '' : html;
+}
+
 export class LayoutAvaliacao {
     provaModelo: any;
     layoutOptions: any;
@@ -33,7 +44,7 @@ export class LayoutAvaliacao {
         const seenTitles = new Set<string>();
 
         const questions = (listaProvaQuestao || []).map(q => {
-            let parsedContent = {};
+            let parsedContent: Record<string, any> = {};
             try {
                 parsedContent = JSON.parse(q.questao.visualizaQuestao);
             } catch (e) {
@@ -53,6 +64,13 @@ export class LayoutAvaliacao {
             });
 
             // Flatten parsed content into the entity for easier access in presenters
+            // Sanitize fields that may contain only empty paragraphs
+            const htmlFields: string[] = ['instrucao', 'textoBase', 'fonte'];
+            htmlFields.forEach(field => {
+                if (parsedContent[field]) {
+                    parsedContent[field] = sanitizeEmptyHtml(parsedContent[field]);
+                }
+            });
             question.visualizaQuestaoParsed = parsedContent;
 
             // Map other fields used in rendering
