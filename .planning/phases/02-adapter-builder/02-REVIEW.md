@@ -1,6 +1,6 @@
 ---
 phase: 02-adapter-builder
-reviewed: 2026-06-01T00:00:00Z
+reviewed: 2026-06-01T12:00:00Z
 depth: standard
 files_reviewed: 5
 files_reviewed_list:
@@ -8,146 +8,229 @@ files_reviewed_list:
   - src/LayoutAvaliacao.ts
   - src/LayoutAvaliacaoBuilder.ts
   - src/index.ts
-  - src/types/AssessmentInput.ts
+  - index.html
 findings:
-  critical: 3
-  warning: 2
-  info: 2
-  total: 7
+  critical: 1
+  warning: 4
+  info: 5
+  total: 10
 status: issues_found
 ---
 
 # Phase 02: Code Review Report
 
-**Reviewed:** 2026-06-01T00:00:00Z
+**Reviewed:** 2026-06-01T12:00:00Z
 **Depth:** standard
 **Files Reviewed:** 5
 **Status:** issues_found
 
 ## Summary
 
-This phase introduced a `ProvaModelo3Adapter`, updated `LayoutAvaliacao._mapToEntity()` to consume `AssessmentInput`, and updated `LayoutAvaliacaoBuilder.build()` to accept `AssessmentInput`. The refactor is structurally sound on paper, but three critical defects prevent it from working correctly in the browser dev harness:
-
-1. The harness (`index.html`) was not updated — it still calls `build(provaModelo3)` with the raw object and still calls the deleted `marcaDaquaRascunho()` method. The harness will throw a `TypeError` at runtime when the draft-watermark checkbox is checked, and will silently render empty questions when it is not.
-2. The adapter incorrectly sources `listaProvaAnexo` from the wrong level of the input object — it is nested inside `prova`, not at the root.
-
-All three critical issues would be caught immediately by the "npm run dev" human-verify gate defined in Plan 02-02, but they were not caught because the gate was not executed before the review was submitted.
+Five source files from the adapter/builder refactor were reviewed. The three previously identified critical defects (CR-01 harness not using adapter, CR-02 method name mismatch, CR-03 wrong `listaProvaAnexo` path) have all been resolved in the current code. One new critical defect was found: a `JSON.parse(null)` path in `_mapToEntity` that silently overwrites `parsedContent` with `null` and then crashes outside the `try/catch` block. Four warnings and five informational findings round out the review.
 
 ---
 
 ## Critical Issues
 
-### CR-01: Dev harness passes raw `provaModelo3` to `build()` instead of the adapted `AssessmentInput`
+### CR-01: `JSON.parse(null)` writes `null` to `parsedContent`, crashing outside the `try/catch`
 
-**File:** `index.html:262`
-**Issue:** `layoutBuilder.build(provaModelo3)` passes the raw backend object directly. After this refactor, `build()` hands the argument to `new LayoutAvaliacao(input, ...)`, which calls `_mapToEntity(input)`. `_mapToEntity` now reads `input.questions` (which is `undefined` on the raw object — the raw key is `listaProvaQuestao` at the top level), so `listaProvaQuestao = rawQuestions || []` becomes `[]`, silently producing a zero-question assessment. Every question is lost. The rendering appears to succeed (no exception thrown) but outputs a blank document.
+**File:** `src/LayoutAvaliacao.ts:49-75`
+**Issue:** When `q.visualizaQuestaoRaw` is `null` (allowed by the `QuestionInput` type — `visualizaQuestaoRaw?: string | null`), `JSON.parse(null)` returns `null` without throwing. The `try/catch` at lines 50-54 does **not** fire. `parsedContent` is then reassigned to `null` instead of remaining `{}`. Execution continues past the `catch` block to line 71, where:
 
-Additionally, `build()` reads `input.layout?.quebraQuestao` — on the raw object this path resolves to `undefined` because the raw object does not have a top-level `layout` key (`quebraQuestao` lives at `provaModelo3.prova.quebraQuestao`). The correct call would also mutate `provaModelo3.prova.quebraQuestao` via `provaModelo3.prova.quebraQuestao = quebraQuestao` at line 229, which the adapter would then surface via `prova?.layout?.quebraQuestao` — but `quebraQuestao` is a field of `prova` itself, not of `prova.layout`, so even after routing through the adapter this value would be lost.
-
-**Fix:** Update `index.html` to use the adapter:
-```javascript
-// import or access fromProvaModelo3 from the UMD bundle
-const assessmentInput = AvaliacaoLayout.fromProvaModelo3(provaModelo3);
-let layoutResult = layoutBuilder.build(assessmentInput);
-```
-Also verify whether `quebraQuestao` should be read from `prova.quebraQuestao` or `prova.layout.quebraQuestao` in the fixture, and update the adapter mapping accordingly.
-
----
-
-### CR-02: Dev harness calls deleted method `marcaDaquaRascunho()` — runtime TypeError
-
-**File:** `index.html:251`
-**Issue:** The harness calls `layoutBuilder.marcaDaquaRascunho(...)` at line 251. Plan 02-02 renamed this method to `marcaDaguaRascunho` (correct spelling) as a hard rename with no deprecated alias. The old name no longer exists on `LayoutAvaliacaoBuilder`. When the "Rascunho" watermark checkbox is checked, this line throws `TypeError: layoutBuilder.marcaDaquaRascunho is not a function`, crashing the render.
-
-This is an external consumer breaking change that was not propagated to the harness.
-
-**Fix:** Update `index.html` line 251:
-```javascript
-// Before (broken):
-layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
-
-// After:
-layoutBuilder.marcaDaguaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
-```
-
----
-
-### CR-03: Adapter reads `listaProvaAnexo` from wrong level — attachments always silently empty
-
-**File:** `src/adapter/ProvaModelo3Adapter.ts:4,23`
-**Issue:** The adapter destructures `listaProvaAnexo` from the root of `provaModelo3`:
 ```typescript
-const { prova, listaProvaQuestao, listaProvaAnexo } = provaModelo3;
+htmlFields.forEach(field => {
+    if (parsedContent[field]) {   // TypeError: Cannot read properties of null
 ```
-In the actual fixture (and in the real backend shape), `listaProvaAnexo` is a property of `prova`, not of the top-level object. The top-level keys of `provaModelo3` are: `prova`, `nome`, `fonteTamanho`, `listaProvaQuestao`, `rascunho`, `usuario`. There is no top-level `listaProvaAnexo`.
 
-As a result, `listaProvaAnexo` is always `undefined` from this destructure, and line 23 falls back to `[]` via the `|| []` guard, silently discarding all attachment data. Questions that depend on annexe references will be rendered without their reference text blocks.
+`null['instrucao']` throws `TypeError: Cannot read properties of null (reading 'instrucao')`. This uncaught exception propagates out of the `.map()` callback, crashing the entire `_mapToEntity()` call and preventing any HTML from being produced. Any question whose `visualizaQuestaoRaw` field is `null` in the backend payload will bring down the whole render.
 
-**Fix:**
+**Fix:** Assert that the parsed value is an object before assigning it, or reset to `{}` on a non-object result:
+
 ```typescript
-// ProvaModelo3Adapter.ts line 4 — correct destructure path:
-const { prova, listaProvaQuestao } = provaModelo3;
-const listaProvaAnexo = prova?.listaProvaAnexo;
-
-// ...rest of function unchanged
-const attachments: AttachmentInput[] = listaProvaAnexo || [];
+let parsedContent: Record<string, any> = {};
+try {
+    const parsed = JSON.parse(q.visualizaQuestaoRaw);
+    if (parsed !== null && typeof parsed === 'object') {
+        parsedContent = parsed;
+    }
+} catch (e) {
+    console.error("Error parsing question content", e);
+}
 ```
 
 ---
 
 ## Warnings
 
-### WR-01: `quebraQuestao` mapping is unreachable via the adapter path
+### WR-01: `comMarcaDaguaRascunho` and `quantidadeFolhasRascunho` are not initialized in the constructor
 
-**File:** `src/adapter/ProvaModelo3Adapter.ts:25` and `src/LayoutAvaliacaoBuilder.ts:165`
-**Issue:** `build()` reads `input.layout?.quebraQuestao` (line 165 of `LayoutAvaliacaoBuilder`). The adapter maps `prova?.layout` to `layout` (line 25 of adapter). In the fixture, `quebraQuestao` is a field of `prova` directly (`provaModelo3.prova.quebraQuestao`), not of `prova.layout`. Therefore `input.layout.quebraQuestao` will always be `undefined` even when the adapter is used correctly. The feature silently does nothing.
+**File:** `src/LayoutAvaliacaoBuilder.ts:26-27` and constructor (lines 29-48)
+**Issue:** The class declares both `comMarcaDaguaRascunho: any` and `quantidadeFolhasRascunho: any` as public class properties. Neither is initialized in the constructor — they remain `undefined`. The constructor does initialize the obsolete `numeroFolhasRascunho = null` (see IN-02), but not the two fields that are actually used.
 
-This is a contract mismatch between the adapter's output and `build()`'s expectation. The field `quebraQuestao` needs to either be added to `AssessmentLayoutInput` and populated by the adapter from `prova.quebraQuestao`, or be moved to a top-level field in `AssessmentInput`.
+- `comMarcaDaguaRascunho` is surfaced directly in the frozen `build()` return object (line 187). Consumers comparing `result.comMarcaDaguaRascunho === false` will get `undefined !== false` — a latent truthiness bug if the downstream handler ever uses strict equality.
+- `quantidadeFolhasRascunho` is passed as `layoutOptions.quantidadeFolhasRascunho` (line 163). `AssessmentHtmlRenderer` at line 16 computes `.repeat(this.options.quantidadeFolhasRascunho || 0)`. `undefined || 0` is `0`, so no draft pages render — this is safe but misleads: a consumer might call `.rascunhoHtml(html)` without calling `.rascunho(n)` and wonder why nothing appears.
 
-**Fix:** In `ProvaModelo3Adapter.ts`, explicitly map `quebraQuestao` from `prova`:
+**Fix:**
 ```typescript
-const layout: AssessmentLayoutInput = {
-    ...(prova?.layout || {}),
-    quebraQuestao: prova?.quebraQuestao,
-};
+constructor() {
+    // ...
+    this.comMarcaDaguaRascunho = false;
+    this.quantidadeFolhasRascunho = 0;
+    // remove the stale: this.numeroFolhasRascunho = null;
+}
 ```
-Or add `quebraQuestao` as a top-level field to `AssessmentInput` and read it in `build()` as `input.quebraQuestao`.
 
 ---
 
-### WR-02: `comMarcaDaguaRascunho` and `quantidadeFolhasRascunho` are not initialized in constructor
+### WR-02: `q.questao` accessed without null guard in adapter — crashes on malformed input
 
-**File:** `src/LayoutAvaliacaoBuilder.ts:27,28` and constructor (lines 29–48)
-**Issue:** The class declares `comMarcaDaguaRascunho: any` and `quantidadeFolhasRascunho: any` as public properties but the constructor does not initialize either of them. They are left as `undefined` (not `null`, not `false`). The `build()` output at line 187 exposes `comMarcaDaguaRascunho` directly in the frozen return object; a consumer checking `result.comMarcaDaguaRascunho` truthily will get `undefined` instead of `false` when the method was never called. `quantidadeFolhasRascunho` is also used in the `layoutOptions` object passed to `LayoutAvaliacao` — passing `undefined` where a count is expected may produce unexpected rendering behavior in draft pages.
+**File:** `src/adapter/ProvaModelo3Adapter.ts:8,13,14,16,19`
+**Issue:** The adapter accesses `q.questao.codigo`, `q.questao.tipoQuestao`, `q.questao.referencia`, `q.questao.visualizaQuestao`, and `q.questao.visualizaResposta` inside the `.map()` on line 7. If any element in `listaProvaQuestao` has a missing or null `questao` property, every one of these property accesses throws `TypeError: Cannot read properties of null (reading 'codigo')` (or similar), crashing the entire adapter call.
 
-**Fix:** Initialize in constructor:
+The backend is the only current consumer and presumably always provides well-formed data, but the CLAUDE.md constraint is "given any well-formed assessment input" — a missing `questao` sub-object is an observable failure mode that is not protected.
+
+**Fix:**
 ```typescript
-this.comMarcaDaguaRascunho = false;
-this.quantidadeFolhasRascunho = 0;
+const questions: QuestionInput[] = (listaProvaQuestao || [])
+    .filter(q => q.questao != null)   // skip items with no questao
+    .map(q => ({
+        id: q.questao.codigo,
+        // ...rest unchanged
+    }));
+```
+Or use optional chaining throughout:
+```typescript
+id: q.questao?.codigo,
+type: q.questao?.tipoQuestao,
+// ...
+```
+
+---
+
+### WR-03: CSS custom-property values are not sanitized — CSS injection via `_identificacao` and watermark URLs
+
+**File:** `src/LayoutAvaliacaoBuilder.ts:173-181`
+**Issue:** Three CSS custom-property values are constructed by direct string interpolation without escaping:
+
+```typescript
+"--layout-watermark-rascunho": this._marcaDaquaRascunho
+    ? `url("${this._marcaDaquaRascunho}")`  // line 175
+    : "none",
+"--layout-watermark-instituicao": this._marcaDaguaInstituicao
+    ? `url("${this._marcaDaguaInstituicao}")` // line 178
+    : "none",
+"--layout-identificacao": this._identificacao
+    ? `"${this._identificacao}"`             // line 182
+    : "none",
+```
+
+A URL containing `")` followed by arbitrary CSS, or an identification string containing `"`, can escape the quoted value and inject additional CSS declarations. For example, a `_marcaDaquaRascunho` value of `test") } body { background: red; } .x {` produces a valid CSS injection. These values are then applied via `document.documentElement.style.setProperty()` (PagedJsRenderer line 24), which executes them in the rendered document.
+
+While this library is consumed by a single trusted backend today, the value of these fields ultimately traces back to user-configurable data (watermark URLs, institution identification strings) and the pattern is a latent escalation risk.
+
+**Fix:** Strip or encode characters that are meaningful in CSS `url()` or string contexts before interpolation:
+```typescript
+const safeCssString = (s: string) => s.replace(/["\\]/g, '\\$&');
+const safeCssUrl = (u: string) => u.replace(/[")]/g, encodeURIComponent);
+
+"--layout-watermark-rascunho": this._marcaDaquaRascunho
+    ? `url("${safeCssUrl(this._marcaDaquaRascunho)}")`
+    : "none",
+"--layout-identificacao": this._identificacao
+    ? `"${safeCssString(this._identificacao)}"`
+    : "none",
+```
+
+---
+
+### WR-04: `rascunhoHtml()` accepts `null` without guard — produces literal `"null"` string in rendered HTML
+
+**File:** `src/LayoutAvaliacaoBuilder.ts:96-99`
+**Issue:** The `rascunhoHtml(rascunhoHtml)` method has no validation and assigns the argument directly:
+```typescript
+rascunhoHtml(rascunhoHtml) {
+    this._rascunhoHtml = rascunhoHtml;  // null/undefined accepted silently
+    return this;
+}
+```
+The index.html harness calls `.rascunhoHtml(provaModelo3.prova.layout.rascunho)`. If `rascunho` is absent from the layout object, this assigns `undefined` to `_rascunhoHtml`. In `AssessmentHtmlRenderer`:
+```typescript
+const draftsHtml = `<div class="rascunho">${this.options.rascunho}</div>`.repeat(...)
+```
+Template literal coercion turns `null` → `"null"` and `undefined` → `"undefined"`, rendering visible garbage in every draft page. The repeat guard (`|| 0`) prevents this only when `.rascunho()` was never called. If `.rascunho(1)` is called without setting HTML content, one draft page with literal `"undefined"` text is rendered.
+
+**Fix:**
+```typescript
+rascunhoHtml(rascunhoHtml) {
+    this._rascunhoHtml = rascunhoHtml ?? "";
+    return this;
+}
+```
+And in `AssessmentHtmlRenderer`, guard the template literal:
+```typescript
+const rascunhoContent = this.options.rascunho || "";
+const draftsHtml = `<div class="rascunho">${rascunhoContent}</div>`.repeat(this.options.quantidadeFolhasRascunho || 0);
 ```
 
 ---
 
 ## Info
 
-### IN-01: `LayoutAvaliacao.input` and `layoutOptions` are public with no visibility guard
+### IN-01: `LayoutAvaliacao` is not exported from `index.ts` — contradicts documented public surface
 
-**File:** `src/LayoutAvaliacao.ts:19,20`
-**Issue:** `input: AssessmentInput` and `layoutOptions: any` are declared as public class properties. While TypeScript `strict` is off and this is intentional for the project style, these fields hold the full assessment data and layout configuration. A consumer who receives a `LayoutAvaliacao` instance (which does not happen via the public API — only `build()` return is exported) could mutate these after construction. Low risk given the single-consumer architecture, but worth noting as a pattern that conflicts with the `Object.freeze()` applied to the `build()` return value.
+**File:** `src/index.ts:7-8`
+**Issue:** `CLAUDE.md` and `ARCHITECTURE.md` state: *"`index.ts` re-exports the public surface (`LayoutAvaliacaoBuilder`, `LayoutAvaliacao`)"*. The current `index.ts` exports only `LayoutAvaliacaoBuilder`, not `LayoutAvaliacao`. The class is only used internally by `LayoutAvaliacaoBuilder.build()`. If the omission is intentional (treating `LayoutAvaliacao` as an implementation detail), the architecture docs should be updated; if it should be public, the export is missing.
 
-**Fix:** Consider `private` or `readonly` modifiers if TypeScript version permits, or at minimum document the intended access pattern with a comment.
+**Fix:** Either add the export:
+```typescript
+export { LayoutAvaliacaoBuilder, LayoutAvaliacao } from './ ...';
+```
+Or update the architecture documentation to remove `LayoutAvaliacao` from the described public surface.
 
 ---
 
-### IN-02: Typo in method name `avalicaoHtml()` preserved
+### IN-02: Dead field `numeroFolhasRascunho` declared, initialized, and never used
+
+**File:** `src/LayoutAvaliacaoBuilder.ts:16,38`
+**Issue:** `numeroFolhasRascunho: any` is declared as a class property (line 16) and initialized to `null` in the constructor (line 38). It is never read anywhere — neither in `build()` nor in any method. The active field is `quantidadeFolhasRascunho` (line 27), set by the `rascunho()` method. `numeroFolhasRascunho` is a stale remnant that adds noise to the class shape.
+
+**Fix:** Remove lines 16 and 38 entirely.
+
+---
+
+### IN-03: Method name typo `avalicaoHtml()` — missing letter 'a'
 
 **File:** `src/LayoutAvaliacao.ts:27`
-**Issue:** Method is spelled `avalicaoHtml` (missing 'a' — should be `avaliacaoHtml`). This is a pre-existing defect not introduced in this phase, but it is referenced internally by `build()` and therefore not part of the public API contract. Worth tracking for a future cleanup phase.
+**Issue:** The method is spelled `avalicaoHtml` (should be `avaliacaoHtml`). Both the definition and the single call site in `LayoutAvaliacaoBuilder.ts:171` use the misspelling consistently, so there is no runtime error. Because the method is internal (not on the public surface), this is a low-priority cosmetic issue, but it makes the codebase harder to grep and is confusing for future contributors.
 
-**Fix:** Rename to `avaliacaoHtml()` and update the single call site in `LayoutAvaliacaoBuilder.ts:171`. This is a safe internal rename with no public API impact.
+**Fix:** Rename to `avaliacaoHtml()` and update `LayoutAvaliacaoBuilder.ts:171` accordingly.
 
 ---
 
-_Reviewed: 2026-06-01T00:00:00Z_
+### IN-04: `console.error` left in library code
+
+**File:** `src/LayoutAvaliacao.ts:53`
+**Issue:** `console.error("Error parsing question content", e)` is production code in a distributable library. It writes to the host application's console unconditionally whenever a question has malformed `visualizaQuestaoRaw` content. Library code should not produce console output without the host's knowledge or consent.
+
+**Fix:** Either remove the log entirely and let the silent fallback to `{}` handle it, or expose an optional error callback on the builder so the host can decide how to handle parse failures:
+```typescript
+// Silent fallback (simplest):
+} catch (_e) {
+    // visualizaQuestaoRaw was not valid JSON; parsedContent stays {}
+}
+```
+
+---
+
+### IN-05: `_mapToEntity` uses underscore-private convention but is a public TypeScript method
+
+**File:** `src/LayoutAvaliacao.ts:42`
+**Issue:** The method is named `_mapToEntity` using the JavaScript `_`-prefix convention to signal "private", but TypeScript does not enforce this — the method is accessible to any caller. Given `strict: false` and the project's lenient style, this is a low-priority pattern inconsistency. Since `LayoutAvaliacao` itself is not exported from `index.ts`, external callers cannot reach it anyway, but the inconsistency is worth noting if `LayoutAvaliacao` is ever added to the public surface.
+
+**Fix:** Add the `private` modifier: `private _mapToEntity(input: AssessmentInput)`.
+
+---
+
+_Reviewed: 2026-06-01T12:00:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
