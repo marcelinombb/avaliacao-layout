@@ -7,3 +7,4 @@ const createLayout = () => new LayoutAvaliacaoBuilder();
 export {
     createLayout, LayoutAvaliacaoBuilder, replacePlaceholders, latexParser, LayoutRenderer
 }
+export type { AssessmentInput, AssessmentLayoutInput, QuestionInput, AttachmentInput, ReferenceInput } from './types/AssessmentInput';

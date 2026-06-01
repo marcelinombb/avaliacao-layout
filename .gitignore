@@ -1,6 +1,6 @@
 node_modules
 .vscode/
 .cache/
-types
+/types
 .agent/
 .agents/
