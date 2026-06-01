@@ -48,9 +48,12 @@ export class LayoutAvaliacao {
         const questions = listaProvaQuestao.map(q => {
             let parsedContent: Record<string, any> = {};
             try {
-                parsedContent = JSON.parse(q.visualizaQuestaoRaw);
+                const parsed = JSON.parse(q.visualizaQuestaoRaw);
+                if (parsed !== null && typeof parsed === 'object') {
+                    parsedContent = parsed;
+                }
             } catch (e) {
-                console.error("Error parsing question content", e);
+                // visualizaQuestaoRaw was not valid JSON; parsedContent stays {}
             }
 
             const question = new Question({
