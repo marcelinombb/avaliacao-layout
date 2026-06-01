@@ -12,3 +12,4 @@ export {
     replacePlaceholders,
     shuffleAndMultiply
 }
+export type { AssessmentInput, AssessmentLayoutInput, QuestionInput, AttachmentInput, ReferenceInput } from './types/AssessmentInput';
