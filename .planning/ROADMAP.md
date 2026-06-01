@@ -85,5 +85,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Type Foundation | 2/2 | Complete    | 2026-06-01 |
-| 2. Adapter & Builder | 2/2 | Complete   | 2026-06-01 |
+| 2. Adapter & Builder | 3/3 | Complete   | 2026-06-01 |
 | 3. Documentation | 0/? | Not started | - |
