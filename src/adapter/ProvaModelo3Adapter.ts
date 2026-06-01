@@ -1,7 +1,8 @@
 import { AssessmentInput, QuestionInput, AttachmentInput, AssessmentLayoutInput } from '../types/AssessmentInput';
 
 export function fromProvaModelo3(provaModelo3): AssessmentInput {
-    const { prova, listaProvaQuestao, listaProvaAnexo } = provaModelo3;
+    const { prova, listaProvaQuestao } = provaModelo3;
+    const listaProvaAnexo = prova?.listaProvaAnexo;
 
     const questions: QuestionInput[] = (listaProvaQuestao || []).map(q => ({
         id: q.questao.codigo,
@@ -22,7 +23,7 @@ export function fromProvaModelo3(provaModelo3): AssessmentInput {
 
     const attachments: AttachmentInput[] = listaProvaAnexo || [];
 
-    const layout: AssessmentLayoutInput = prova?.layout || {};
+    const layout: AssessmentLayoutInput = { ...(prova?.layout || {}), quebraQuestao: prova?.quebraQuestao };
 
     return {
         id: prova?.id,
