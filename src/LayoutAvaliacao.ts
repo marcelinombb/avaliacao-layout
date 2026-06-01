@@ -60,7 +60,7 @@ export class LayoutAvaliacao {
                 customOrder: q.customOrder,
                 value: q.value,
                 type: q.type,
-                reference: q.reference,
+                reference: q.reference as any,
                 orderAlternative: q.orderAlternative,
                 visualizaQuestaoRaw: q.visualizaQuestaoRaw
             });
