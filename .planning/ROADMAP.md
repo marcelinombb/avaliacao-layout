@@ -14,7 +14,7 @@ This milestone refactors the library's public API surface: first establishing a 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Type Foundation** - Define `AssessmentInput` and typed domain entities, eliminating `any` on all public API surfaces (completed 2026-06-01)
-- [ ] **Phase 2: Adapter & Builder** - Implement `fromProvaModelo3()` adapter and clean up the builder API
+- [x] **Phase 2: Adapter & Builder** - Implement `fromProvaModelo3()` adapter and clean up the builder API (completed 2026-06-01)
 - [ ] **Phase 3: Documentation** - Write README contract docs and JSDoc for the builder
 
 ## Phase Details
@@ -61,7 +61,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Update LayoutAvaliacaoBuilder: build() signature, marcaDagua cleanup, pagina removal (BUILDER-01, BUILDER-02, INPUT-03)
+- [x] 02-02-PLAN.md — Update LayoutAvaliacaoBuilder: build() signature, marcaDagua cleanup, pagina removal (BUILDER-01, BUILDER-02, INPUT-03)
 
 ### Phase 3: Documentation
 
@@ -85,5 +85,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Type Foundation | 2/2 | Complete    | 2026-06-01 |
-| 2. Adapter & Builder | 1/2 | In Progress|  |
+| 2. Adapter & Builder | 2/2 | Complete   | 2026-06-01 |
 | 3. Documentation | 0/? | Not started | - |
