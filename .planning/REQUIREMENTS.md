@@ -50,13 +50,13 @@ Deferred to a future milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INPUT-01 | — | Pending |
-| INPUT-02 | — | Pending |
-| INPUT-03 | — | Pending |
-| TYPES-01 | — | Pending |
-| TYPES-02 | — | Pending |
-| BUILDER-01 | — | Pending |
-| BUILDER-02 | — | Pending |
-| DOCS-01 | — | Pending |
-| DOCS-02 | — | Pending |
-| DOCS-03 | — | Pending |
+| INPUT-01 | Phase 1 | Pending |
+| INPUT-02 | Phase 1 | Pending |
+| INPUT-03 | Phase 2 | Pending |
+| TYPES-01 | Phase 1 | Pending |
+| TYPES-02 | Phase 1 | Pending |
+| BUILDER-01 | Phase 2 | Pending |
+| BUILDER-02 | Phase 2 | Pending |
+| DOCS-01 | Phase 3 | Pending |
+| DOCS-02 | Phase 3 | Pending |
+| DOCS-03 | Phase 3 | Pending |
