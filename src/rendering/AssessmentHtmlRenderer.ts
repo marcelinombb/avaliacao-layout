@@ -13,7 +13,8 @@ export class AssessmentHtmlRenderer {
         const folhaDeRostoHtml = this.options.folhaDeRosto ? `<div id="folha-rosto">${this.options.folhaDeRosto}</div>` : "";
         const questionsHtml = this.renderQuestions();
         const attachmentsHtml = this.renderAttachments();
-        const draftsHtml = `<div class="rascunho">${this.options.rascunho}</div>`.repeat(this.options.quantidadeFolhasRascunho || 0);
+        const rascunhoContent = this.options.rascunho || "";
+        const draftsHtml = `<div class="rascunho">${rascunhoContent}</div>`.repeat(this.options.quantidadeFolhasRascunho || 0);
         return folhaDeRostoHtml + questionsHtml + attachmentsHtml + draftsHtml;
     }
 

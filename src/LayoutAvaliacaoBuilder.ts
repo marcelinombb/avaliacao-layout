@@ -94,7 +94,7 @@ export class LayoutAvaliacaoBuilder {
   }
 
   rascunhoHtml(rascunhoHtml) {
-    this._rascunhoHtml = rascunhoHtml;
+    this._rascunhoHtml = rascunhoHtml ?? "";
     return this;
   }
 
