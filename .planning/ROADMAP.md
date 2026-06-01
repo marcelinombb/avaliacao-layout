@@ -57,7 +57,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Create ProvaModelo3Adapter and update LayoutAvaliacao to accept AssessmentInput (INPUT-03)
+- [x] 02-01-PLAN.md — Create ProvaModelo3Adapter and update LayoutAvaliacao to accept AssessmentInput (INPUT-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -85,5 +85,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Type Foundation | 2/2 | Complete    | 2026-06-01 |
-| 2. Adapter & Builder | 0/2 | Not started | - |
+| 2. Adapter & Builder | 1/2 | In Progress|  |
 | 3. Documentation | 0/? | Not started | - |
