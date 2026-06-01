@@ -248,7 +248,7 @@
         .paginacao();
 
       if (addDraftWatermark) {
-        layoutBuilder.marcaDaquaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
+        layoutBuilder.marcaDaguaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
       }
 
       if (addInstitutionWatermark) {
@@ -259,7 +259,8 @@
         layoutBuilder.gabarito();
       }
 
-      let layoutResult = layoutBuilder.build(provaModelo3);
+      const assessmentInput = AvaliacaoLayout.fromProvaModelo3(provaModelo3);
+      let layoutResult = layoutBuilder.build(assessmentInput);
 
       const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
 
