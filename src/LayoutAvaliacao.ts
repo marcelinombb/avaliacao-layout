@@ -2,6 +2,7 @@ import { Assessment } from "./domain/Assessment";
 import { Question } from "./domain/Question";
 import { ReferenceService } from "./domain/ReferenceService";
 import { AssessmentHtmlRenderer } from "./rendering/AssessmentHtmlRenderer";
+import { AssessmentInput } from './types/AssessmentInput';
 
 /**
  * Retorna string vazia se o HTML contiver apenas parágrafos vazios (ex: <p ...><br></p>).
@@ -15,17 +16,17 @@ function sanitizeEmptyHtml(html: string): string {
 }
 
 export class LayoutAvaliacao {
-    provaModelo: any;
+    input: AssessmentInput;
     layoutOptions: any;
 
-    constructor(provaModelo: any, layoutOptions: any) {
-        this.provaModelo = provaModelo;
+    constructor(input: AssessmentInput, layoutOptions: any) {
+        this.input = input;
         this.layoutOptions = layoutOptions;
     }
 
     avalicaoHtml() {
         // 1. Map Raw Data to Entities
-        const assessment = this._mapToEntity(this.provaModelo);
+        const assessment = this._mapToEntity(this.input);
 
         // 2. Domain Logic: Process References
         ReferenceService.processReferences(assessment.questions);
@@ -38,29 +39,30 @@ export class LayoutAvaliacao {
         return renderer.render();
     }
 
-    _mapToEntity(rawData) {
-        const { prova, listaProvaQuestao, listaProvaAnexo } = rawData;
+    _mapToEntity(input: AssessmentInput) {
+        const { questions: rawQuestions, attachments: listaProvaAnexo, layout, id, title } = input;
+        const listaProvaQuestao = rawQuestions || [];
 
         const seenTitles = new Set<string>();
 
-        const questions = (listaProvaQuestao || []).map(q => {
+        const questions = listaProvaQuestao.map(q => {
             let parsedContent: Record<string, any> = {};
             try {
-                parsedContent = JSON.parse(q.questao.visualizaQuestao);
+                parsedContent = JSON.parse(q.visualizaQuestaoRaw);
             } catch (e) {
                 console.error("Error parsing question content", e);
             }
 
             const question = new Question({
-                id: q.questao.codigo,
-                order: q.ordem,
-                title: q.titulo,
-                customOrder: q.ordemPersonalizada,
-                value: q.valor,
-                type: q.questao.tipoQuestao,
-                reference: q.questao.referencia,
-                orderAlternative: q.ordemAlternativa,
-                visualizaQuestaoRaw: q.questao.visualizaQuestao
+                id: q.id,
+                order: q.order,
+                title: q.title,
+                customOrder: q.customOrder,
+                value: q.value,
+                type: q.type,
+                reference: q.reference,
+                orderAlternative: q.orderAlternative,
+                visualizaQuestaoRaw: q.visualizaQuestaoRaw
             });
 
             // Flatten parsed content into the entity for easier access in presenters
@@ -76,7 +78,7 @@ export class LayoutAvaliacao {
             // Map other fields used in rendering
             question.linhasBranco = q.linhasBranco;
             question.quebraPagina = q.quebraPagina;
-            question.visualizaResposta = q.questao.visualizaResposta;
+            question.visualizaResposta = q.visualizaResposta;
 
             // Map fields used by QuadroResposta
             question.tipoLinha = q.tipoLinha;
@@ -98,11 +100,11 @@ export class LayoutAvaliacao {
         });
 
         return new Assessment({
-            id: prova?.id,
-            title: prova?.descricao,
+            id: input.id,
+            title: input.title,
             questions: questions,
             attachments: listaProvaAnexo || [],
-            layout: prova?.layout || {}
+            layout: input.layout || {}
         });
     }
 }
