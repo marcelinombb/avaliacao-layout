@@ -1,4 +1,5 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao";
+import { AssessmentInput } from './types/AssessmentInput';
 
 const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,
@@ -12,7 +13,6 @@ export class LayoutAvaliacaoBuilder {
   footer: string;
   fontSize: number;
   _folhaDeRosto: any;
-  pagina: any;
   numeroFolhasRascunho: any;
   _marcaDaquaRascunho: any;
   _marcaDaguaInstituicao: any;
@@ -35,10 +35,6 @@ export class LayoutAvaliacaoBuilder {
       content: "",
       footer: "",
     };
-    this.pagina = {
-      header: "",
-      footer: "",
-    };
     this.numeroFolhasRascunho = null;
     this._rascunhoHtml = "";
     this._marcaDaquaRascunho = null;
@@ -51,8 +47,8 @@ export class LayoutAvaliacaoBuilder {
     this._tipoAlternativa = null;
   }
 
-  marcaDaguaRascunho(comMarcaDagua) {
-    this.comMarcaDaguaRascunho = comMarcaDagua;
+  habilitarMarcaDaguaRascunho(enabled: boolean) {
+    this.comMarcaDaguaRascunho = enabled;
     return this;
   }
 
@@ -71,7 +67,7 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  marcaDaquaRascunho(marcaDaguaUrl) {
+  marcaDaguaRascunho(marcaDaguaUrl: string) {
     this._marcaDaquaRascunho = marcaDaguaUrl;
     return this;
   }
@@ -159,14 +155,14 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
-  build(provaModelo) {
-    const layoutAvaliacao = new LayoutAvaliacao(provaModelo, {
+  build(input: AssessmentInput) {
+    const layoutAvaliacao = new LayoutAvaliacao(input, {
       fontSize: this.fontSize,
       folhaDeRosto: this._folhaDeRosto.content,
       rascunho: this._rascunhoHtml,
       quantidadeFolhasRascunho: this.quantidadeFolhasRascunho,
       quantidadeColunas: this.quantidadeColunas,
-      quebraQuestao: provaModelo.prova.quebraQuestao,
+      quebraQuestao: input.layout?.quebraQuestao,
       gabarito: this._gabarito,
       paginacaoAtiva: this.paginacaoAtiva,
     });
