@@ -29,7 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `domain/Assessment` and `domain/Question` entities expose no `any`-typed fields on paths accessed during rendering (textoBase, comando, alternativas, afirmacoes, etc.)
   4. `QuestionContent` interface covers all fields rendered by Handlebars templates: textoBase, comando, instrucao, fonte, alternativas, afirmacoes, associacoes, assercoes
   5. TypeScript compilation (`tsc --noEmit`) succeeds with no type errors introduced by the new interfaces
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Create AssessmentInput public type contract and wire into index.ts (INPUT-01, INPUT-02)
+- [ ] 01-02-PLAN.md — Narrow any fields in Question and Assessment domain entities (TYPES-01, TYPES-02)
 
 ### Phase 2: Adapter & Builder
 **Goal**: Consuming developers can pass a raw `provaModelo3` backend response through `fromProvaModelo3()` and receive a valid `AssessmentInput`; the builder API exposes no dead or duplicated methods
@@ -61,6 +65,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Type Foundation | 0/? | Not started | - |
+| 1. Type Foundation | 0/2 | Planned | - |
 | 2. Adapter & Builder | 0/? | Not started | - |
 | 3. Documentation | 0/? | Not started | - |
