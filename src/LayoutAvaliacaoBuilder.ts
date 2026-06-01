@@ -13,7 +13,6 @@ export class LayoutAvaliacaoBuilder {
   footer: string;
   fontSize: number;
   _folhaDeRosto: any;
-  numeroFolhasRascunho: any;
   _marcaDaquaRascunho: any;
   _marcaDaguaInstituicao: any;
   quantidadeColunas: number;
@@ -35,7 +34,6 @@ export class LayoutAvaliacaoBuilder {
       content: "",
       footer: "",
     };
-    this.numeroFolhasRascunho = null;
     this._rascunhoHtml = "";
     this._marcaDaquaRascunho = null;
     this._marcaDaguaInstituicao = null;
@@ -45,6 +43,8 @@ export class LayoutAvaliacaoBuilder {
     this._gabarito = false;
     this.tipoOrdenacaoAlternativa = TIPO_ORDENACAO.NAO_EMBARALHAR;
     this._tipoAlternativa = null;
+    this.comMarcaDaguaRascunho = false;
+    this.quantidadeFolhasRascunho = 0;
   }
 
   habilitarMarcaDaguaRascunho(enabled: boolean) {
