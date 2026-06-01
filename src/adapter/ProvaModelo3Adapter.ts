@@ -4,7 +4,9 @@ export function fromProvaModelo3(provaModelo3): AssessmentInput {
     const { prova, listaProvaQuestao } = provaModelo3;
     const listaProvaAnexo = prova?.listaProvaAnexo;
 
-    const questions: QuestionInput[] = (listaProvaQuestao || []).map(q => ({
+    const questions: QuestionInput[] = (listaProvaQuestao || [])
+        .filter(q => q.questao != null)
+        .map(q => ({
         id: q.questao.codigo,
         order: q.ordem,
         title: q.titulo,
