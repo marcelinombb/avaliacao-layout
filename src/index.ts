@@ -8,3 +8,4 @@ export {
     createLayout, LayoutAvaliacaoBuilder, replacePlaceholders, latexParser, LayoutRenderer
 }
 export type { AssessmentInput, AssessmentLayoutInput, QuestionInput, AttachmentInput, ReferenceInput } from './types/AssessmentInput';
+export { fromProvaModelo3 } from './adapter/ProvaModelo3Adapter';
