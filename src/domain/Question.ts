@@ -10,8 +10,33 @@ export interface Reference {
     autor: string;
     texto: string | null;
     fonte: ReferenceSource | null;
-    instituicao?: any;
-    totalRegistros?: any;
+    instituicao?: string | null;
+    totalRegistros?: number | null;
+}
+
+export interface AfirmacaoItem {
+    item: string;
+    descricao: string;
+}
+
+export interface AssociacaoItem {
+    item: string;
+    descricao: string;
+}
+
+export interface AssociacoesContent {
+    coluna1: AssociacaoItem[];
+    coluna2: AssociacaoItem[];
+}
+
+export interface AssercoesContent {
+    assercao1?: string;
+    assercao2?: string;
+}
+
+export interface TipoLinha {
+    codigo: number;
+    nome: string;
 }
 
 export interface QuestionContent {
@@ -21,10 +46,9 @@ export interface QuestionContent {
     comando?: string;
     justificarFalsas?: boolean;
     alternativas?: string[];
-    afirmacoes?: any[];
-    associacoes?: any;
-    assercoes?: any;
-    visualizaQuestaoParsed?: any; // Recursion or extra fields
+    afirmacoes?: AfirmacaoItem[];
+    associacoes?: AssociacoesContent | null;
+    assercoes?: AssercoesContent | null;
 }
 
 export interface QuestionConstructor {
@@ -36,9 +60,9 @@ export interface QuestionConstructor {
     content?: any;
     reference?: Reference | null;
     alternatives?: string[];
-    afirmacoes?: any[];
-    associacoes?: any;
-    assercoes?: any;
+    afirmacoes?: AfirmacaoItem[];
+    associacoes?: AssociacoesContent | null;
+    assercoes?: AssercoesContent | null;
     title?: string | null;
     visualizaQuestaoRaw?: string | null;
     orderAlternative?: number;
@@ -53,9 +77,9 @@ export class Question {
     content: any;
     reference: Reference | null;
     alternatives: string[];
-    afirmacoes: any[];
-    associacoes: any;
-    assercoes: any;
+    afimacoes: AfirmacaoItem[];
+    associacoes: AssociacoesContent | null;
+    assercoes: AssercoesContent | null;
     visualizaQuestaoRaw: string;
     orderAlternative: number;
 
@@ -67,7 +91,7 @@ export class Question {
     linhasBranco?: number;
     quebraPagina?: boolean;
     visualizaResposta?: string;
-    tipoLinha?: string | null;
+    tipoLinha?: TipoLinha | null;
     numeroLinhas?: number;
     title?: string | null;
 
@@ -96,7 +120,7 @@ export class Question {
         this.content = content;
         this.reference = reference || null;
         this.alternatives = alternatives || [];
-        this.afirmacoes = afirmacoes || [];
+        this.afimacoes = afirmacoes || [];
         this.associacoes = associacoes;
         this.assercoes = assercoes;
         this.visualizaQuestaoRaw = visualizaQuestaoRaw || '';

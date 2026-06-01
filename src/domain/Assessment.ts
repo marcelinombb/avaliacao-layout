@@ -4,9 +4,7 @@ export interface Attachment {
     ordem?: number;
     anexo?: {
         texto?: string;
-        [key: string]: any;
     };
-    [key: string]: any;
 }
 
 export interface AssessmentLayout {
@@ -23,23 +21,22 @@ export interface AssessmentLayout {
     orientacaoFolha?: string;
     rodapeRosto?: string | null;
     rascunho?: string;
-    instituicao?: any;
+    instituicao?: string | null;
     colunas?: number;
     marcaDagua?: string;
     fonte?: string;
     fonteTamanho?: number;
     origemQuestao?: boolean;
     ordemQuestaoPersonalizada?: boolean;
-    ativo?: any;
+    ativo?: boolean | null;
     tamanhosSuportados?: string;
-    rodapeUltimaPagina?: any;
-    espacamentoLinhas?: any;
-    mapa?: any;
-    identificado?: any;
-    totalRegistros?: any;
+    rodapeUltimaPagina?: string | null;
+    espacamentoLinhas?: string | null;
+    mapa?: unknown;
+    identificado?: unknown;
+    totalRegistros?: number | null;
     tipoAlternativa?: number;
     quebraQuestao?: boolean;
-    [key: string]: any;
 }
 
 export interface AssessmentConstructor {
