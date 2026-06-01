@@ -156,6 +156,10 @@ export class LayoutAvaliacaoBuilder {
   }
 
   build(input: AssessmentInput) {
+    // Sanitize values used inside CSS url() and string contexts to prevent CSS injection
+    const safeCssUrl = (u: string) => u.replace(/[")\\\n\r]/g, encodeURIComponent);
+    const safeCssString = (s: string) => s.replace(/["\\]/g, '\\$&');
+
     const layoutAvaliacao = new LayoutAvaliacao(input, {
       fontSize: this.fontSize,
       folhaDeRosto: this._folhaDeRosto.content,
@@ -172,13 +176,13 @@ export class LayoutAvaliacaoBuilder {
       cssVars: {
         "--layout-font-size": this.fontSize + "px",
         "--layout-watermark-rascunho": this._marcaDaquaRascunho
-          ? `url("${this._marcaDaquaRascunho}")`
+          ? `url("${safeCssUrl(this._marcaDaquaRascunho)}")`
           : "none",
         "--layout-watermark-instituicao": this._marcaDaguaInstituicao
-          ? `url("${this._marcaDaguaInstituicao}")`
+          ? `url("${safeCssUrl(this._marcaDaguaInstituicao)}")`
           : "none",
         "--layout-identificacao": this._identificacao
-          ? `"${this._identificacao}"`
+          ? `"${safeCssString(this._identificacao)}"`
           : "none",
       },
       folhaDeRosto: this._folhaDeRosto,
