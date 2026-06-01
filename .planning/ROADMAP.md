@@ -75,7 +75,12 @@ Plans:
   2. README contains a `fromProvaModelo3()` usage section explaining how existing consumers can migrate from the raw backend shape
   3. Every public builder method has a JSDoc comment stating what it does, what values are valid, and whether it is optional
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+**Wave 1** *(both plans run in parallel — different files)*
+
+- [ ] 03-01-PLAN.md — Create README.md with AssessmentInput contract, builder reference, and fromProvaModelo3 migration guide (DOCS-01, DOCS-02)
+- [ ] 03-02-PLAN.md — Add JSDoc to all public LayoutAvaliacaoBuilder methods (DOCS-03)
 
 ## Progress
 
@@ -86,4 +91,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Type Foundation | 2/2 | Complete    | 2026-06-01 |
 | 2. Adapter & Builder | 3/3 | Complete   | 2026-06-01 |
-| 3. Documentation | 0/? | Not started | - |
+| 3. Documentation | 0/2 | Not started | - |
