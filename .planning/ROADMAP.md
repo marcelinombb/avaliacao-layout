@@ -54,10 +54,13 @@ Plans:
   4. The dead `pagina` field is removed from `LayoutAvaliacaoBuilder` — it no longer appears in the constructor or type signature
 
 **Plans**: 2 plans
-
 Plans:
+**Wave 1**
 
 - [ ] 02-01-PLAN.md — Create ProvaModelo3Adapter and update LayoutAvaliacao to accept AssessmentInput (INPUT-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 02-02-PLAN.md — Update LayoutAvaliacaoBuilder: build() signature, marcaDagua cleanup, pagina removal (BUILDER-01, BUILDER-02, INPUT-03)
 
 ### Phase 3: Documentation
