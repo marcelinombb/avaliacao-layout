@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Type Foundation** - Define `AssessmentInput` and typed domain entities, eliminating `any` on all public API surfaces (completed 2026-06-01)
 - [x] **Phase 2: Adapter & Builder** - Implement `fromProvaModelo3()` adapter and clean up the builder API (completed 2026-06-01)
-- [ ] **Phase 3: Documentation** - Write README contract docs and JSDoc for the builder
+- [x] **Phase 3: Documentation** - Write README contract docs and JSDoc for the builder (completed 2026-06-02)
 
 ## Phase Details
 
@@ -79,8 +79,8 @@ Plans:
 
 **Wave 1** *(both plans run in parallel — different files)*
 
-- [ ] 03-01-PLAN.md — Create README.md with AssessmentInput contract, builder reference, and fromProvaModelo3 migration guide (DOCS-01, DOCS-02)
-- [ ] 03-02-PLAN.md — Add JSDoc to all public LayoutAvaliacaoBuilder methods (DOCS-03)
+- [x] 03-01-PLAN.md — Create README.md with AssessmentInput contract, builder reference, and fromProvaModelo3 migration guide (DOCS-01, DOCS-02)
+- [x] 03-02-PLAN.md — Add JSDoc to all public LayoutAvaliacaoBuilder methods (DOCS-03)
 
 ## Progress
 
@@ -91,4 +91,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Type Foundation | 2/2 | Complete    | 2026-06-01 |
 | 2. Adapter & Builder | 3/3 | Complete   | 2026-06-01 |
-| 3. Documentation | 0/2 | Not started | - |
+| 3. Documentation | 2/2 | Complete   | 2026-06-02 |
