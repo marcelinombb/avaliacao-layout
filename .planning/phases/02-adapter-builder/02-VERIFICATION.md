@@ -1,9 +1,10 @@
 ---
 phase: 02-adapter-builder
-verified: 2026-06-01T00:00:00Z
-status: gaps_found
-score: 5/7 must-haves verified
+verified: 2026-06-02T00:00:00Z
+status: passed
+score: 7/7 must-haves verified
 overrides_applied: 0
+gap_closure_note: "Gaps from initial verification (2026-06-01) were resolved by plan 02-03 (commits c9a8b99 and 6898702): adapter listaProvaAnexo path corrected, quebraQuestao mapped, index.html wired to fromProvaModelo3, marcaDaquaRascunho typo fixed."
 gaps:
   - truth: "Calling fromProvaModelo3(provaModelo3) in the browser dev harness produces an AssessmentInput that renders identically to the previous raw-input path (pixel-identical HTML output)"
     status: failed
