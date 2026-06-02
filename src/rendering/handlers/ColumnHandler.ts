@@ -20,8 +20,13 @@ class ColumnHandler extends Handler {
                 page-break-before: auto !important;
                 break-inside: auto !important;
             }
-            .pagedjs_column img, .pagedjs_column figure, .pagedjs_column table {
+            .pagedjs_column img, .pagedjs_column figure {
                 max-width: fit-content !important;
+                height: auto !important;
+            }
+            .pagedjs_column table {
+                max-width: 100% !important;
+                width: 100% !important;
                 height: auto !important;
             }
             .pagedjs_column_1 {
