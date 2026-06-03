@@ -9,7 +9,7 @@ A TypeScript library that converts a JSON assessment model into a paginated, PDF
 
 ### Constraints
 
-- **Compatibility**: `fromProvaModelo3()` must accept the exact current `provaModelo3` shape without changes — the backend does not need to change
+- **Compatibility**: `fromProvaModelo()` must accept the exact current `provaModelo3` shape without changes — the backend does not need to change
 - **No breaking changes to rendering output**: the HTML output for the same logical question must remain pixel-identical after the refactor
 - **No test framework**: validation is manual via the browser dev harness (`npm run dev`)
 - **Bundle targets**: ESM + CJS + UMD must all continue to be built and exported

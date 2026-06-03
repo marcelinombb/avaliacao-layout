@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A TypeScript library that converts a typed `AssessmentInput` into a paginated, PDF-ready HTML document. It renders assessment questions (multiple choice, open-ended, assertions, associations) using Handlebars templates and KaTeX for math, paginated in the browser via Paged.js. The public API accepts a clean `AssessmentInput` type — no backend DB shape leakage — with a `fromProvaModelo3()` adapter for existing consumers migrating from the raw backend shape.
+A TypeScript library that converts a typed `AssessmentInput` into a paginated, PDF-ready HTML document. It renders assessment questions (multiple choice, open-ended, assertions, associations) using Handlebars templates and KaTeX for math, paginated in the browser via Paged.js. The public API accepts a clean `AssessmentInput` type — no backend DB shape leakage — with a `fromProvaModelo()` adapter for existing consumers migrating from the raw backend shape.
 
 ## Core Value
 
@@ -23,7 +23,7 @@ Given any well-formed assessment input, produce a pixel-perfect, print-ready HTM
 - ✓ Fluent builder API (`LayoutAvaliacaoBuilder`) — existing
 - ✓ Distributed as ESM + CJS + UMD bundles — existing
 - ✓ Clean `AssessmentInput` type contract — no `any` on public API surfaces — v1.0
-- ✓ `fromProvaModelo3()` adapter — maps current backend shape to typed `AssessmentInput` — v1.0
+- ✓ `fromProvaModelo()` adapter — maps current backend shape to typed `AssessmentInput` — v1.0
 - ✓ Strict TypeScript types on domain entities — `Assessment`, `Question`, `QuestionContent` — v1.0
 - ✓ Builder API cleanup — `marcaDagua` typo resolved, dead `pagina` field removed — v1.0
 - ✓ README documents full input contract, builder API, and adapter migration guide — v1.0
@@ -48,7 +48,7 @@ Given any well-formed assessment input, produce a pixel-perfect, print-ready HTM
 
 The library now has a clean two-path input model:
 1. **New path:** `createLayout().build(assessmentInput)` — uses the typed `AssessmentInput` contract
-2. **Migration path:** `createLayout().build(fromProvaModelo3(raw))` — adapter translates the legacy backend shape
+2. **Migration path:** `createLayout().build(fromProvaModelo(raw))` — adapter translates the legacy backend shape
 
 Tech stack: TypeScript 5.9 (strict OFF), Handlebars templates, KaTeX, Paged.js, Rollup bundles (ESM + CJS + UMD).
 
@@ -59,7 +59,7 @@ Key constraints still in force:
 
 ## Constraints
 
-- **Compatibility**: `fromProvaModelo3()` must accept the exact current `provaModelo3` shape without changes — the backend does not need to change
+- **Compatibility**: `fromProvaModelo()` must accept the exact current `provaModelo3` shape without changes — the backend does not need to change
 - **No breaking changes to rendering output**: the HTML output for the same logical question must remain pixel-identical after any refactor
 - **No test framework**: validation is manual via the browser dev harness (`npm run dev`)
 - **Bundle targets**: ESM + CJS + UMD must all continue to be built and exported
@@ -69,7 +69,7 @@ Key constraints still in force:
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Keep `visualizaQuestao` as JSON string | User explicitly chose not to change this structure | The lib continues to `JSON.parse` it internally in `_mapToEntity` |
-| New input + adapter pattern | Enables gradual migration; backend doesn't need to change immediately | `fromProvaModelo3()` exported as named function from the package — v1.0 ✓ |
+| New input + adapter pattern | Enables gradual migration; backend doesn't need to change immediately | `fromProvaModelo()` exported as named function from the package — v1.0 ✓ |
 | TypeScript types without strict mode migration | Scope constraint — only public API surfaces need typed interfaces | Explicit interfaces added; `strict`/`noImplicitAny` remain OFF globally — v1.0 ✓ |
 | Keep `_marcaDaquaRascunho` private field (D-09) | Internal implementation detail; only the public method spelling was corrected | Private field `_marcaDaquaRascunho` retained; public method is `marcaDaguaRascunho` — v1.0 ✓ |
 | `handlers: []` always empty in build() output | Host app wires Paged.js handlers externally by design | Documented in README; clarification/refactor deferred to v2.0 |

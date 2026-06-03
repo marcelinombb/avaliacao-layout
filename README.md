@@ -12,6 +12,16 @@ npm install avaliacao-layout
 import { createLayout, AssessmentInput } from 'avaliacao-layout';
 ```
 
+### KaTeX CSS
+
+The library bundles the KaTeX JS engine, but the CSS and fonts must be loaded separately by the consumer. Add this `<link>` tag to your HTML before rendering:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
+```
+
+The fonts are served alongside the CSS by the CDN — no additional setup is needed. If you prefer to self-host, any KaTeX-compatible CSS source works.
+
 ## Quick Start
 
 The minimal path from input data to rendered HTML:
@@ -221,14 +231,14 @@ const result = createLayout().build(provaModelo3);
 **After (using the adapter):**
 
 ```ts
-import { createLayout, fromProvaModelo3 } from 'avaliacao-layout';
+import { createLayout, fromProvaModelo } from 'avaliacao-layout';
 
 // Same provaModelo3 raw response — no backend changes required
-const input = fromProvaModelo3(provaModelo3);
+const input = fromProvaModelo(provaModelo3);
 const result = createLayout().build(input);
 ```
 
-`fromProvaModelo3` maps the raw backend shape to the `AssessmentInput` contract:
+`fromProvaModelo` maps the raw backend shape to the `AssessmentInput` contract:
 
 | Source field | Maps to |
 |-------------|---------|

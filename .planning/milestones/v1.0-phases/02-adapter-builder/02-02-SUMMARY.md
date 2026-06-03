@@ -47,7 +47,7 @@ Task 2 is a `checkpoint:human-verify` task requiring manual browser verification
 3. Open DevTools console — verify no errors on page load
 4. Confirm the assessment renders visually (questions appear, pagination works, no blank page)
 5. Compare with the previous rendering (pixel-identical output expected per Phase 2 success criterion 2)
-6. Optionally: in DevTools console, run `fromProvaModelo3(provaModelo3)` and inspect that the returned object has questions[], attachments[], layout, id, and title fields
+6. Optionally: in DevTools console, run `fromProvaModelo(provaModelo3)` and inspect that the returned object has questions[], attachments[], layout, id, and title fields
 
 **Resume signal:** Type "approved" if rendering is pixel-identical to the previous output, or describe any visual differences.
 

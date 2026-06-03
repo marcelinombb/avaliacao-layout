@@ -1,6 +1,6 @@
 import { AssessmentInput, QuestionInput, AttachmentInput, AssessmentLayoutInput } from '../types/AssessmentInput';
 
-export function fromProvaModelo3(provaModelo3): AssessmentInput {
+export function fromProvaModelo(provaModelo3): AssessmentInput {
     const { prova, listaProvaQuestao } = provaModelo3;
     const listaProvaAnexo = prova?.listaProvaAnexo;
 

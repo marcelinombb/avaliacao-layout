@@ -30,7 +30,7 @@ import { AssessmentInput, QuestionInput, AttachmentInput, AssessmentLayoutInput 
 
 **Core transform pattern** — derived from `src/LayoutAvaliacao.ts` lines 41–107:
 ```typescript
-export function fromProvaModelo3(provaModelo3): AssessmentInput {
+export function fromProvaModelo(provaModelo3): AssessmentInput {
     const { prova, listaProvaQuestao, listaProvaAnexo } = provaModelo3;
 
     const questions: QuestionInput[] = (listaProvaQuestao || []).map(q => ({
@@ -300,7 +300,7 @@ return new Assessment({
 
 **Analog:** self — read in full above (`src/index.ts` lines 1–10)
 
-**Change: add `fromProvaModelo3` named export**
+**Change: add `fromProvaModelo` named export**
 
 Current exports pattern (lines 7–10):
 ```typescript
@@ -312,19 +312,19 @@ export type { AssessmentInput, AssessmentLayoutInput, QuestionInput, AttachmentI
 
 Add import at top of file:
 ```typescript
-import { fromProvaModelo3 } from './adapter/ProvaModelo3Adapter';
+import { fromProvaModelo } from './adapter/ProvaModelo3Adapter';
 ```
 
 Add to the value exports block:
 ```typescript
 export {
-    createLayout, LayoutAvaliacaoBuilder, replacePlaceholders, latexParser, LayoutRenderer, fromProvaModelo3
+    createLayout, LayoutAvaliacaoBuilder, replacePlaceholders, latexParser, LayoutRenderer, fromProvaModelo
 }
 ```
 
 Alternatively (per D-04 decision), use direct re-export:
 ```typescript
-export { fromProvaModelo3 } from './adapter/ProvaModelo3Adapter';
+export { fromProvaModelo } from './adapter/ProvaModelo3Adapter';
 ```
 
 The re-export form (`export { X } from './...'`) matches the type-export pattern already in the file (line 10) and avoids an extra import statement. Prefer this form.
@@ -346,7 +346,7 @@ Every setter returns `this` for chaining.
 
 ### Optional chaining for nullable nested fields
 **Source:** `src/LayoutAvaliacao.ts` lines 100–106
-**Apply to:** `fromProvaModelo3()` adapter and updated `_mapToEntity()`
+**Apply to:** `fromProvaModelo()` adapter and updated `_mapToEntity()`
 ```typescript
 id: prova?.id,
 title: prova?.descricao,
@@ -357,7 +357,7 @@ Use `?.` for fields that may be absent; use `|| []` / `|| {}` for array/object d
 ### Named export, no default export
 **Source:** `src/index.ts` lines 7–10, `src/LayoutAvaliacao.ts` line 17, `src/LayoutAvaliacaoBuilder.ts` line 10
 **Apply to:** `src/adapter/ProvaModelo3Adapter.ts`
-All modules use named exports only — no `export default`. The adapter must follow this: `export function fromProvaModelo3(...)`.
+All modules use named exports only — no `export default`. The adapter must follow this: `export function fromProvaModelo(...)`.
 
 ### Relative import paths
 **Source:** `src/LayoutAvaliacao.ts` lines 1–4, `src/LayoutAvaliacaoBuilder.ts` line 1

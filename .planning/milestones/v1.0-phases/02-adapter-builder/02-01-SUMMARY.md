@@ -5,7 +5,7 @@ subsystem: "adapter"
 tags: ["adapter", "type-mapping", "refactor", "AssessmentInput"]
 dependency_graph:
   requires: []
-  provides: ["fromProvaModelo3", "LayoutAvaliacao.input:AssessmentInput", "LayoutAvaliacao._mapToEntity(AssessmentInput)"]
+  provides: ["fromProvaModelo", "LayoutAvaliacao.input:AssessmentInput", "LayoutAvaliacao._mapToEntity(AssessmentInput)"]
   affects: ["src/index.ts", "src/LayoutAvaliacao.ts"]
 tech_stack:
   added: []
@@ -17,7 +17,7 @@ key_files:
     - src/LayoutAvaliacao.ts
     - src/index.ts
 decisions:
-  - "Used direct re-export form (export { fromProvaModelo3 } from './adapter/...') per D-04 to avoid extra import statement in index.ts"
+  - "Used direct re-export form (export { fromProvaModelo } from './adapter/...') per D-04 to avoid extra import statement in index.ts"
   - "Adapter passes visualizaQuestaoRaw through as-is (no JSON.parse); JSON.parse responsibility stays in _mapToEntity()"
   - "_mapToEntity destructures input.layout directly into layout var (unused locally); Assessment() receives input.layout"
 metrics:
@@ -29,7 +29,7 @@ metrics:
 
 # Phase 02 Plan 01: ProvaModelo3Adapter and LayoutAvaliacao Update Summary
 
-**One-liner:** Pure-transform adapter `fromProvaModelo3()` extracts typed `AssessmentInput` from raw backend shape; `LayoutAvaliacao` updated to consume `AssessmentInput` with `QuestionInput` field names throughout.
+**One-liner:** Pure-transform adapter `fromProvaModelo()` extracts typed `AssessmentInput` from raw backend shape; `LayoutAvaliacao` updated to consume `AssessmentInput` with `QuestionInput` field names throughout.
 
 ## Tasks Completed
 
@@ -42,7 +42,7 @@ metrics:
 
 ### src/adapter/ProvaModelo3Adapter.ts (new)
 
-A pure-transform adapter function `fromProvaModelo3(provaModelo3): AssessmentInput` that maps raw backend fields to the typed `AssessmentInput` interface:
+A pure-transform adapter function `fromProvaModelo(provaModelo3): AssessmentInput` that maps raw backend fields to the typed `AssessmentInput` interface:
 
 - Destructures `prova`, `listaProvaQuestao`, `listaProvaAnexo` from the raw input
 - Maps each `listaProvaQuestao` entry to a `QuestionInput` object using raw backend field paths (`q.questao.codigo`, `q.ordem`, etc.)
@@ -59,14 +59,14 @@ Four changes applied:
 
 ### src/index.ts (modified)
 
-Added direct re-export: `export { fromProvaModelo3 } from './adapter/ProvaModelo3Adapter';`
+Added direct re-export: `export { fromProvaModelo } from './adapter/ProvaModelo3Adapter';`
 
 ## Verification
 
 - `npx tsc --noEmit` exits with code 0 — no type errors introduced
 - No `q.questao.*` reads remain in `LayoutAvaliacao.ts`
 - No `JSON.parse` in adapter file
-- `fromProvaModelo3` exported from package entry point
+- `fromProvaModelo` exported from package entry point
 
 ## Deviations from Plan
 
@@ -84,7 +84,7 @@ None — this plan introduces no new network endpoints, auth paths, file access 
 
 - [x] src/adapter/ProvaModelo3Adapter.ts exists
 - [x] src/LayoutAvaliacao.ts updated
-- [x] src/index.ts has fromProvaModelo3 re-export
+- [x] src/index.ts has fromProvaModelo re-export
 - [x] Commit d07b7c2 exists
 - [x] Commit 5ef9228 exists
 - [x] tsc --noEmit exits 0

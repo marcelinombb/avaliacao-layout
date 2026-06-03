@@ -14,7 +14,7 @@
 | Option | Description | Selected |
 |--------|-------------|----------|
 | `src/adapter/ProvaModelo3Adapter.ts` | New `src/adapter/` directory, mirrors the `src/domain/` and `src/types/` pattern | ✓ |
-| `src/fromProvaModelo3.ts` | Flat at `src/` root, no new directory | |
+| `src/fromProvaModelo.ts` | Flat at `src/` root, no new directory | |
 | `src/types/AssessmentInput.ts` | Co-located with the type it produces | |
 
 **User's choice:** `src/adapter/ProvaModelo3Adapter.ts`

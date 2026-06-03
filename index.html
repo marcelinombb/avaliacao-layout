@@ -259,7 +259,7 @@
         layoutBuilder.gabarito();
       }
 
-      const assessmentInput = AvaliacaoLayout.fromProvaModelo3(provaModelo3);
+      const assessmentInput = AvaliacaoLayout.fromProvaModelo(provaModelo3);
       let layoutResult = layoutBuilder.build(assessmentInput);
 
       const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);

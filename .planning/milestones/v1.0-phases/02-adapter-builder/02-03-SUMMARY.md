@@ -6,14 +6,14 @@ tags: [typescript, adapter, data-mapping]
 
 requires:
   - phase: 02-01
-    provides: ProvaModelo3Adapter.ts with initial fromProvaModelo3 implementation
+    provides: ProvaModelo3Adapter.ts with initial fromProvaModelo implementation
   - phase: 02-02
     provides: LayoutAvaliacaoBuilder with corrected build(AssessmentInput) signature
 
 provides:
   - ProvaModelo3Adapter.ts with correct listaProvaAnexo source path (prova?.listaProvaAnexo)
   - ProvaModelo3Adapter.ts with quebraQuestao correctly spread into layout object
-  - index.html dev harness wired through fromProvaModelo3 adapter end-to-end
+  - index.html dev harness wired through fromProvaModelo adapter end-to-end
   - Correct marcaDaguaRascunho method call in harness (deleted method removed)
 
 affects: []
@@ -31,7 +31,7 @@ key-files:
 key-decisions:
   - "Read listaProvaAnexo from prova?.listaProvaAnexo, not from provaModelo3 root — fixture places it nested under prova"
   - "Spread quebraQuestao: prova?.quebraQuestao into layout object — fixture places it at prova.quebraQuestao, not inside prova.layout"
-  - "Harness must call fromProvaModelo3() before build() to exercise the adapter end-to-end"
+  - "Harness must call fromProvaModelo() before build() to exercise the adapter end-to-end"
 
 patterns-established: []
 
@@ -44,7 +44,7 @@ completed: 2026-06-01
 
 # Phase 02-03: Adapter Data-Path Defects Summary
 
-**ProvaModelo3Adapter corrected to read listaProvaAnexo and quebraQuestao from their actual fixture locations; dev harness wired through fromProvaModelo3 adapter end-to-end**
+**ProvaModelo3Adapter corrected to read listaProvaAnexo and quebraQuestao from their actual fixture locations; dev harness wired through fromProvaModelo adapter end-to-end**
 
 ## Performance
 
@@ -57,7 +57,7 @@ completed: 2026-06-01
 
 - Fixed silent data disconnect: `listaProvaAnexo` was always `undefined` because it was destructured from root instead of `prova?.listaProvaAnexo`
 - Fixed silent feature disable: `quebraQuestao` was never included in the layout object because it lives at `prova.quebraQuestao`, not inside `prova.layout`
-- Wired dev harness to call `AvaliacaoLayout.fromProvaModelo3(provaModelo3)` before `build()`, so the adapter is exercised on every dev render
+- Wired dev harness to call `AvaliacaoLayout.fromProvaModelo(provaModelo3)` before `build()`, so the adapter is exercised on every dev render
 - Removed call to deleted method `marcaDaquaRascunho` → replaced with correct `marcaDaguaRascunho`
 - Browser verification: rendering pixel-identical to Phase 1 output, no console errors, watermark checkbox no longer crashes
 
@@ -70,7 +70,7 @@ completed: 2026-06-01
 ## Files Created/Modified
 
 - `src/adapter/ProvaModelo3Adapter.ts` — listaProvaAnexo sourced from `prova?.listaProvaAnexo`; quebraQuestao spread into layout object from `prova?.quebraQuestao`
-- `index.html` — harness wired through `fromProvaModelo3`; `marcaDaguaRascunho` spelling corrected
+- `index.html` — harness wired through `fromProvaModelo`; `marcaDaguaRascunho` spelling corrected
 
 ## Decisions Made
 
@@ -91,7 +91,7 @@ All acceptance criteria met:
 - ✓ `grep "quebraQuestao.*prova?.quebraQuestao"` — match found (line 26)
 - ✓ Old `listaProvaAnexo } = provaModelo3` destructure removed (0 matches)
 - ✓ `tsc --noEmit` exits 0
-- ✓ `grep "fromProvaModelo3(provaModelo3)" index.html` — match found (line 262)
+- ✓ `grep "fromProvaModelo(provaModelo3)" index.html` — match found (line 262)
 - ✓ `grep -c "build(provaModelo3)"` — 0 matches
 - ✓ `grep -c "marcaDaquaRascunho"` — 0 matches
 - ✓ `grep "marcaDaguaRascunho" index.html` — match found (line 251)

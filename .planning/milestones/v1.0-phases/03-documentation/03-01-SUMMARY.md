@@ -6,12 +6,12 @@ tags: [typescript, handlebars, pagedjs, katex, readme, api-docs]
 
 requires:
   - phase: 02-adapter-builder
-    provides: AssessmentInput interface, fromProvaModelo3 adapter, LayoutAvaliacaoBuilder.build() return shape
+    provides: AssessmentInput interface, fromProvaModelo adapter, LayoutAvaliacaoBuilder.build() return shape
 
 provides:
   - README.md with full AssessmentInput contract documentation
   - Quick Start example with createLayout().build() pattern
-  - fromProvaModelo3 migration guide with before/after examples
+  - fromProvaModelo migration guide with before/after examples
   - Builder methods reference table (16 methods)
   - build() return value documentation (9 keys)
 
@@ -43,7 +43,7 @@ completed: 2026-06-02
 
 # Phase 03 Plan 01: Documentation Summary
 
-**README with AssessmentInput contract (5 interfaces), 16 builder methods, build() return shape, and fromProvaModelo3 migration guide from raw provaModelo3 backend shape**
+**README with AssessmentInput contract (5 interfaces), 16 builder methods, build() return shape, and fromProvaModelo migration guide from raw provaModelo3 backend shape**
 
 ## Performance
 
@@ -58,17 +58,17 @@ completed: 2026-06-02
 - Created README.md from scratch documenting the full AssessmentInput contract (AssessmentInput, QuestionInput, AttachmentInput, AssessmentLayoutInput, ReferenceInput)
 - Documented all 16 LayoutAvaliacaoBuilder methods with parameter names, types, return type, and description
 - Documented all 9 keys returned by build() including cssVars sub-keys
-- Added fromProvaModelo3 migration section with before/after code examples and field mapping table
+- Added fromProvaModelo migration section with before/after code examples and field mapping table
 
 ## Task Commits
 
-1. **Task 1: Create README.md with AssessmentInput contract and fromProvaModelo3 migration** - `293c064` (docs)
+1. **Task 1: Create README.md with AssessmentInput contract and fromProvaModelo migration** - `293c064` (docs)
 
 **Plan metadata:** (pending final metadata commit)
 
 ## Files Created/Modified
 
-- `README.md` - Library onboarding documentation covering installation, Quick Start, AssessmentInput reference, builder methods, build() return value, fromProvaModelo3 migration, and Paged.js rendering
+- `README.md` - Library onboarding documentation covering installation, Quick Start, AssessmentInput reference, builder methods, build() return value, fromProvaModelo migration, and Paged.js rendering
 
 ## Decisions Made
 

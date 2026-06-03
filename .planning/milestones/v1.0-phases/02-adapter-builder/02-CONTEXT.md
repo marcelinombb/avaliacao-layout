@@ -6,23 +6,23 @@
 <domain>
 ## Phase Boundary
 
-Implement `fromProvaModelo3()` as a named export that maps the raw `provaModelo3` backend shape → `AssessmentInput`, update `build()` and `LayoutAvaliacao._mapToEntity()` to accept `AssessmentInput` as the canonical input type, and clean up the builder API (resolve the `marcaDagua` duplication, remove the dead `pagina` field).
+Implement `fromProvaModelo()` as a named export that maps the raw `provaModelo3` backend shape → `AssessmentInput`, update `build()` and `LayoutAvaliacao._mapToEntity()` to accept `AssessmentInput` as the canonical input type, and clean up the builder API (resolve the `marcaDagua` duplication, remove the dead `pagina` field).
 
 </domain>
 
 <decisions>
 ## Implementation Decisions
 
-### Adapter: fromProvaModelo3()
+### Adapter: fromProvaModelo()
 - **D-01:** New file at `src/adapter/ProvaModelo3Adapter.ts` in a new `src/adapter/` directory — mirrors the `src/domain/` and `src/types/` pattern
-- **D-02:** `fromProvaModelo3()` is the only export from the adapter file — no `ProvaModelo3` type exported; the raw backend shape is an internal implementation detail
+- **D-02:** `fromProvaModelo()` is the only export from the adapter file — no `ProvaModelo3` type exported; the raw backend shape is an internal implementation detail
 - **D-03:** The adapter maps raw → `AssessmentInput` fields (top-level mapping only). `visualizaQuestao` passes through as a JSON string — `_mapToEntity()` continues to `JSON.parse` it internally. No change to parsing location.
-- **D-04:** Exported as a named function from `src/index.ts`: `export { fromProvaModelo3 } from './adapter/ProvaModelo3Adapter'`
+- **D-04:** Exported as a named function from `src/index.ts`: `export { fromProvaModelo } from './adapter/ProvaModelo3Adapter'`
 
 ### Builder: build() signature
 - **D-05:** `build()` is updated to accept `AssessmentInput` — `build(input: AssessmentInput)` is the new signature
 - **D-06:** `LayoutAvaliacao._mapToEntity()` is updated to accept `AssessmentInput` directly — reads `input.layout`, `input.questions[]`, `input.attachments[]` instead of `provaModelo.prova`, `.listaProvaQuestao`, `.listaProvaAnexo`. The `visualizaQuestao` JSON string parsing stays inside `_mapToEntity()` unchanged.
-- **D-07:** Usage pattern: `builder.build(fromProvaModelo3(raw))` — adapter produces the input, builder consumes it
+- **D-07:** Usage pattern: `builder.build(fromProvaModelo(raw))` — adapter produces the input, builder consumes it
 
 ### Builder: marcaDagua resolution
 - **D-08:** Two methods are kept, both with correct spelling:
@@ -46,8 +46,8 @@ Implement `fromProvaModelo3()` as a named export that maps the raw `provaModelo3
 **Downstream agents MUST read these before planning or implementing.**
 
 ### Type Contract (Phase 1 output)
-- `src/types/AssessmentInput.ts` — The `AssessmentInput` interface that `fromProvaModelo3()` must return and `build()` must accept. All 5 interfaces defined here: `AssessmentInput`, `AssessmentLayoutInput`, `QuestionInput`, `AttachmentInput`, `ReferenceInput`
-- `src/index.ts` — Current public exports; new exports (`fromProvaModelo3`) must be added here
+- `src/types/AssessmentInput.ts` — The `AssessmentInput` interface that `fromProvaModelo()` must return and `build()` must accept. All 5 interfaces defined here: `AssessmentInput`, `AssessmentLayoutInput`, `QuestionInput`, `AttachmentInput`, `ReferenceInput`
+- `src/index.ts` — Current public exports; new exports (`fromProvaModelo`) must be added here
 
 ### Builder (target of changes)
 - `src/LayoutAvaliacaoBuilder.ts` — Full builder source; contains both `marcaDagua` methods, the dead `pagina` field, and the `build()` method to retype
@@ -58,7 +58,7 @@ Implement `fromProvaModelo3()` as a named export that maps the raw `provaModelo3
 - `.planning/ROADMAP.md` §Phase 2 — Success criteria for this phase
 
 ### Fixture (validation reference)
-- `public/prova-modelo.js` — The `provaModelo3` fixture used in the browser dev harness; `fromProvaModelo3(provaModelo3)` must produce output that renders identically to the previous raw-input path
+- `public/prova-modelo.js` — The `provaModelo3` fixture used in the browser dev harness; `fromProvaModelo(provaModelo3)` must produce output that renders identically to the previous raw-input path
 
 </canonical_refs>
 
@@ -66,12 +66,12 @@ Implement `fromProvaModelo3()` as a named export that maps the raw `provaModelo3
 ## Existing Code Insights
 
 ### Reusable Assets
-- `src/types/AssessmentInput.ts` — Pure interfaces file (no runtime code); `fromProvaModelo3()` returns these types directly
+- `src/types/AssessmentInput.ts` — Pure interfaces file (no runtime code); `fromProvaModelo()` returns these types directly
 - `src/domain/Question.ts` — Exports `AfirmacaoItem`, `AssociacaoItem`, `AssociacoesContent`, `AssercoesContent`, `TipoLinha` — the adapter may reference these for field shaping if needed
 
 ### Established Patterns
 - **Pure-types file pattern**: `src/types/AssessmentInput.ts` has no imports and no runtime code — adapter file should have runtime code and import `AssessmentInput` types
-- **Named re-export via index**: `src/index.ts` uses `export type { AssessmentInput, ... }` for types and `export { LayoutAvaliacaoBuilder, LayoutAvaliacao }` for classes — `fromProvaModelo3` is a function export, same pattern as the class exports
+- **Named re-export via index**: `src/index.ts` uses `export type { AssessmentInput, ... }` for types and `export { LayoutAvaliacaoBuilder, LayoutAvaliacao }` for classes — `fromProvaModelo` is a function export, same pattern as the class exports
 - **`_mapToEntity()` field access pattern**: reads `q.questao.visualizaQuestao` (JSON string), `q.questao.codigo`, `q.ordem`, `q.titulo`, `q.questao.tipoQuestao`, etc. — the adapter maps these from the raw shape into `QuestionInput` fields
 - **TypeScript strict OFF**: no type annotations required on internal variables; explicit types only on public API boundaries (function signature)
 

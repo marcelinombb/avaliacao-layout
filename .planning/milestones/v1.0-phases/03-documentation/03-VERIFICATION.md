@@ -20,7 +20,7 @@ overrides_applied: 0
 | # | Check | Command | Expected | Actual | Status |
 |---|-------|---------|----------|--------|--------|
 | 1 | README.md exists | `test -f README.md` | 0 exit code | EXISTS | PASS |
-| 2 | fromProvaModelo3 in README | `grep -c "fromProvaModelo3" README.md` | >= 3 | 3 | PASS |
+| 2 | fromProvaModelo in README | `grep -c "fromProvaModelo" README.md` | >= 3 | 3 | PASS |
 | 3 | AssessmentInput in README | `grep -c "AssessmentInput" README.md` | >= 5 | 12 | PASS |
 | 4 | visualizaQuestaoRaw in README | `grep -c "visualizaQuestaoRaw" README.md` | >= 1 | 3 | PASS |
 | 5 | layoutHtml in README | `grep -c "layoutHtml" README.md` | >= 1 | 6 | PASS |
@@ -39,7 +39,7 @@ overrides_applied: 0
 | # | Success Criterion | Status | Evidence |
 |---|-------------------|--------|----------|
 | 1 | README contains a complete minimal example showing how to construct an `AssessmentInput` and call the library — all required fields are shown | VERIFIED | Quick Start section (lines 16-60 of README.md) shows `AssessmentInput` object with `order`, `value`, `type`, `visualizaQuestaoRaw` marked as required; calls `createLayout().pageHeader().pageFooter().build(input)` |
-| 2 | README contains a `fromProvaModelo3()` usage section explaining how existing consumers can migrate from the raw backend shape | VERIFIED | Section "Migrating from provaModelo3" (lines 208-241) shows before/after code examples and a field mapping table; states "No backend changes are required" |
+| 2 | README contains a `fromProvaModelo()` usage section explaining how existing consumers can migrate from the raw backend shape | VERIFIED | Section "Migrating from provaModelo3" (lines 208-241) shows before/after code examples and a field mapping table; states "No backend changes are required" |
 | 3 | Every public builder method has a JSDoc comment stating what it does, what values are valid, and whether it is optional | VERIFIED | 16 JSDoc blocks (`grep -c "/**"` = 16) present in `src/LayoutAvaliacaoBuilder.ts`; each block includes description, valid values in `@param`, and optional/required note |
 
 **Score:** 3/3 roadmap criteria verified
@@ -49,7 +49,7 @@ overrides_applied: 0
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
 | 1 | Developer can read README and construct a minimal AssessmentInput, call createLayout(), invoke build() — all required fields shown | VERIFIED | Quick Start section constructs `AssessmentInput` with all required fields (`order`, `value`, `type`), chains `createLayout().pageHeader().pageFooter().build(input)`, and destructures `{ layoutHtml, cssVars }` |
-| 2 | Developer using provaModelo3 can find the fromProvaModelo3() migration section with complete before/after example | VERIFIED | "Migrating from provaModelo3" section provides both before (legacy `builder.build(provaModelo3)`) and after (`fromProvaModelo3(provaModelo3)` then `build(input)`) code blocks |
+| 2 | Developer using provaModelo3 can find the fromProvaModelo() migration section with complete before/after example | VERIFIED | "Migrating from provaModelo3" section provides both before (legacy `builder.build(provaModelo3)`) and after (`fromProvaModelo(provaModelo3)` then `build(input)`) code blocks |
 | 3 | README documents every required field of AssessmentInput and QuestionInput (order, value, type marked required; all others optional) | VERIFIED | AssessmentInput Reference tables (lines 64-151) mark `order`, `value`, `type` as **Yes** (required); all other QuestionInput fields show No; matches actual `src/types/AssessmentInput.ts` field definitions |
 | 4 | README documents what the build() return value contains (all 9 keys: layoutHtml, cssVars, folhaDeRosto, header, footer, comMarcaDaguaRascunho, ordemAlternativa, tipoAlternativa, handlers) | VERIFIED | "build() Return Value" section (lines 175-206) documents all 9 keys in a table with type and description; cssVars sub-keys also documented |
 | 5 | Every public method on LayoutAvaliacaoBuilder has a JSDoc comment above it | VERIFIED | 16 JSDoc blocks confirmed by `grep -c "/**" src/LayoutAvaliacaoBuilder.ts` = 16; all 16 methods (habilitarMarcaDaguaRascunho, pageHeader, pageFooter, marcaDaguaInstituicao, marcaDaguaRascunho, fonteTamanho, gabarito, rascunho, rascunhoHtml, folhaDeRosto, colunas, identificacao, paginacao, ordemAlternativa, tipoAlternativa, build) confirmed present |
@@ -64,7 +64,7 @@ overrides_applied: 0
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
 | `README.md` | Library onboarding documentation; contains "AssessmentInput" | VERIFIED | 260 lines; contains all required sections: Quick Start, AssessmentInput Reference, Builder Methods Reference, build() Return Value, Migrating from provaModelo3, Paged.js Rendering |
-| `README.md` | Migration guide; contains "fromProvaModelo3" | VERIFIED | "Migrating from provaModelo3" section present with before/after code and field mapping table |
+| `README.md` | Migration guide; contains "fromProvaModelo" | VERIFIED | "Migrating from provaModelo3" section present with before/after code and field mapping table |
 | `src/LayoutAvaliacaoBuilder.ts` | JSDoc-documented builder class; contains "@param" | VERIFIED | 294 lines; 16 JSDoc blocks, `@param` count = 16, `@returns` count = 16 |
 
 ### Key Link Verification
@@ -72,7 +72,7 @@ overrides_applied: 0
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
 | README.md minimal example | `src/types/AssessmentInput.ts` | AssessmentInput field names match README example | VERIFIED | README uses `order`, `value`, `type`, `visualizaQuestaoRaw` — all confirmed present in `src/types/AssessmentInput.ts` lines 46-51 |
-| README.md migration section | `src/adapter/ProvaModelo3Adapter.ts` | `fromProvaModelo3` function name matches README | VERIFIED | `fromProvaModelo3` exported from `src/index.ts` line 11; README import example uses same function name |
+| README.md migration section | `src/adapter/ProvaModelo3Adapter.ts` | `fromProvaModelo` function name matches README | VERIFIED | `fromProvaModelo` exported from `src/index.ts` line 11; README import example uses same function name |
 | JSDoc on marcaDaguaRascunho | `src/LayoutAvaliacaoBuilder.ts` marcaDaguaRascunho method | JSDoc directly above method definition | VERIFIED | Lines 94-103: JSDoc block immediately precedes `marcaDaguaRascunho(marcaDaguaUrl: string)` method definition |
 | JSDoc on build() | `src/LayoutAvaliacaoBuilder.ts` build() method | JSDoc directly above build() method definition | VERIFIED | Lines 248-253: JSDoc block immediately precedes `build(input: AssessmentInput)` method definition |
 
@@ -81,7 +81,7 @@ overrides_applied: 0
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|------------|-------------|--------|----------|
 | DOCS-01 | 03-01-PLAN.md | README documents the new `AssessmentInput` interface with a complete minimal example showing how to call the library | SATISFIED | Quick Start section + AssessmentInput Reference section both present in README.md |
-| DOCS-02 | 03-01-PLAN.md | README documents `fromProvaModelo3()` usage for existing consumers migrating from the old backend shape | SATISFIED | "Migrating from provaModelo3" section with before/after code and field mapping table |
+| DOCS-02 | 03-01-PLAN.md | README documents `fromProvaModelo()` usage for existing consumers migrating from the old backend shape | SATISFIED | "Migrating from provaModelo3" section with before/after code and field mapping table |
 | DOCS-03 | 03-02-PLAN.md | Builder methods are documented (JSDoc comments) — what each method does, valid values, and which are optional | SATISFIED | All 16 public methods have JSDoc with description, @param (valid values), @returns, and optional/required note |
 
 ### Anti-Patterns Found
@@ -120,7 +120,7 @@ No visual rendering, real-time behavior, or external service integration involve
 
 No gaps identified. All 10 automated checks pass, all 3 roadmap success criteria are verified, all 8 observable truths are confirmed, all 3 REQUIREMENTS (DOCS-01, DOCS-02, DOCS-03) are satisfied, and no anti-patterns were found.
 
-The commits cited in the SUMMARYs both exist in the git log (`293c064` for README creation, `682d6a2` for JSDoc addition). The README accurately documents symbols that are actually exported from `src/index.ts` — `fromProvaModelo3`, `AssessmentInput`, `createLayout`, `LayoutRenderer` all confirmed exported.
+The commits cited in the SUMMARYs both exist in the git log (`293c064` for README creation, `682d6a2` for JSDoc addition). The README accurately documents symbols that are actually exported from `src/index.ts` — `fromProvaModelo`, `AssessmentInput`, `createLayout`, `LayoutRenderer` all confirmed exported.
 
 ---
 

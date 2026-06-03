@@ -9,7 +9,7 @@
 
 - `AssessmentInput` public type contract with 5 typed sub-interfaces (no `any` on public API surfaces)
 - `Question.ts` and domain entities narrowed — all `any` fields on rendering paths eliminated
-- `fromProvaModelo3()` adapter — pure transform from raw backend shape to `AssessmentInput`
+- `fromProvaModelo()` adapter — pure transform from raw backend shape to `AssessmentInput`
 - `LayoutAvaliacaoBuilder` cleaned: typed `build(input: AssessmentInput)`, `marcaDagua` typo resolved, dead `pagina` field removed
 - README with full input contract, builder reference, `build()` return shape, and migration guide
 - JSDoc on all 16 public builder methods (IDE hover docs)
@@ -27,7 +27,7 @@
 
 ### Patterns Established
 
-- **Adapter pattern for backward compat**: `fromProvaModelo3()` as a pure named function (not a method) makes it tree-shakeable and easy to test in isolation.
+- **Adapter pattern for backward compat**: `fromProvaModelo()` as a pure named function (not a method) makes it tree-shakeable and easy to test in isolation.
 - **Gap-closure plans as first-class artifacts**: Inserting 02-03 as a proper plan (rather than an ad-hoc fix) kept the audit trail clean and STATE.md consistent.
 - **README structure**: Installation → Quick Start → Reference (AssessmentInput, Builder Methods, build() Return) → Migration Guide — this ordering works for both new consumers and existing ones.
 

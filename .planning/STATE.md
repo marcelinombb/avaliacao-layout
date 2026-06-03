@@ -59,7 +59,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Keep `visualizaQuestao` as JSON string — lib continues to `JSON.parse` it internally; no structural change
-- New input + adapter pattern — `fromProvaModelo3()` exported as named function; enables gradual migration
+- New input + adapter pattern — `fromProvaModelo()` exported as named function; enables gradual migration
 - TypeScript types without strict mode migration — use explicit interfaces on public surfaces only; do not enable `strict` or `noImplicitAny` globally
 
 ### Pending Todos

@@ -408,7 +408,7 @@ TypeScript compiler confirmed available: [VERIFIED: codebase check]
 ## Project Constraints (from CLAUDE.md)
 
 - **No breaking changes to rendering output** — Phase 1 is interface-only; no runtime behavior changes. This constraint is satisfied by design.
-- **`fromProvaModelo3()` must accept the exact current `provaModelo3` shape without changes** — Phase 1 does not touch `fromProvaModelo3()` (that is Phase 2). No risk.
+- **`fromProvaModelo()` must accept the exact current `provaModelo3` shape without changes** — Phase 1 does not touch `fromProvaModelo()` (that is Phase 2). No risk.
 - **No test framework** — CLAUDE.md explicitly states "No test framework: validation is manual via the browser dev harness (`npm run dev`)". Success criterion 5 uses `tsc --noEmit` only, not a test runner. Validation Architecture section is omitted per `nyquist_validation: false` in config.json.
 - **TypeScript `strict: false`, `noImplicitAny: false`** — `tsconfig.json` must not be changed. New interfaces are valid under the lenient config.
 - **Bundle targets ESM + CJS + UMD must all continue to build** — interface-only changes cannot affect the bundle. New types are erased at compile time. No risk.
