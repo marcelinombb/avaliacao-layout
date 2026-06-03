@@ -1,12 +1,37 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao";
 import { AssessmentInput } from './types/AssessmentInput';
 
-const TIPO_ORDENACAO = {
+export const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,
   ALEATORIO: 1,
   ASCENDENTE: 2,
   DESCENDENTE: 3,
-}
+} as const;
+
+export const TIPO_ALTERNATIVA = {
+  NUMERO: 1,
+  ROMANO: 2,
+  LETRA_MAIUSCULA_PONTO: 3,
+  LETRA_MINUSCULA_PONTO: 4,
+  LETRA_MAIUSCULA_PARENTESE: 5,
+  LETRA_MINUSCULA_PARENTESE: 6,
+  LETRA_PARENTESES_DUPLOS: 7,
+  LETRA_LACUNA: 8,
+  ENEM: 9,
+  SEM_ROTULO: 10,
+} as const;
+
+export type BuildResult = Readonly<{
+  layoutHtml: string;
+  cssVars: Record<string, string>;
+  folhaDeRosto: { header: string; content: string; footer: string };
+  header: string;
+  footer: string;
+  comMarcaDaguaRascunho: boolean;
+  ordemAlternativa: number;
+  tipoAlternativa: number | null;
+  handlers: never[];
+}>;
 
 export class LayoutAvaliacaoBuilder {
   header: string;
@@ -20,7 +45,7 @@ export class LayoutAvaliacaoBuilder {
   _identificacao: string;
   _gabarito: boolean;
   tipoOrdenacaoAlternativa: number;
-  _tipoAlternativa: any;
+  _tipoAlternativa: number | null;
   _rascunhoHtml: string;
   comMarcaDaguaRascunho: any;
   quantidadeFolhasRascunho: any;
@@ -64,7 +89,7 @@ export class LayoutAvaliacaoBuilder {
    * @param header {string} — raw HTML string; use empty string to suppress the header.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  pageHeader(header) {
+  pageHeader(header: string) {
     this.header = header;
     return this;
   }
@@ -75,7 +100,7 @@ export class LayoutAvaliacaoBuilder {
    * @param footer {string} — raw HTML string; use empty string to suppress the footer.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  pageFooter(footer) {
+  pageFooter(footer: string) {
     this.footer = footer;
     return this;
   }
@@ -86,7 +111,7 @@ export class LayoutAvaliacaoBuilder {
    * @param marcaDaguaUrl {string} — absolute URL to the watermark image. Pass null to remove.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  marcaDaguaInstituicao(marcaDaguaUrl) {
+  marcaDaguaInstituicao(marcaDaguaUrl: string | null) {
     this._marcaDaguaInstituicao = marcaDaguaUrl;
     return this;
   }
@@ -108,7 +133,7 @@ export class LayoutAvaliacaoBuilder {
    * @param tamanho {number} — font size in pixels; must be a numeric value. Throws if NaN.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  fonteTamanho(tamanho) {
+  fonteTamanho(tamanho: number) {
     if (isNaN(tamanho)) {
       throw new Error("O valor da fonte deve ser um valor numerico.");
     }
@@ -121,8 +146,8 @@ export class LayoutAvaliacaoBuilder {
    * Optional — omit for student-facing output.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  gabarito() {
-    this._gabarito = true;
+  gabarito(enabled: boolean = true) {
+    this._gabarito = enabled;
     return this;
   }
 
@@ -132,7 +157,7 @@ export class LayoutAvaliacaoBuilder {
    * @param quantidadeFolhasRascunho {number} — integer count of blank pages; must be numeric. Throws if NaN.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  rascunho(quantidadeFolhasRascunho) {
+  rascunho(quantidadeFolhasRascunho: number) {
     if (isNaN(quantidadeFolhasRascunho)) {
       throw new Error("O valor da rascunho deve ser um valor numerico.");
     }
@@ -146,7 +171,7 @@ export class LayoutAvaliacaoBuilder {
    * @param rascunhoHtml {string} — HTML string for the draft page body. Null/undefined is coerced to empty string.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  rascunhoHtml(rascunhoHtml) {
+  rascunhoHtml(rascunhoHtml: string) {
     this._rascunhoHtml = rascunhoHtml ?? "";
     return this;
   }
@@ -159,7 +184,7 @@ export class LayoutAvaliacaoBuilder {
    * @param footer {string} — HTML string for the cover sheet footer; required in the argument object (throws if null).
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  folhaDeRosto({ header, content, footer }) {
+  folhaDeRosto({ header, content, footer }: { header: string; content: string; footer: string }) {
     const valid = header != null && content != null && footer != null;
 
     if (!valid) {
@@ -179,7 +204,7 @@ export class LayoutAvaliacaoBuilder {
    * @param quantidade {number} — must be 1 or 2. Throws if not numeric or outside this range.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  colunas(quantidade) {
+  colunas(quantidade: number) {
     if (isNaN(quantidade)) {
       throw new Error(
         "O valor da quantidade de colunas deve ser um valor numerico."
@@ -210,8 +235,8 @@ export class LayoutAvaliacaoBuilder {
    * Optional — omit to suppress page numbers.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  paginacao() {
-    this.paginacaoAtiva = true;
+  paginacao(enabled: boolean = true) {
+    this.paginacaoAtiva = enabled;
     return this;
   }
 
@@ -221,9 +246,9 @@ export class LayoutAvaliacaoBuilder {
    * @param tipoOrdenacao {number} — one of: 0 (NAO_EMBARALHAR, no shuffle), 1 (ALEATORIO, random), 2 (ASCENDENTE, ascending), 3 (DESCENDENTE, descending). Throws for invalid values.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  ordemAlternativa(tipoOrdenacao) {
+  ordemAlternativa(tipoOrdenacao: number) {
 
-    if (!Object.values(TIPO_ORDENACAO).includes(tipoOrdenacao)) {
+    if (!(Object.values(TIPO_ORDENACAO) as number[]).includes(tipoOrdenacao)) {
       throw new Error("Tipo de ordenação de alternativas inválido.");
     }
 
@@ -238,20 +263,18 @@ export class LayoutAvaliacaoBuilder {
    * @param tipoAlternativa {any} — value passed through to the renderer; acceptable values depend on the template configuration.
    * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
    */
-  tipoAlternativa(tipoAlternativa) {
-
+  tipoAlternativa(tipoAlternativa: number | null) {
     this._tipoAlternativa = tipoAlternativa;
-
     return this;
   }
 
   /**
    * Builds and freezes the final layout output from the given assessment input. Call this last after all configuration methods.
    * REQUIRED — must be called to produce output.
-   * @param input {AssessmentInput} — typed assessment data including questions, attachments, and optional layout overrides. Use fromProvaModelo3() to convert a raw backend provaModelo3 object to this type.
+   * @param input {AssessmentInput} — typed assessment data including questions, attachments, and optional layout overrides. Use fromProvaModelo() to convert a raw backend provaModelo3 object to this type.
    * @returns {Readonly<{ layoutHtml: string; cssVars: Record<string, string>; folhaDeRosto: object; header: string; footer: string; comMarcaDaguaRascunho: boolean; ordemAlternativa: number; tipoAlternativa: any; handlers: never[] }>} — frozen result object. layoutHtml is the full HTML to inject into the DOM. cssVars are CSS custom properties to apply to the container. handlers is always an empty array; Paged.js handlers are registered externally by the host application.
    */
-  build(input: AssessmentInput) {
+  build(input: AssessmentInput): BuildResult {
     // Sanitize values used inside CSS url() and string contexts to prevent CSS injection
     const safeCssUrl = (u: string) => u.replace(/[")\\\n\r]/g, encodeURIComponent);
     const safeCssString = (s: string) => s.replace(/["\\]/g, '\\$&');
@@ -287,7 +310,7 @@ export class LayoutAvaliacaoBuilder {
       comMarcaDaguaRascunho: this.comMarcaDaguaRascunho,
       ordemAlternativa: this.tipoOrdenacaoAlternativa,
       tipoAlternativa: this._tipoAlternativa,
-      handlers: [],
+      handlers: [] as never[],
     });
   }
 }
