@@ -34,33 +34,22 @@ const numberToLetter = (number, lowerCase = false) => {
   return lowerCase ? letter.toLowerCase() : letter;
 };
 
+const COLUMN_TYPE_FORMATTERS = {
+  1: (i) => String(i + 1),
+  2: (i) => toRoman(i + 1) + ".",
+  3: (i) => numberToLetter(i, true) + ".",
+  4: (i) => numberToLetter(i) + ".",
+  5: (i) => numberToLetter(i, true) + ")",
+  6: (i) => numberToLetter(i) + ")",
+  7: (i) => `(${numberToLetter(i)})`,
+  8: (i) => `${numberToLetter(i)} (&nbsp;&nbsp;&nbsp;)`,
+  9: (i) => `<div class="item_enem" style="vertical-align:middle;border-radius:50%;width:18px;height:18px;background:black;color:white;display:table-cell;text-align:center;" >${numberToLetter(i)}</div>`,
+  10: () => "",
+};
+
 function conversorDeIndicesParaAlternativas(indice, tipoColuna) {
-  switch (tipoColuna) {
-    case 1:
-      return String(indice + 1);
-    case 2:
-      return toRoman(indice + 1) + ".";
-    case 3:
-      return numberToLetter(indice, true) + ".";
-    case 4:
-      return numberToLetter(indice) + ".";
-    case 5:
-      return numberToLetter(indice, true) + ")";
-    case 6:
-      return numberToLetter(indice) + ")";
-    case 7:
-      return `(${numberToLetter(indice)})`;
-    case 8:
-      return `${numberToLetter(indice)} (&nbsp;&nbsp;&nbsp;)`;
-    case 9:
-      return `<div class="item_enem" style="vertical-align:middle;border-radius:50%;width:18px;height:18px;background:black;color:white;display:table-cell;text-align:center;" >${numberToLetter(
-        indice
-      )}</div>`;
-    case 10:
-      return "";
-    default:
-      return indice;
-  }
+  const formatter = COLUMN_TYPE_FORMATTERS[tipoColuna];
+  return formatter ? formatter(indice) : indice;
 }
 
 function diaDaSemana(dateStr) {
@@ -113,91 +102,158 @@ function replacer(string, placeholders) {
   return replacedString;
 }
 
+function resolveProvaDateFields(prova, provaModelo) {
+  const dataRealizacao = prova.dataRealizacao ?? "";
+  const totalQuestoes = provaModelo.listaProvaQuestao?.length ?? 0;
+  const etapaNome = prova.etapa?.nome ?? "&nbsp;";
+  const periodoLetivoNome = prova.turma?.periodoLetivo?.nome ?? "&nbsp;";
+  return {
+    dataRealizacao,
+    totalQuestoes,
+    periodoEtapa: periodoLetivoNome + " - " + etapaNome,
+  };
+}
+
+function resolveProvaDetails(prova) {
+  return {
+    duracao: prova.duracao ?? "&nbsp;",
+    totalPontos: prova.totalPontos ?? "&nbsp;",
+    observacao: prova.observacao ?? "&nbsp;",
+    nomeUsuario: prova.usuario?.nome,
+  };
+}
+
+function resolveTurmaBasic(turma) {
+  return {
+    disciplina: turma?.disciplina ?? "&nbsp;",
+    codigoTurma: turma?.codigoTurma ?? "&nbsp;",
+    nomeTurma: turma?.nome ?? "&nbsp;",
+    nomeProfessorTurma: turma?.listaTurmaDisciplina?.[0]?.nomeProfessor,
+  };
+}
+
+function resolveTurmaUnidade(turma) {
+  return {
+    nomeCurso: turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
+    nomeTurno: turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
+  };
+}
+
+function resolveInstitution(prova) {
+  return {
+    logoUrl: prova.instituicao?.linkFile ?? "",
+    site: prova.instituicao?.site ?? "&nbsp;",
+  };
+}
+
+function resolveProvaMetadata(prova, provaModelo) {
+  return {
+    nomeTipoProva: prova.tipoProva?.nome ?? "&nbsp;",
+    instrucaoTexto: prova.instrucaoEspecifica?.texto ?? "&nbsp;",
+    nomeLayout: prova.layout?.nome ?? "&nbsp;",
+    nomeModelo: provaModelo.nome ?? "",
+    layout: prova.layout,
+  };
+}
+
+function buildProvaContext(provaModelo) {
+  const prova = provaModelo.prova;
+  const turma = prova.turma;
+  const dateFields = resolveProvaDateFields(prova, provaModelo);
+  const details = resolveProvaDetails(prova);
+  const turmaBasic = resolveTurmaBasic(turma);
+  const turmaUnidade = resolveTurmaUnidade(turma);
+  const institution = resolveInstitution(prova);
+  const metadata = resolveProvaMetadata(prova, provaModelo);
+  const professor = (turmaBasic.nomeProfessorTurma ?? details.nomeUsuario) ?? "&nbsp;";
+  return {
+    ...dateFields, ...details, ...turmaBasic, ...turmaUnidade, ...institution, ...metadata,
+    professor,
+    ano: String(anoLetivo(dateFields.dataRealizacao) || "&nbsp;"),
+    diaSemana: diaDaSemana(dateFields.dataRealizacao) || "&nbsp;",
+  };
+}
+
+function buildFolhaDeRostoPlaceholders(ctx) {
+  return {
+    "#DATA#": ctx.dataRealizacao || "&nbsp;",
+    "#DIASEMANA#": ctx.diaSemana,
+    "#CURSO#": ctx.nomeCurso,
+    "#DISCIPLINA#": ctx.disciplina,
+    "#TURMA#": ctx.codigoTurma,
+    "#CODIGO_TURMA#": ctx.codigoTurma,
+    "#TIPOPROVA#": ctx.nomeTipoProva,
+    "#PERIODO#": ctx.periodoEtapa,
+    "#MODELO#": " - Modelo " + ctx.nomeModelo,
+    "#PROFESSOR#": ctx.professor,
+    "#TURNO#": ctx.nomeTurno,
+    "#DURACAO#": ctx.duracao,
+    "#TOTALQUEST#": ctx.totalQuestoes,
+    "#NUM_QUESTOES#": ctx.totalQuestoes,
+    "#PONTOS#": ctx.totalPontos,
+    "#INSTRUCAO#": ctx.instrucaoTexto,
+    "#ANO#": ctx.ano,
+    "#OBSERVACAO#": ctx.observacao,
+  };
+}
+
+function buildCabecalhoPlaceholders(ctx) {
+  return {
+    "#LOGO#": ctx.logoUrl,
+    "#TIPOPROVA#": ctx.nomeTipoProva,
+    "#TIPOPROVANOME#": ctx.nomeTipoProva,
+    "#DISCIPLINA#": ctx.disciplina,
+    "#CURSO#": ctx.nomeCurso,
+    "#TURMA#": ctx.codigoTurma,
+    "#TURMANOME#": ctx.nomeTurma,
+    "#NOME_TURMA#": ctx.nomeTurma,
+    "#TURNO#": ctx.nomeTurno,
+    "#PERIODO#": ctx.periodoEtapa,
+    "#TOTALQUEST#": ctx.totalQuestoes,
+    "#LAYOUTNOME#": ctx.nomeLayout,
+    "#NOMELAYOUT#": ctx.nomeLayout,
+    "#INSTRUCAO#": ctx.instrucaoTexto,
+    "#PONTOS#": ctx.totalPontos,
+    "#DATA#": ctx.dataRealizacao || "&nbsp;",
+    "#ANO#": ctx.ano,
+  };
+}
+
+function buildCabecalhoPaginaPlaceholders(ctx) {
+  return {
+    "#LOGO#": ctx.logoUrl,
+    "#DISCIPLINA#": ctx.disciplina,
+    "#CURSO#": ctx.nomeCurso,
+    "#TURMA#": ctx.codigoTurma,
+    "#CURSONOME#": ctx.nomeCurso,
+    "#PERIODO#": ctx.periodoEtapa,
+    "#PERIODOLET#": ctx.periodoEtapa,
+    "#TIPOPROVA#": ctx.nomeTipoProva,
+    "#TIPOPROVANOME#": ctx.nomeTipoProva,
+    "#ANO#": ctx.ano,
+  };
+}
+
+function buildFooterPlaceholders(ctx) {
+  return {
+    "#TURMA#": ctx.codigoTurma,
+    "#site#": ctx.site,
+  };
+}
+
 function replacePlaceholders(provaModelo) {
   if (!provaModelo || !provaModelo.prova) {
     return provaModelo;
   }
 
-  const prova = provaModelo.prova;
-  const turma = prova.turma;
-  const instituicao = prova.instituicao;
-  const tipoProva = prova.tipoProva;
-  const instrucaoEspecifica = prova.instrucaoEspecifica;
-  const layout = prova.layout;
-  const dataRealizacao = prova.dataRealizacao ?? "";
-  const totalQuestoes = provaModelo.listaProvaQuestao?.length ?? 0;
-  const periodoEtapa = (turma?.periodoLetivo?.nome ?? "&nbsp;") + " - " + (prova.etapa?.nome ?? "&nbsp;");
-
-  const folhaDeRostoPlaceholder = {
-    "#DATA#": dataRealizacao || "&nbsp;",
-    "#DIASEMANA#": diaDaSemana(dataRealizacao) || "&nbsp;",
-    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
-    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
-    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
-    "#CODIGO_TURMA#": turma?.codigoTurma ?? "&nbsp;",
-    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
-    "#PERIODO#": periodoEtapa,
-    "#MODELO#": " - Modelo " + (provaModelo.nome ?? ""),
-    "#PROFESSOR#":
-      (turma?.listaTurmaDisciplina?.[0]?.nomeProfessor ??
-        prova.usuario?.nome) ??
-      "&nbsp;",
-    "#TURNO#": turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
-    "#DURACAO#": prova.duracao ?? "&nbsp;",
-    "#TOTALQUEST#": totalQuestoes,
-    "#NUM_QUESTOES#": totalQuestoes,
-    "#PONTOS#": prova.totalPontos ?? "&nbsp;",
-    "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
-    "#OBSERVACAO#": prova.observacao ?? "&nbsp;",
-  };
-
-  const cabecalhoPlaceholders = {
-    "#LOGO#": instituicao?.linkFile ?? "",
-    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
-    "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
-    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
-    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
-    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
-    "#TURMANOME#": turma?.nome ?? "&nbsp;",
-    "#NOME_TURMA#": turma?.nome ?? "&nbsp;",
-    "#TURNO#": turma?.cursoUnidade?.turno?.nome ?? "&nbsp;",
-    "#PERIODO#": periodoEtapa,
-    "#TOTALQUEST#": totalQuestoes,
-    "#LAYOUTNOME#": layout?.nome ?? "&nbsp;",
-    "#NOMELAYOUT#": layout?.nome ?? "&nbsp;",
-    "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
-    "#PONTOS#": prova.totalPontos ?? "&nbsp;",
-    "#DATA#": dataRealizacao || "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
-  };
-
-  const cabecalhoPaginaPlaceholders = {
-    "#LOGO#": instituicao?.linkFile ?? "",
-    "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
-    "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
-    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
-    "#CURSONOME#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
-    "#PERIODO#": periodoEtapa,
-    "#PERIODOLET#": periodoEtapa,
-    "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
-    "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
-  };
-
-  const footerPlaceholders = {
-    "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
-    "#site#": instituicao?.site ?? "&nbsp;",
-  };
+  const ctx = buildProvaContext(provaModelo);
+  const { layout } = ctx;
 
   if (layout) {
-    layout.cabecalho = replacer(layout.cabecalho, cabecalhoPlaceholders);
-    layout.folhaRosto = replacer(layout.folhaRosto, folhaDeRostoPlaceholder);
-    layout.cabecalhoPagina = replacer(
-      layout.cabecalhoPagina,
-      cabecalhoPaginaPlaceholders
-    );
-    layout.rodape = replacer(layout.rodape, footerPlaceholders);
+    layout.cabecalho = replacer(layout.cabecalho, buildCabecalhoPlaceholders(ctx));
+    layout.folhaRosto = replacer(layout.folhaRosto, buildFolhaDeRostoPlaceholders(ctx));
+    layout.cabecalhoPagina = replacer(layout.cabecalhoPagina, buildCabecalhoPaginaPlaceholders(ctx));
+    layout.rodape = replacer(layout.rodape, buildFooterPlaceholders(ctx));
   }
 
   return provaModelo;
