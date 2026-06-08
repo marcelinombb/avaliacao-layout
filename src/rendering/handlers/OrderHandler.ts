@@ -1,12 +1,6 @@
 import { Handler } from "pagedjs";
 import { conversorDeIndicesParaAlternativas } from "../utils/util";
-
-export const TIPO_ORDENACAO = Object.freeze({
-    NAO_EMBARALHAR: 0,
-    ALEATORIO: 1,
-    ASCENDENTE: 2,
-    DESCENDENTE: 3,
-});
+import { TIPO_ORDENACAO } from '../../LayoutAvaliacaoBuilder';
 
 export default class OrderHandler extends Handler {
 

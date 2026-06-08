@@ -2,7 +2,6 @@ import { Previewer, registeredHandlers } from "pagedjs"
 import {
   WatermarkHandler,
   HeaderFooterHandler,
-  PreventEmptyPageHandler,
   OrderHandler
 } from "./handlers/index";
 import ColumnHandler from "./handlers/ColumnHandler";
@@ -25,10 +24,6 @@ export class PagedJsRenderer {
     });
 
     const defaultHandlers = [
-      {
-        MyHandler: PreventEmptyPageHandler,
-        config: {},
-      },
       {
         MyHandler: WatermarkHandler,
         config: { comMarcaDaguaRascunho: result.comMarcaDaguaRascunho },

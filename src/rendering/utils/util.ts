@@ -1,7 +1,7 @@
-function toRoman(num) {
+function toRoman(num: number): string {
   if (num < 1 || num > 3999) return "Number out of range";
 
-  const romanNumerals = [
+  const romanNumerals: { value: number; numeral: string }[] = [
     { value: 1000, numeral: "M" },
     { value: 900, numeral: "CM" },
     { value: 500, numeral: "D" },
@@ -29,12 +29,12 @@ function toRoman(num) {
   return result;
 }
 
-const numberToLetter = (number, lowerCase = false) => {
+const numberToLetter = (number: number, lowerCase: boolean = false): string => {
   const letter = String.fromCharCode(65 + number);
   return lowerCase ? letter.toLowerCase() : letter;
 };
 
-function conversorDeIndicesParaAlternativas(indice, tipoColuna) {
+function conversorDeIndicesParaAlternativas(indice: number, tipoColuna: number): string {
   switch (tipoColuna) {
     case 1:
       return String(indice + 1);
@@ -59,11 +59,11 @@ function conversorDeIndicesParaAlternativas(indice, tipoColuna) {
     case 10:
       return "";
     default:
-      return indice;
+      return String(indice);
   }
 }
 
-function diaDaSemana(dateStr) {
+function diaDaSemana(dateStr: string): string {
   if (!dateStr || typeof dateStr !== "string") return "";
   const parts = dateStr.split("/");
   if (parts.length !== 3) return "";
@@ -73,7 +73,7 @@ function diaDaSemana(dateStr) {
 
   if (isNaN(date.getTime())) return "";
 
-  const mapaSemana = {
+  const mapaSemana: Record<number, string> = {
     0: "domingo",
     1: "segunda-feira",
     2: "terça-feira",
@@ -86,7 +86,7 @@ function diaDaSemana(dateStr) {
   return mapaSemana[date.getDay()];
 }
 
-function anoLetivo(dateStr) {
+function anoLetivo(dateStr: string): number | string {
   if (!dateStr || typeof dateStr !== "string") return "";
   const parts = dateStr.split("/");
   if (parts.length !== 3) return "";
@@ -99,7 +99,7 @@ function anoLetivo(dateStr) {
   return date.getFullYear();
 }
 
-function replacer(string, placeholders) {
+function replacer(string: string, placeholders: Record<string, string>): string {
   if (!string) return "";
 
   let replacedString = string;
@@ -113,7 +113,7 @@ function replacer(string, placeholders) {
   return replacedString;
 }
 
-function replacePlaceholders(provaModelo) {
+function replacePlaceholders(provaModelo: any): any {
   if (!provaModelo || !provaModelo.prova) {
     return provaModelo;
   }
@@ -128,7 +128,7 @@ function replacePlaceholders(provaModelo) {
   const totalQuestoes = provaModelo.listaProvaQuestao?.length ?? 0;
   const periodoEtapa = (turma?.periodoLetivo?.nome ?? "&nbsp;") + " - " + (prova.etapa?.nome ?? "&nbsp;");
 
-  const folhaDeRostoPlaceholder = {
+  const folhaDeRostoPlaceholder: Record<string, string> = {
     "#DATA#": dataRealizacao || "&nbsp;",
     "#DIASEMANA#": diaDaSemana(dataRealizacao) || "&nbsp;",
     "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
@@ -148,11 +148,11 @@ function replacePlaceholders(provaModelo) {
     "#NUM_QUESTOES#": totalQuestoes,
     "#PONTOS#": prova.totalPontos ?? "&nbsp;",
     "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
+    "#ANO#": String(anoLetivo(dataRealizacao) || "&nbsp;"),
     "#OBSERVACAO#": prova.observacao ?? "&nbsp;",
   };
 
-  const cabecalhoPlaceholders = {
+  const cabecalhoPlaceholders: Record<string, string> = {
     "#LOGO#": instituicao?.linkFile ?? "",
     "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
     "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
@@ -169,10 +169,10 @@ function replacePlaceholders(provaModelo) {
     "#INSTRUCAO#": instrucaoEspecifica?.texto ?? "&nbsp;",
     "#PONTOS#": prova.totalPontos ?? "&nbsp;",
     "#DATA#": dataRealizacao || "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
+    "#ANO#": String(anoLetivo(dataRealizacao) || "&nbsp;"),
   };
 
-  const cabecalhoPaginaPlaceholders = {
+  const cabecalhoPaginaPlaceholders: Record<string, string> = {
     "#LOGO#": instituicao?.linkFile ?? "",
     "#DISCIPLINA#": turma?.disciplina ?? "&nbsp;",
     "#CURSO#": turma?.cursoUnidade?.curso?.nome ?? "&nbsp;",
@@ -182,10 +182,10 @@ function replacePlaceholders(provaModelo) {
     "#PERIODOLET#": periodoEtapa,
     "#TIPOPROVA#": tipoProva?.nome ?? "&nbsp;",
     "#TIPOPROVANOME#": tipoProva?.nome ?? "&nbsp;",
-    "#ANO#": anoLetivo(dataRealizacao) || "&nbsp;",
+    "#ANO#": String(anoLetivo(dataRealizacao) || "&nbsp;"),
   };
 
-  const footerPlaceholders = {
+  const footerPlaceholders: Record<string, string> = {
     "#TURMA#": turma?.codigoTurma ?? "&nbsp;",
     "#site#": instituicao?.site ?? "&nbsp;",
   };
@@ -203,7 +203,7 @@ function replacePlaceholders(provaModelo) {
   return provaModelo;
 }
 
-function shuffleAndMultiply(arr, multiplier) {
+function shuffleAndMultiply(arr: any[], multiplier: number): any[] {
   // Shuffle group order
   const chunks = Array(multiplier).fill(arr).map(a => [...a]);
   for (let i = chunks.length - 1; i > 0; i--) {
