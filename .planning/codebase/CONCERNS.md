@@ -23,8 +23,7 @@
 
 ## Performance Concerns
 
-- **Stateful regex in `latexParser`** — uses a `/g` flag regex with `.exec()` in a loop without resetting `lastIndex` between calls. Risk of skipping matches on repeated invocations of the same regex instance.
-- **DOM node leak in `OrderHandler.getMeasureRoot()`** — creates an offscreen DOM node for measurement; if a render error occurs, the node may not be removed.
+*(All items resolved.)*
 
 ## Outdated Dependencies
 

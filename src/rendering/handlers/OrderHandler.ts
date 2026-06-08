@@ -79,14 +79,19 @@ export default class OrderHandler extends Handler {
         clone.style.maxWidth = "none";
 
         root.appendChild(clone);
-        const target = clone.querySelector(".media-corpo") || clone;
-        const width = target.getBoundingClientRect().width;
-        root.removeChild(clone);
+        let width = 0;
+        try {
+            const target = clone.querySelector(".media-corpo") || clone;
+            width = target.getBoundingClientRect().width;
+            if (width <= 0) {
+                const fallbackText = (target.textContent || "").trim();
+                return fallbackText.length;
+            }
+        } finally {
+            root.removeChild(clone);
+        }
 
-        if (width > 0) return width;
-
-        const fallbackText = (target.textContent || "").trim();
-        return fallbackText.length;
+        return width;
     }
 
     getMeasureRoot() {
