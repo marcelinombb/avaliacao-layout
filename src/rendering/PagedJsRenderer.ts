@@ -63,18 +63,18 @@ export class PagedJsRenderer {
       contentContainer,
       stylesheets,
       pagesContainer
-    ).then(chunker => {
-      chunker.pages.forEach(page => page.removeListeners());
+    ).then((chunker: any) => {
+      chunker.pages.forEach((page: any) => page.removeListeners());
       contentContainer.remove();
       return chunker;
     })
   }
 }
 
-function prepareHandlers(handlersWithConfig) {
-  return handlersWithConfig.map(({ MyHandler, config }) => {
+function prepareHandlers(handlersWithConfig: any) {
+  return handlersWithConfig.map(({ MyHandler, config }: any) => {
     class ConfiguredHandler extends MyHandler {
-      constructor(chunker, polisher, caller) {
+      constructor(chunker: any, polisher: any, caller: any) {
         super(chunker, polisher, caller, config);
       }
     }
@@ -82,7 +82,7 @@ function prepareHandlers(handlersWithConfig) {
     ConfiguredHandler.__originalHandler = MyHandler;
 
     const existingIndex = registeredHandlers.findIndex(
-      (h) => h.__originalHandler === MyHandler
+      (h: any) => h.__originalHandler === MyHandler
     );
 
     if (existingIndex !== -1) {
