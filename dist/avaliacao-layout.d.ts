@@ -237,7 +237,7 @@ declare class PagedJsRenderer {
     static render(result: any, stylesheets: any, pagesContainer: any): Promise<any>;
 }
 
-declare function latexParser(text: any): any;
+declare function latexParser(text: string): string;
 
 declare function replacePlaceholders(provaModelo: any): any;
 

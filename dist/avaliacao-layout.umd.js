@@ -2691,7 +2691,7 @@
         }
     }
 
-    const TIPO_ORDENACAO$1 = {
+    const TIPO_ORDENACAO = {
         NAO_EMBARALHAR: 0,
         ALEATORIO: 1,
         ASCENDENTE: 2,
@@ -2726,7 +2726,7 @@
             this.paginacaoAtiva = false;
             this._identificacao = "";
             this._gabarito = false;
-            this.tipoOrdenacaoAlternativa = TIPO_ORDENACAO$1.NAO_EMBARALHAR;
+            this.tipoOrdenacaoAlternativa = TIPO_ORDENACAO.NAO_EMBARALHAR;
             this._tipoAlternativa = null;
             this.comMarcaDaguaRascunho = false;
             this.quantidadeFolhasRascunho = 0;
@@ -2884,7 +2884,7 @@
          * @returns {LayoutAvaliacaoBuilder} Returns the builder instance for chaining.
          */
         ordemAlternativa(tipoOrdenacao) {
-            if (!Object.values(TIPO_ORDENACAO$1).includes(tipoOrdenacao)) {
+            if (!Object.values(TIPO_ORDENACAO).includes(tipoOrdenacao)) {
                 throw new Error("Tipo de ordenação de alternativas inválido.");
             }
             this.tipoOrdenacaoAlternativa = tipoOrdenacao;
@@ -37365,21 +37365,6 @@
 
     EventEmitter(Previewer.prototype);
 
-    class WatermarkHandler extends Handler {
-        constructor(chunker, polisher, caller, config) {
-            super(chunker, polisher, caller);
-            this.chunker = chunker;
-            this.polisher = polisher;
-            this.caller = caller;
-            this.config = config;
-        }
-        afterPageLayout(pageElement, page, breakToken, chunker) {
-            const watermark = document.createElement("div");
-            watermark.classList.add("watermark");
-            pageElement.querySelector(".pagedjs_area").appendChild(watermark);
-        }
-    }
-
     const FOLHA_DE_ROSTO = "folhaDeRosto";
     class HeaderFooterHandler extends Handler {
         constructor(chunker, polisher, caller, config) {
@@ -37439,31 +37424,17 @@
         calculateRealHeight(element) {
             if (!element)
                 return 0;
-            // Optimization: Single DOM Read Phase
-            // Get all necessary metrics in one go to minimize browser recalculations
             const { height } = element.getBoundingClientRect();
             const styles = window.getComputedStyle(element);
-            // Helper to avoid repetitive parsing
             const getInt = (val) => {
                 const parsed = parseInt(val);
                 return isNaN(parsed) ? 0 : parsed;
             };
-            // Calculate sum of vertical spacings
             const margins = getInt(styles.marginTop) + getInt(styles.marginBottom);
-            const paddings = getInt(styles.paddingTop) + getInt(styles.paddingBottom);
-            const borders = getInt(styles.borderTopWidth) + getInt(styles.borderBottomWidth);
-            // Note: getBoundingClientRect height already includes padding and border in standard box-model,
-            // but we preserve the original logic which added them again (possibly for specific Paged.js requirements or custom box-sizing)
-            return height + margins + paddings + borders;
+            return height + margins;
         }
     }
 
-    const TIPO_ORDENACAO = Object.freeze({
-        NAO_EMBARALHAR: 0,
-        ALEATORIO: 1,
-        ASCENDENTE: 2,
-        DESCENDENTE: 3,
-    });
     class OrderHandler extends Handler {
         constructor(chunker, polisher, caller, config = {}) {
             super(chunker, polisher, caller);
@@ -37524,13 +37495,19 @@
             clone.style.width = "max-content";
             clone.style.maxWidth = "none";
             root.appendChild(clone);
-            const target = clone.querySelector(".media-corpo") || clone;
-            const width = target.getBoundingClientRect().width;
-            root.removeChild(clone);
-            if (width > 0)
-                return width;
-            const fallbackText = (target.textContent || "").trim();
-            return fallbackText.length;
+            let width = 0;
+            try {
+                const target = clone.querySelector(".media-corpo") || clone;
+                width = target.getBoundingClientRect().width;
+                if (width <= 0) {
+                    const fallbackText = (target.textContent || "").trim();
+                    return fallbackText.length;
+                }
+            }
+            finally {
+                root.removeChild(clone);
+            }
+            return width;
         }
         getMeasureRoot() {
             if (this.measureRoot)
@@ -37581,29 +37558,6 @@
                 this.measureRoot.parentElement.removeChild(this.measureRoot);
             }
             this.measureRoot = null;
-        }
-    }
-
-    class PreventEmptyPageHandler extends Handler {
-        onBreakToken(breakToken, overflow, rendered, layout) {
-            if (!(breakToken === null || breakToken === void 0 ? void 0 : breakToken.node) || breakToken.node.nodeType !== 1)
-                return;
-            const el = breakToken.node;
-            const hasVisualContent = el.querySelector('img, svg, table, video, canvas, iframe');
-            const isEmpty = el.textContent.trim().length === 0 && !hasVisualContent;
-            if (isEmpty && el.offsetHeight === 0) {
-                // When Paged.js successfully identifies an overflow and creates a breakToken,
-                // we intercept it here. If the element causing the break is genuinely empty and 0 height,
-                // we want to cancel the page break.
-                // We cannot return `null` because `layout.js` calls `breakToken.equals()`.
-                // Instead, we override `.equals()` to mathematically return `true`. 
-                // `layout.js` interprets `breakToken.equals(prevBreakToken) === true` as an infinite loop 
-                // and gracefully aborts the layout for this node, preventing the blank page creation
-                // without ever hiding or deleting the user's anchors!
-                //breakToken.equals = function () { return true; };
-                console.log("PreventEmptyPageHandler", overflow);
-                //return breakToken;
-            }
         }
     }
 
@@ -37748,14 +37702,6 @@
             });
             const defaultHandlers = [
                 {
-                    MyHandler: PreventEmptyPageHandler,
-                    config: {},
-                },
-                {
-                    MyHandler: WatermarkHandler,
-                    config: { comMarcaDaguaRascunho: result.comMarcaDaguaRascunho },
-                },
-                {
                     MyHandler: HeaderFooterHandler,
                     config: {
                         cabecalhoPagina: result.header,
@@ -37783,8 +37729,8 @@
             // prepara handlers configurados e registra via paged.registerHandlers
             const configuredHandlers = prepareHandlers(defaultHandlers);
             paged.registerHandlers(...configuredHandlers);
-            return paged.preview(contentContainer, stylesheets, pagesContainer).then(chunker => {
-                chunker.pages.forEach(page => page.removeListeners());
+            return paged.preview(contentContainer, stylesheets, pagesContainer).then((chunker) => {
+                chunker.pages.forEach((page) => page.removeListeners());
                 contentContainer.remove();
                 return chunker;
             });
@@ -56921,12 +56867,12 @@
     }
     function latexParser(text) {
         const regex = /<span class=\\*"math-tex\\*">([.\s\S]*?)<\/span>/g;
-        let match;
         let dataModified = text;
+        let match;
+        regex.lastIndex = 0;
         while ((match = regex.exec(text)) !== null) {
-            let renderFormula;
             try {
-                renderFormula = renderWithDelimiters(decodeHTML(match[1]).replace(/\u00A0/g, " "), delimiters);
+                const renderFormula = renderWithDelimiters(decodeHTML(match[1]).replace(/\u00A0/g, " "), delimiters);
                 dataModified = dataModified.replace(match[0], `<span class="math-tex">${renderFormula}</span>`);
             }
             catch (e) {
@@ -56973,7 +56919,7 @@
     exports.LayoutAvaliacaoBuilder = LayoutAvaliacaoBuilder;
     exports.LayoutRenderer = PagedJsRenderer;
     exports.TIPO_ALTERNATIVA = TIPO_ALTERNATIVA;
-    exports.TIPO_ORDENACAO = TIPO_ORDENACAO$1;
+    exports.TIPO_ORDENACAO = TIPO_ORDENACAO;
     exports.createLayout = createLayout;
     exports.fromProvaModelo = fromProvaModelo;
     exports.latexParser = latexParser;
