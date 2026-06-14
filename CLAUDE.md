@@ -182,3 +182,43 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+# Complexity Rules
+
+## Function Complexity
+
+* Maximum Cyclomatic Complexity: 10
+* Maximum Cognitive Complexity: 15
+* Maximum Nesting Depth: 3
+* Maximum Function Length: 80 lines
+
+## Refactoring Requirements
+
+When a function exceeds any complexity limit:
+
+1. Extract responsibilities into private functions.
+2. Replace conditional chains with Strategy Pattern when applicable.
+3. Prefer polymorphism over large switch/if-else chains.
+4. Use guard clauses to reduce nesting.
+5. Split orchestration from business logic.
+
+## Anti-Patterns
+
+Avoid:
+
+* Nested if statements deeper than 3 levels.
+* Switch statements with more than 5 cases.
+* Methods containing multiple business responsibilities.
+* God Services.
+* Large orchestrator methods.
+
+## Preferred Patterns
+
+* Strategy
+* Factory
+* Specification
+* Command
+* Domain Services
+* Pure Functions
+
+All generated code must respect these limits.

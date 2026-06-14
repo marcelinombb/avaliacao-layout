@@ -1,7 +1,7 @@
-function toRoman(num) {
+function toRoman(num: number): string {
   if (num < 1 || num > 3999) return "Number out of range";
 
-  const romanNumerals = [
+  const romanNumerals: { value: number; numeral: string }[] = [
     { value: 1000, numeral: "M" },
     { value: 900, numeral: "CM" },
     { value: 500, numeral: "D" },
@@ -29,7 +29,7 @@ function toRoman(num) {
   return result;
 }
 
-const numberToLetter = (number, lowerCase = false) => {
+const numberToLetter = (number: number, lowerCase: boolean = false): string => {
   const letter = String.fromCharCode(65 + number);
   return lowerCase ? letter.toLowerCase() : letter;
 };
@@ -52,7 +52,7 @@ function conversorDeIndicesParaAlternativas(indice, tipoColuna) {
   return formatter ? formatter(indice) : indice;
 }
 
-function diaDaSemana(dateStr) {
+function diaDaSemana(dateStr: string): string {
   if (!dateStr || typeof dateStr !== "string") return "";
   const parts = dateStr.split("/");
   if (parts.length !== 3) return "";
@@ -62,7 +62,7 @@ function diaDaSemana(dateStr) {
 
   if (isNaN(date.getTime())) return "";
 
-  const mapaSemana = {
+  const mapaSemana: Record<number, string> = {
     0: "domingo",
     1: "segunda-feira",
     2: "terça-feira",
@@ -75,7 +75,7 @@ function diaDaSemana(dateStr) {
   return mapaSemana[date.getDay()];
 }
 
-function anoLetivo(dateStr) {
+function anoLetivo(dateStr: string): number | string {
   if (!dateStr || typeof dateStr !== "string") return "";
   const parts = dateStr.split("/");
   if (parts.length !== 3) return "";
@@ -88,7 +88,7 @@ function anoLetivo(dateStr) {
   return date.getFullYear();
 }
 
-function replacer(string, placeholders) {
+function replacer(string: string, placeholders: Record<string, string>): string {
   if (!string) return "";
 
   let replacedString = string;
@@ -259,7 +259,7 @@ function replacePlaceholders(provaModelo) {
   return provaModelo;
 }
 
-function shuffleAndMultiply(arr, multiplier) {
+function shuffleAndMultiply(arr: any[], multiplier: number): any[] {
   // Shuffle group order
   const chunks = Array(multiplier).fill(arr).map(a => [...a]);
   for (let i = chunks.length - 1; i > 0; i--) {
@@ -284,3 +284,4 @@ export {
   replacePlaceholders,
   conversorDeIndicesParaAlternativas
 }
+

@@ -1,12 +1,6 @@
 import { Handler } from "pagedjs";
 import { conversorDeIndicesParaAlternativas } from "../utils/util";
-
-export const TIPO_ORDENACAO = Object.freeze({
-    NAO_EMBARALHAR: 0,
-    ALEATORIO: 1,
-    ASCENDENTE: 2,
-    DESCENDENTE: 3,
-});
+import { TIPO_ORDENACAO } from '../../LayoutAvaliacaoBuilder';
 
 export default class OrderHandler extends Handler {
 
@@ -85,14 +79,19 @@ export default class OrderHandler extends Handler {
         clone.style.maxWidth = "none";
 
         root.appendChild(clone);
-        const target = clone.querySelector(".media-corpo") || clone;
-        const width = target.getBoundingClientRect().width;
-        root.removeChild(clone);
+        let width = 0;
+        try {
+            const target = clone.querySelector(".media-corpo") || clone;
+            width = target.getBoundingClientRect().width;
+            if (width <= 0) {
+                const fallbackText = (target.textContent || "").trim();
+                return fallbackText.length;
+            }
+        } finally {
+            root.removeChild(clone);
+        }
 
-        if (width > 0) return width;
-
-        const fallbackText = (target.textContent || "").trim();
-        return fallbackText.length;
+        return width;
     }
 
     getMeasureRoot() {

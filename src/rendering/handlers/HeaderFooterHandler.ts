@@ -87,24 +87,16 @@ export default class HeaderFooterHandler extends Handler {
   calculateRealHeight(element: any) {
     if (!element) return 0;
 
-    // Optimization: Single DOM Read Phase
-    // Get all necessary metrics in one go to minimize browser recalculations
     const { height } = element.getBoundingClientRect();
     const styles = window.getComputedStyle(element);
 
-    // Helper to avoid repetitive parsing
     const getInt = (val: string) => {
       const parsed = parseInt(val);
       return isNaN(parsed) ? 0 : parsed;
     };
 
-    // Calculate sum of vertical spacings
     const margins = getInt(styles.marginTop) + getInt(styles.marginBottom);
-    const paddings = getInt(styles.paddingTop) + getInt(styles.paddingBottom);
-    const borders = getInt(styles.borderTopWidth) + getInt(styles.borderBottomWidth);
 
-    // Note: getBoundingClientRect height already includes padding and border in standard box-model,
-    // but we preserve the original logic which added them again (possibly for specific Paged.js requirements or custom box-sizing)
-    return height + margins + paddings + borders;
+    return height + margins;
   }
 }

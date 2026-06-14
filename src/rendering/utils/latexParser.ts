@@ -54,19 +54,16 @@ function renderWithDelimiters(latexString, delimiters) {
   return htmlString;
 }
 
-function latexParser(text) {
-  
+function latexParser(text: string): string {
   const regex = /<span class=\\*"math-tex\\*">([.\s\S]*?)<\/span>/g;
 
-  let match;
+  let dataModified = text;
 
-  let dataModified = text;  
-  
+  let match: RegExpExecArray | null;
+  regex.lastIndex = 0;
   while ((match = regex.exec(text)) !== null) {
-    let renderFormula;
     try {
-      
-      renderFormula = renderWithDelimiters(
+      const renderFormula = renderWithDelimiters(
         decodeHTML(match[1]).replace(/\u00A0/g, " "),
         delimiters
       );
@@ -74,7 +71,6 @@ function latexParser(text) {
         match[0],
         `<span class="math-tex">${renderFormula}</span>`
       );
-      
     } catch (e) {
       console.log(e);
     }
