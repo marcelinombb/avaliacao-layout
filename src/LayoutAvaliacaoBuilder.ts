@@ -1,5 +1,6 @@
 import { LayoutAvaliacao } from "./LayoutAvaliacao";
 import { AssessmentInput } from './types/AssessmentInput';
+import latexParser from './rendering/utils/latexParser';
 
 export const TIPO_ORDENACAO = {
   NAO_EMBARALHAR: 0,
@@ -44,6 +45,7 @@ export class LayoutAvaliacaoBuilder {
   paginacaoAtiva: boolean;
   _identificacao: string;
   _gabarito: boolean;
+  _latex: boolean;
   tipoOrdenacaoAlternativa: number;
   _tipoAlternativa: number | null;
   _rascunhoHtml: string;
@@ -70,6 +72,7 @@ export class LayoutAvaliacaoBuilder {
     this._tipoAlternativa = null;
     this.comMarcaDaguaRascunho = false;
     this.quantidadeFolhasRascunho = 0;
+    this._latex = false;
   }
 
   /**
@@ -268,6 +271,11 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
+  latex() {
+    this._latex = true;
+    return this;
+  }
+
   /**
    * Builds and freezes the final layout output from the given assessment input. Call this last after all configuration methods.
    * REQUIRED — must be called to produce output.
@@ -290,8 +298,14 @@ export class LayoutAvaliacaoBuilder {
       paginacaoAtiva: this.paginacaoAtiva,
     });
 
+    let layoutHtml = layoutAvaliacao.avalicaoHtml();
+
+    if (this._latex) {
+      layoutHtml = latexParser(layoutHtml);
+    }
+
     return Object.freeze({
-      layoutHtml: layoutAvaliacao.avalicaoHtml(),
+      layoutHtml: layoutHtml,
       cssVars: {
         "--layout-font-size": this.fontSize + "px",
         "--layout-watermark-rascunho": this._marcaDaquaRascunho

@@ -245,7 +245,8 @@
         .rascunho(draftPages)
         .ordemAlternativa(ordemAlternativa)
         .tipoAlternativa(tipoAlternativa)
-        .paginacao();
+        .paginacao()
+        .latex();
 
       if (addDraftWatermark) {
         layoutBuilder.marcaDaguaRascunho("public/assets/marcadagua/marcadagua_semfundo.png");
@@ -260,9 +261,8 @@
       }
 
       const layoutResult = layoutBuilder.build(assessmentInput);
-      const layoutHtml = AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
 
-      return AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
+      return AvaliacaoLayout.LayoutRenderer.render(layoutResult, ["public/css/layout-avaliacao.css"], pagesContainer).then(() => {
         resizer();
         if (overlay) overlay.style.display = "none";
         if (questionId) {
