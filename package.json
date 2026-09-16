@@ -39,7 +39,6 @@
     "typescript-eslint": "^8.60.1"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.4",
     "entities": "^6.0.1",
     "handlebars": "^4.7.8",
     "katex": "^0.16.22",
