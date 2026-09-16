@@ -15,14 +15,10 @@ class ColumnHandler extends Handler {
         const style = document.createElement('style');
         style.id = 'pagedjs-column-styles';
         style.innerHTML = `
-            .pagedjs_column > * { 
-                break-before: auto !important; 
+            .pagedjs_column > * {
+                break-before: auto !important;
                 page-break-before: auto !important;
                 break-inside: auto !important;
-            }
-            .pagedjs_column img, .pagedjs_column figure {
-                max-width: fit-content !important;
-                height: auto !important;
             }
             .pagedjs_column table {
                 max-width: 100% !important;
@@ -148,4 +144,3 @@ class ColumnHandler extends Handler {
 }
 
 export default ColumnHandler;
-
