@@ -1,5 +1,11 @@
 // @ts-nocheck
 // main.ts
+import '../../public/css/exitus-questao-style.css';
+import '../../public/css/linhas-resposta.css';
+import '../../public/css/pages.css';
+import '../../public/css/preview-editor.css';
+import '../css/main.css';
+
 import { monacoManager } from './monaco-manager';
 import { createLayout, replacePlaceholders, latexParser, LayoutRenderer } from '../../src/index';
 
@@ -145,6 +151,24 @@ function renderizarPreview() {
     try {
         replacePlaceholders(formSubmitObj);
 
+        // Convert legacy payload to strict AssessmentInput domain contract
+        const assessmentInput = {
+            id: formSubmitObj.prova.codigo || formSubmitObj.codigo,
+            title: formSubmitObj.prova.nome || formSubmitObj.nome,
+            layout: formSubmitObj.prova.layout,
+            questions: formSubmitObj.listaProvaQuestao.map(q => ({
+                id: q.questao?.codigo || q.codigo,
+                order: q.ordem,
+                value: q.valor,
+                type: q.questao?.tipoQuestao,
+                visualizaQuestaoRaw: q.questao?.visualizaQuestao,
+                linhasBranco: q.linhasBranco,
+                numeroLinhas: q.numeroLinhas,
+                tipoLinha: q.tipoLinha,
+                quebraPagina: q.quebraPagina
+            }))
+        };
+
         const builder = createLayout()
             .pageHeader(layoutConfig.cabecalhoPagina)
             .fonteTamanho(layoutConfig.fonteTamanho)
@@ -165,12 +189,12 @@ function renderizarPreview() {
             builder.marcaDaguaInstituicao(layoutConfig.marcaDagua);
         }
 
-        let layoutResult = builder.build(formSubmitObj);
+        let layoutResult = builder.build(assessmentInput);
         let layoutHtml = latexParser(layoutResult.layoutHtml);
 
         pagesContainer.innerHTML = '';
 
-        LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["../public/css/layout-avaliacao.css"], pagesContainer)
+        LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["/css/layout-avaliacao.css"], pagesContainer)
             .then(() => {
                 resizer();
             })
@@ -284,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    fetch('../layout-output.json')
+    fetch('/layout-output.json')
         .then(res => res.json())
         .then(data => {
             const setVal = (id, val) => {
