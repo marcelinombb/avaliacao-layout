@@ -41,25 +41,33 @@ export default class HeaderFooterHandler extends Handler {
   createFooterArea(page: any, content: string, cacheKey: string) {
     const pageArea = page.element.querySelector(".pagedjs_area");
 
-    if (pageArea && pageArea.querySelector(".pagedjs_footer_area")) return;
+    if (!pageArea || pageArea.querySelector(".pagedjs_footer_area")) return;
+
+    if (!content) {
+      page.element.style.setProperty("--pagedjs-footer-height", "0px");
+      return;
+    }
 
     const footerArea = document.createElement("footer");
     footerArea.classList.add("pagedjs_footer_area");
     footerArea.innerHTML = content;
     pageArea.appendChild(footerArea);
 
-    const height = this.getCachedHeight(cacheKey, footerArea.firstElementChild);
+    // FIX: measure the whole footer area, not just its first child, to avoid 0 height if text-only or multiple children
+    const height = this.getCachedHeight(cacheKey, footerArea);
 
-    page.element.style.setProperty(
-      "--pagedjs-footer-height",
-      height + "px"
-    );
+    page.element.style.setProperty("--pagedjs-footer-height", height + "px");
   }
 
   createHeaderArea(page: any, content: string, cacheKey: string) {
     const pageArea = page.element.querySelector(".pagedjs_area");
 
-    if (pageArea && pageArea.querySelector(".pagedjs_headernote_area")) return;
+    if (!pageArea || pageArea.querySelector(".pagedjs_headernote_area")) return;
+
+    if (!content) {
+      page.element.style.setProperty("--pagedjs-header-height", "0px");
+      return;
+    }
 
     const headerArea = document.createElement("header");
     headerArea.classList.add("pagedjs_headernote_area");
@@ -68,10 +76,7 @@ export default class HeaderFooterHandler extends Handler {
 
     const height = this.getCachedHeight(cacheKey, headerArea);
 
-    page.element.style.setProperty(
-      "--pagedjs-header-height",
-      height + "px"
-    );
+    page.element.style.setProperty("--pagedjs-header-height", height + "px");
   }
 
   getCachedHeight(key: string, element: any) {
@@ -90,12 +95,12 @@ export default class HeaderFooterHandler extends Handler {
     const { height } = element.getBoundingClientRect();
     const styles = window.getComputedStyle(element);
 
-    const getInt = (val: string) => {
-      const parsed = parseInt(val);
+    const getFloat = (val: string) => {
+      const parsed = parseFloat(val);
       return isNaN(parsed) ? 0 : parsed;
     };
 
-    const margins = getInt(styles.marginTop) + getInt(styles.marginBottom);
+    const margins = getFloat(styles.marginTop) + getFloat(styles.marginBottom);
 
     return height + margins;
   }

@@ -276,6 +276,29 @@ export class LayoutAvaliacaoBuilder {
     return this;
   }
 
+  private safeCssUrl(u: string): string {
+    return u.replace(/[")\\\n\r]/g, encodeURIComponent);
+  }
+
+  private safeCssString(s: string): string {
+    return s.replace(/["\\]/g, '\\$&');
+  }
+
+  private generateCssVars(): Record<string, string> {
+    return {
+      "--layout-font-size": `${this.fontSize}px`,
+      "--layout-watermark-rascunho": this._marcaDaquaRascunho
+        ? `url("${this.safeCssUrl(this._marcaDaquaRascunho)}")`
+        : "none",
+      "--layout-watermark-instituicao": this._marcaDaguaInstituicao
+        ? `url("${this.safeCssUrl(this._marcaDaguaInstituicao)}")`
+        : "none",
+      "--layout-identificacao": this._identificacao
+        ? `"${this.safeCssString(this._identificacao)}"`
+        : "none",
+    };
+  }
+
   /**
    * Builds and freezes the final layout output from the given assessment input. Call this last after all configuration methods.
    * REQUIRED — must be called to produce output.
@@ -283,10 +306,6 @@ export class LayoutAvaliacaoBuilder {
    * @returns {Readonly<{ layoutHtml: string; cssVars: Record<string, string>; folhaDeRosto: object; header: string; footer: string; comMarcaDaguaRascunho: boolean; ordemAlternativa: number; tipoAlternativa: any; handlers: never[] }>} — frozen result object. layoutHtml is the full HTML to inject into the DOM. cssVars are CSS custom properties to apply to the container. handlers is always an empty array; Paged.js handlers are registered externally by the host application.
    */
   build(input: AssessmentInput): BuildResult {
-    // Sanitize values used inside CSS url() and string contexts to prevent CSS injection
-    const safeCssUrl = (u: string) => u.replace(/[")\\\n\r]/g, encodeURIComponent);
-    const safeCssString = (s: string) => s.replace(/["\\]/g, '\\$&');
-
     const layoutAvaliacao = new LayoutAvaliacao(input, {
       fontSize: this.fontSize,
       folhaDeRosto: this._folhaDeRosto.content,
@@ -306,18 +325,7 @@ export class LayoutAvaliacaoBuilder {
 
     return Object.freeze({
       layoutHtml: layoutHtml,
-      cssVars: {
-        "--layout-font-size": this.fontSize + "px",
-        "--layout-watermark-rascunho": this._marcaDaquaRascunho
-          ? `url("${safeCssUrl(this._marcaDaquaRascunho)}")`
-          : "none",
-        "--layout-watermark-instituicao": this._marcaDaguaInstituicao
-          ? `url("${safeCssUrl(this._marcaDaguaInstituicao)}")`
-          : "none",
-        "--layout-identificacao": this._identificacao
-          ? `"${safeCssString(this._identificacao)}"`
-          : "none",
-      },
+      cssVars: this.generateCssVars(),
       folhaDeRosto: this._folhaDeRosto,
       header: this.header,
       footer: this.footer,

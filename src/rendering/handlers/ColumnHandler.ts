@@ -12,28 +12,30 @@ class ColumnHandler extends Handler {
 
         // Inject global styles to prevent forced breaks inside columns
         // This ensures that the first element doesn't immediately break out of the first column
-        const style = document.createElement('style');
-        style.id = 'pagedjs-column-styles';
-        style.innerHTML = `
-            .pagedjs_column > * {
-                break-before: auto !important;
-                page-break-before: auto !important;
-                break-inside: auto !important;
-            }
-            .pagedjs_column table {
-                max-width: 100% !important;
-                width: 100% !important;
-                height: auto !important;
-            }
-            .pagedjs_column_1 {
-                padding-right: 10px;
-                border-right: solid 1px rgb(66, 65, 65);
-            }
-            .pagedjs_column_2 {
-                padding-left: 10px;
-            }
-        `;
-        document.head.appendChild(style);
+        if (!document.getElementById('pagedjs-column-styles')) {
+            const style = document.createElement('style');
+            style.id = 'pagedjs-column-styles';
+            style.innerHTML = `
+                .pagedjs_column > * {
+                    break-before: auto !important;
+                    page-break-before: auto !important;
+                    break-inside: auto !important;
+                }
+                .pagedjs_column table {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    height: auto !important;
+                }
+                .pagedjs_column_1 {
+                    padding-right: 10px;
+                    border-right: solid 1px rgb(66, 65, 65);
+                }
+                .pagedjs_column_2 {
+                    padding-left: 10px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
     /**
      * Hook called before page layout.
@@ -48,21 +50,25 @@ class ColumnHandler extends Handler {
         // If no column count is defined, return and let Paged.js handle layout normally
         if (isNaN(columnCount) || columnCount < 2) {
 
-            const originalGetBoundingClientRect = page.area.getBoundingClientRect.bind(page.area);
-            page.area.getBoundingClientRect = () => {
-                const layoutBounds = originalGetBoundingClientRect();
-                return {
-                    left: layoutBounds.left,
-                    top: layoutBounds.top,
-                    right: layoutBounds.right,
-                    bottom: layoutBounds.bottom - 2,
-                    width: layoutBounds.width,
-                    height: layoutBounds.height - 2,
-                    x: layoutBounds.x,
-                    y: layoutBounds.y,
-                    toJSON: () => layoutBounds.toJSON()
+            // Prevent double-wrapping of getBoundingClientRect if layout is run multiple times
+            if (!page.area._boundsPatched) {
+                const originalGetBoundingClientRect = page.area.getBoundingClientRect.bind(page.area);
+                page.area.getBoundingClientRect = () => {
+                    const layoutBounds = originalGetBoundingClientRect();
+                    return {
+                        left: layoutBounds.left,
+                        top: layoutBounds.top,
+                        right: layoutBounds.right,
+                        bottom: layoutBounds.bottom - 2,
+                        width: layoutBounds.width,
+                        height: layoutBounds.height - 2,
+                        x: layoutBounds.x,
+                        y: layoutBounds.y,
+                        toJSON: () => layoutBounds.toJSON()
+                    };
                 };
-            };
+                page.area._boundsPatched = true;
+            }
 
             return;
         }
