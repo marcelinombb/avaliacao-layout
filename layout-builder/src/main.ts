@@ -1,5 +1,7 @@
-// main.js
-import { monacoManager } from './monaco-manager.js';
+// @ts-nocheck
+// main.ts
+import { monacoManager } from './monaco-manager';
+import { createLayout, replacePlaceholders, latexParser, LayoutRenderer } from '../../src/index';
 
 /**
  * Utilitário para debounce
@@ -94,23 +96,23 @@ function getLayoutConfigFromForm() {
     monacoManager.syncToTextareas();
 
     return {
-        codigo: parseInt(document.getElementById('layout-codigo').value, 10) || 0,
-        nome: document.getElementById('layout-nome').value,
-        colunas: parseInt(document.getElementById('layout-colunas').value, 10) || 1,
-        tipoFolha: document.getElementById('layout-tipoFolha').value,
-        orientacaoFolha: document.getElementById('layout-orientacao').value,
-        fonte: document.getElementById('layout-fonte').value,
-        fonteTamanho: parseInt(document.getElementById('layout-fonteTamanho').value, 10) || 12,
-        cabecalho: document.getElementById('layout-cabecalho').value,
-        rodape: document.getElementById('layout-rodape').value,
+        codigo: parseInt((document.getElementById('layout-codigo') as any).value, 10) || 0,
+        nome: (document.getElementById('layout-nome') as any).value,
+        colunas: parseInt((document.getElementById('layout-colunas') as any).value, 10) || 1,
+        tipoFolha: (document.getElementById('layout-tipoFolha') as any).value,
+        orientacaoFolha: (document.getElementById('layout-orientacao') as any).value,
+        fonte: (document.getElementById('layout-fonte') as any).value,
+        fonteTamanho: parseInt((document.getElementById('layout-fonteTamanho') as any).value, 10) || 12,
+        cabecalho: (document.getElementById('layout-cabecalho') as any).value,
+        rodape: (document.getElementById('layout-rodape') as any).value,
         folhasRascunho: 1,
-        folhaRosto: document.getElementById('layout-folhaRosto').value,
-        cabecalhoPagina: document.getElementById('layout-cabecalhoPagina').value,
-        cabecalhoQuestao: document.getElementById('layout-cabecalhoQuestao').value,
-        cabecalhoPrimeiraQuestao: document.getElementById('layout-cabecalhoPrimeiraQuestao').value,
-        rascunho: document.getElementById('layout-rascunho').value,
-        paginacao: document.getElementById('layout-paginacao').value,
-        marcaDagua: document.getElementById('layout-marcaDagua').value,
+        folhaRosto: (document.getElementById('layout-folhaRosto') as any).value,
+        cabecalhoPagina: (document.getElementById('layout-cabecalhoPagina') as any).value,
+        cabecalhoQuestao: (document.getElementById('layout-cabecalhoQuestao') as any).value,
+        cabecalhoPrimeiraQuestao: (document.getElementById('layout-cabecalhoPrimeiraQuestao') as any).value,
+        rascunho: (document.getElementById('layout-rascunho') as any).value,
+        paginacao: (document.getElementById('layout-paginacao') as any).value,
+        marcaDagua: (document.getElementById('layout-marcaDagua') as any).value,
 
         origemQuestao: false,
         ordemQuestaoPersonalizada: false,
@@ -126,16 +128,11 @@ function getLayoutConfigFromForm() {
 }
 
 function renderizarPreview() {
-    if (typeof window.AvaliacaoLayout === 'undefined') {
-        setTimeout(renderizarPreview, 500);
-        return;
-    }
-
-    const pagesContainer = document.getElementById('pages-container');
+    const pagesContainer = (document.getElementById('pages-container') as any);
     if (!pagesContainer) return;
 
     const layoutConfig = getLayoutConfigFromForm();
-    const mockCount = parseInt(document.getElementById('layout-mockQuestoes')?.value, 10) || 3;
+    const mockCount = parseInt((document.getElementById('layout-mockQuestoes') as any)?.value, 10) || 3;
 
     const formSubmitObj = {
         ...mockProva,
@@ -146,9 +143,9 @@ function renderizarPreview() {
     pagesContainer.classList.toggle("pages_pages_one_page", true);
 
     try {
-        window.AvaliacaoLayout.replacePlaceholders(formSubmitObj);
+        replacePlaceholders(formSubmitObj);
 
-        const builder = window.AvaliacaoLayout.createLayout()
+        const builder = createLayout()
             .pageHeader(layoutConfig.cabecalhoPagina)
             .fonteTamanho(layoutConfig.fonteTamanho)
             .folhaDeRosto({
@@ -169,11 +166,11 @@ function renderizarPreview() {
         }
 
         let layoutResult = builder.build(formSubmitObj);
-        let layoutHtml = window.AvaliacaoLayout.latexParser(layoutResult.layoutHtml);
+        let layoutHtml = latexParser(layoutResult.layoutHtml);
 
         pagesContainer.innerHTML = '';
 
-        window.AvaliacaoLayout.LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["../public/css/layout-avaliacao.css"], pagesContainer)
+        LayoutRenderer.render({ ...layoutResult, layoutHtml }, ["../public/css/layout-avaliacao.css"], pagesContainer)
             .then(() => {
                 resizer();
             })
@@ -242,9 +239,9 @@ function resizer() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    document.getElementById('btn-render-preview').addEventListener('click', renderizarPreview);
-    document.getElementById('btn-print-preview').addEventListener('click', () => window.print());
-    document.getElementById('btn-export-json').addEventListener('click', exportarJSON);
+    (document.getElementById('btn-render-preview') as any).addEventListener('click', renderizarPreview);
+    (document.getElementById('btn-print-preview') as any).addEventListener('click', () => window.print());
+    (document.getElementById('btn-export-json') as any).addEventListener('click', exportarJSON);
 
     window.addEventListener('resize', resizer);
 
@@ -254,9 +251,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Placeholder Sidebar Logic
-    const sidebar = document.getElementById('placeholders-sidebar');
-    const btnHelp = document.getElementById('btn-help-placeholders');
-    const btnClose = document.getElementById('close-placeholders');
+    const sidebar = (document.getElementById('placeholders-sidebar') as any);
+    const btnHelp = (document.getElementById('btn-help-placeholders') as any);
+    const btnClose = (document.getElementById('close-placeholders') as any);
 
     if (btnHelp && sidebar) {
         btnHelp.addEventListener('click', () => {
@@ -291,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => {
             const setVal = (id, val) => {
-                const element = document.getElementById(id);
+                const element = (document.getElementById(id) as any);
                 if (val !== null && val !== undefined && element) {
                     element.value = val;
                 }

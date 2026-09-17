@@ -291,13 +291,11 @@
         </div>
     </div>
 
-    <!-- Paged.js e AvaliacaoLayout dependem de estarem no escopo global ou ser módulos -->
-    <script src="../dist/avaliacao-layout.umd.js"></script>
+    <!-- Paged.js -->
+    <!-- (We no longer need to import AvaliacaoLayout umd.js since we use Vite and import from source) -->
 
-    <!-- Carregando Monaco a partir do node_modules dentro da pasta layout-builder -->
-    <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
-
-    <script src="js/main.js" type="module"></script>
+    <!-- Carregando Main via Vite -->
+    <script src="/src/main.ts" type="module"></script>
 </body>
 
 </html>

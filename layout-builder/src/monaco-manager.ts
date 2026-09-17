@@ -1,49 +1,50 @@
-// monaco-manager.js
+// @ts-nocheck
+import * as monaco from 'monaco-editor';
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+
+self.MonacoEnvironment = {
+    getWorker(_: any, label: string) {
+        if (label === 'json') { return new jsonWorker(); }
+        if (label === 'css' || label === 'scss' || label === 'less') { return new cssWorker(); }
+        if (label === 'html' || label === 'handlebars' || label === 'razor') { return new htmlWorker(); }
+        if (label === 'typescript' || label === 'javascript') { return new tsWorker(); }
+        return new editorWorker();
+    }
+};
 
 export class MonacoManager {
-    constructor() {
-        this.editors = {};
-        this.isInitialized = false;
-        this.isInitializing = false;
-        this.onReadyCallbacks = [];
-        this.onChangeCallbacks = [];
+    editors: Record<string, monaco.editor.IStandaloneCodeEditor> = {};
+    isInitialized: boolean = false;
+    isInitializing: boolean = false;
+    onReadyCallbacks: Array<() => void> = [];
+    onChangeCallbacks: Array<() => void> = [];
 
-        // Controle de colapso de Base64
-        this.decorationsMap = {}; // editorId -> base64DecoIds
-        this.expandedRangesMap = {}; // editorId -> Set(rangeKey)
-    }
+    decorationsMap: Record<string, string[]> = {};
+    expandedRangesMap: Record<string, Set<string>> = {};
+    base64Map: Record<string, string> = {};
+    isInternalEdit: boolean = false;
 
     init() {
         if (this.isInitialized || this.isInitializing) return;
-
-        if (typeof require === 'undefined') {
-            console.error('Monaco loader (loader.js) não foi encontrado no global scope.');
-            return;
-        }
-
         this.isInitializing = true;
 
         try {
-            require.config({
-                paths: { 'vs': 'node_modules/monaco-editor/min/vs' }
-            });
+            this.createEditors();
+            this.isInitialized = true;
+            this.isInitializing = false;
 
-            require(['vs/editor/editor.main'], () => {
-                this.createEditors();
-                this.isInitialized = true;
-                this.isInitializing = false;
-
-                this.onReadyCallbacks.forEach(cb => cb());
-                this.onReadyCallbacks = [];
-            }, (err) => {
-                console.error('Erro ao carregar os módulos do Monaco:', err);
-                this.isInitializing = false;
-            });
+            this.onReadyCallbacks.forEach(cb => cb());
+            this.onReadyCallbacks = [];
         } catch (e) {
             console.error('Erro crítico na inicialização do MonacoManager:', e);
             this.isInitializing = false;
         }
     }
+
 
     onReady(callback) {
         if (this.isInitialized) {
@@ -75,12 +76,12 @@ export class MonacoManager {
         ];
 
         editorConfigs.forEach(config => {
-            const container = document.getElementById(config.container);
-            const textarea = document.getElementById(config.id);
+            const container = (document.getElementById(config.container) as any);
+            const textarea = (document.getElementById(config.id) as any);
             if (container && textarea) {
-                // `monaco` global is available after require(['vs/editor/editor.main'])
-                const editor = window.monaco.editor.create(container, {
-                    value: textarea.value,
+                // `monaco` is imported directly via ESM
+                const editor = monaco.editor.create(container as HTMLElement, {
+                    value: (textarea as HTMLTextAreaElement).value,
                     language: 'html',
                     theme: 'vs-dark',
                     automaticLayout: true,
@@ -208,7 +209,7 @@ export class MonacoManager {
      */
     updateBase64Decorations(id) {
         const editor = this.editors[id];
-        if (!editor || !window.monaco) return;
+        if (!editor || !monaco) return;
 
         if (this.isInternalEdit) return;
         if (!this.base64Map) this.base64Map = {};
@@ -230,7 +231,7 @@ export class MonacoManager {
             const endPos = model.getPositionAt(match.index + rawBase64.length);
 
             edits.push({
-                range: new window.monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column),
+                range: new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column),
                 text: `__BASE64_${base64Id}__`,
                 forceMoveMarkers: true
             });
@@ -250,21 +251,21 @@ export class MonacoManager {
         while ((tokenMatch = tokenRegex.exec(newText)) !== null) {
             const startPos = model.getPositionAt(tokenMatch.index);
             const endPos = model.getPositionAt(tokenMatch.index + tokenMatch[0].length);
-            const range = new window.monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column);
+            const range = new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column);
 
             newDecorations.push({
                 range: range,
                 options: {
                     inlineClassName: 'base64-hidden',
-                    stickiness: window.monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+                    stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
                 }
             });
 
             newDecorations.push({
-                range: new window.monaco.Range(startPos.lineNumber, startPos.column, startPos.lineNumber, startPos.column),
+                range: new monaco.Range(startPos.lineNumber, startPos.column, startPos.lineNumber, startPos.column),
                 options: {
                     beforeContentClassName: 'base64-placeholder',
-                    stickiness: window.monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+                    stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
                 }
             });
         }
@@ -278,17 +279,17 @@ export class MonacoManager {
 
     openBase64Editor(editorId, base64Id) {
         const editor = this.editors[editorId];
-        if (!editor || !window.monaco) return;
+        if (!editor || !monaco) return;
 
         const base64Content = this.base64Map[base64Id] || "";
 
-        const overlay = document.getElementById('base64-overlay');
-        const textarea = document.getElementById('base64-textarea');
-        const imgPreview = document.getElementById('base64-img-preview');
-        const fileInput = document.getElementById('base64-file-input');
-        const btnUpload = document.getElementById('base64-btn-upload');
-        const btnCancel = document.getElementById('base64-btn-cancel');
-        const btnSave = document.getElementById('base64-btn-save');
+        const overlay = (document.getElementById('base64-overlay') as any);
+        const textarea = (document.getElementById('base64-textarea') as any);
+        const imgPreview = (document.getElementById('base64-img-preview') as any);
+        const fileInput = (document.getElementById('base64-file-input') as any);
+        const btnUpload = (document.getElementById('base64-btn-upload') as any);
+        const btnCancel = (document.getElementById('base64-btn-cancel') as any);
+        const btnSave = (document.getElementById('base64-btn-save') as any);
 
         if (!overlay || !textarea || !imgPreview) return;
 
@@ -331,7 +332,7 @@ export class MonacoManager {
                 const start = model.getPositionAt(match.index);
                 const end = model.getPositionAt(match.index + match[0].length);
                 edits.push({
-                    range: new window.monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
+                    range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
                     text: newValue,
                     forceMoveMarkers: true
                 });
@@ -357,7 +358,7 @@ export class MonacoManager {
     }
 
     toggleFullscreen(id) {
-        const wrapper = document.getElementById(`wrapper-${id}`);
+        const wrapper = (document.getElementById(`wrapper-${id}`) as any);
         if (!wrapper) return;
 
         const isFullscreen = wrapper.classList.toggle('fullscreen-wrapper');
@@ -392,7 +393,7 @@ export class MonacoManager {
 
     syncToTextareas() {
         Object.keys(this.editors).forEach(id => {
-            const textarea = document.getElementById(id);
+            const textarea = (document.getElementById(id) as any);
             if (textarea) {
                 textarea.value = this.getRealValue(id);
             }
