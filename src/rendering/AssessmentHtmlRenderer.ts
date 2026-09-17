@@ -1,10 +1,12 @@
 import { QuestionRenderer } from "./components/QuestionRenderer";
+import { Assessment } from "../domain/Assessment";
+import { LayoutOptions } from "../types/LayoutOptions";
 
 export class AssessmentHtmlRenderer {
-    assessment: any;
-    options: any;
+    assessment: Assessment;
+    options: LayoutOptions;
 
-    constructor(assessment: any, options: any) {
+    constructor(assessment: Assessment, options: LayoutOptions) {
         this.assessment = assessment;
         this.options = options;
     }

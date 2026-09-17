@@ -67,7 +67,20 @@ Handlebars.registerHelper("default", function (this: any, options) {
     }
 });
 
-export const renderQuestion = (context: any) => {
+import { Question } from "../domain/Question";
+import { AssessmentLayout } from "../domain/Assessment";
+import { LayoutOptions } from "../types/LayoutOptions";
+
+export interface QuestionContext {
+    question: Question;
+    displayOrder: number;
+    assessmentLayout: AssessmentLayout;
+    options: LayoutOptions;
+    isMultiplaEscolha: boolean;
+    useRaw: boolean;
+}
+
+export const renderQuestion = (context: QuestionContext) => {
     return (questionTpl as any)(context, {
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true

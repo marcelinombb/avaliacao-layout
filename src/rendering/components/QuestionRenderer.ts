@@ -1,18 +1,21 @@
-import { renderQuestion } from "../Hbs";
+import { renderQuestion, QuestionContext } from "../Hbs";
+import { Question } from "../../domain/Question";
+import { AssessmentLayout } from "../../domain/Assessment";
+import { LayoutOptions } from "../../types/LayoutOptions";
 
 export class QuestionRenderer {
-    question: any;
-    assessmentLayout: any;
-    options: any;
+    question: Question;
+    assessmentLayout: AssessmentLayout;
+    options: LayoutOptions;
 
-    constructor(question: any, assessmentLayout: any, options: any) {
+    constructor(question: Question, assessmentLayout: AssessmentLayout, options: LayoutOptions) {
         this.question = question;
         this.assessmentLayout = assessmentLayout;
         this.options = options;
     }
 
     render() {
-        const context: any = {
+        const context: QuestionContext = {
             question: this.question,
             displayOrder: this.question.order,
             assessmentLayout: this.assessmentLayout,
