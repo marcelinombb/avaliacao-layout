@@ -1,15 +1,21 @@
 import { defineConfig } from 'vite';
 
+import Handlebars from 'handlebars';
+
 const hbsPlugin = () => {
   return {
     name: 'hbs-plugin',
-    transform(src: string, id: string) {
-      if (id.endsWith('.hbs')) {
-        return {
-          code: `export default ${JSON.stringify(src)};`,
-          map: null
-        };
-      }
+    transform(code: string, id: string) {
+      if (!id.endsWith('.hbs')) return null;
+      const spec = Handlebars.precompile(code);
+      return {
+        code: `
+          import HandlebarsRuntime from 'handlebars/runtime';
+          const Handlebars = HandlebarsRuntime.default || HandlebarsRuntime;
+          export default Handlebars.template(${spec});
+        `,
+        map: null
+      };
     }
   };
 };
