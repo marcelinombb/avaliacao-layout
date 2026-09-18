@@ -145,6 +145,28 @@ export class MonacoManager {
 
                 // Inicializa decorações
                 this.updateBase64Decorations(config.id);
+
+                // Formata o HTML do editor via Ctrl+Shift+F
+                editor.addCommand(
+                    monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift, monaco.KeyCode.KeyF),
+                    () => this.formatEditor(config.id)
+                );
+
+                const formatBtn = document.createElement('button');
+                formatBtn.type = 'button';
+                formatBtn.className = 'btn-icon btn-format';
+                formatBtn.title = 'Formatar HTML (Ctrl+Shift+F)';
+                formatBtn.textContent = '{}';
+                formatBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.formatEditor(config.id);
+                });
+
+                const wrapper = container.closest('.editor-wrapper');
+                const header = wrapper?.querySelector('.editor-header');
+                if (header) {
+                    header.appendChild(formatBtn);
+                }
             }
         });
 
@@ -389,6 +411,27 @@ export class MonacoManager {
         return text.replace(/__BASE64_([a-zA-Z0-9]+)__/g, (match, base64Id) => {
             return this.base64Map[base64Id] || match;
         });
+    }
+
+    async formatEditor(id) {
+        const editor = this.editors[id];
+        if (!editor) return;
+
+        this.isInternalEdit = true;
+        try {
+            const action = editor.getAction('editor.action.formatDocument');
+            if (action) {
+                await action.run();
+            }
+        } finally {
+            this.isInternalEdit = false;
+        }
+
+        this.updateBase64Decorations(id);
+    }
+
+    async formatAll() {
+        await Promise.all(Object.keys(this.editors).map(id => this.formatEditor(id)));
     }
 
     syncToTextareas() {

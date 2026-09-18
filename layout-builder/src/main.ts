@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     (document.getElementById('btn-render-preview') as any).addEventListener('click', renderizarPreview);
     (document.getElementById('btn-print-preview') as any).addEventListener('click', () => window.print());
     (document.getElementById('btn-export-json') as any).addEventListener('click', exportarJSON);
+    (document.getElementById('btn-format-html') as any).addEventListener('click', () => monacoManager.formatAll());
 
     window.addEventListener('resize', resizer);
 
@@ -338,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             monacoManager.onReady(() => {
                 monacoManager.onChange(debouncedRender);
+                monacoManager.formatAll();
                 renderizarPreview();
             });
         })
@@ -346,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             monacoManager.init();
             monacoManager.onChange(debouncedRender);
             monacoManager.onReady(() => {
+                monacoManager.formatAll();
                 renderizarPreview();
             });
         });
