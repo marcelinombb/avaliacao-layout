@@ -1,4 +1,41 @@
 @charset "UTF-8";
+/* Shared styles for insert paragraph buttons on block widgets (Figure, Table, AnswerBox) */
+.insert-paragraph-btn {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: #ffc83d;
+  color: white;
+  border-radius: 50%;
+  display: none;
+  z-index: 30;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+}
+.insert-paragraph-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.insert-paragraph-btn:hover {
+  background-color: #3b82f6;
+}
+
+.ex-selected .insert-paragraph-btn {
+  background-color: #3b82f6;
+}
+
+.insert-paragraph-before {
+  top: -12px;
+  left: 20px;
+}
+
+.insert-paragraph-after {
+  bottom: -12px;
+  right: 20px;
+}
 
 /* Estilos para redimensionamento de imagem */
 .resizers-container {
@@ -57,7 +94,7 @@
   cursor: nwse-resize;
 }
 
-.ex-image-wrapper+br.ProseMirror-trailingBreak {
+.ex-image-wrapper + br.ProseMirror-trailingBreak {
   display: none;
 }
 
@@ -76,7 +113,7 @@
   display: block;
 }
 
-.ex-image-wrapper:not([style*=width]) {
+.ex-image-wrapper:not([style*='width']) {
   width: 400px;
 }
 
@@ -278,50 +315,6 @@ figcaption {
   display: none;
 }
 
-/* Styles for Insert Paragraph Buttons */
-.insert-paragraph-btn {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background-color: #ffc83d;
-  color: white;
-  border-radius: 50%;
-  display: none;
-  z-index: 30;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s;
-  align-items: center;
-  justify-content: center;
-}
-
-.ex-selected .insert-paragraph-btn {
-  background-color: #3b82f6;
-}
-
-.insert-paragraph-btn:hover {
-  background-color: #3b82f6;
-}
-
-.insert-paragraph-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.insert-paragraph-before {
-  top: -12px;
-  left: 20px;
-}
-
-.insert-paragraph-after {
-  bottom: -12px;
-  right: 20px;
-}
-
-/* 
-.ex-image-wrapper+p:has(> br) {
-  display: none;
-} */
 /* Image Cropper Styles */
 .ex-crop-overlay {
   position: absolute;
@@ -489,12 +482,12 @@ figcaption {
   right: 0;
 }
 
-.colar-questao>.colar-content {
+.colar-questao > .colar-content {
   margin-top: 1.5rem;
   padding: 1rem;
 }
 
-.colar-questao>.colar-content.is-editable {
+.colar-questao > .colar-content.is-editable {
   border: 2px dashed #909294;
   border-radius: 0.5rem;
   margin: 2.5rem 1rem 1rem;
@@ -508,30 +501,25 @@ figcaption {
   margin: 0;
   overflow: hidden;
 }
-
 .exitus-tiptap-editor .tiptap table[data-no-outer-border] {
   border-style: hidden;
 }
-
 .exitus-tiptap-editor .tiptap table[data-no-vertical-border] td,
 .exitus-tiptap-editor .tiptap table[data-no-vertical-border] th {
   border-left: hidden;
   border-right: hidden;
 }
-
 .exitus-tiptap-editor .tiptap table[data-no-borders] {
   border-style: dotted;
   border-color: #bfbfbf;
   border-width: 1px;
 }
-
 .exitus-tiptap-editor .tiptap table[data-no-borders] td,
 .exitus-tiptap-editor .tiptap table[data-no-borders] th {
   border: dashed;
   border-color: #bfbfbf;
   border-width: 1px;
 }
-
 .exitus-tiptap-editor .tiptap table td,
 .exitus-tiptap-editor .tiptap table th {
   min-width: 2em;
@@ -541,22 +529,19 @@ figcaption {
   box-sizing: border-box;
   position: relative;
 }
-
-.exitus-tiptap-editor .tiptap table td>*,
-.exitus-tiptap-editor .tiptap table th>* {
+.exitus-tiptap-editor .tiptap table td > *,
+.exitus-tiptap-editor .tiptap table th > * {
   margin-bottom: 0;
 }
-
 .exitus-tiptap-editor .tiptap table th {
   font-weight: bold;
   text-align: left;
   background-color: #f1f3f5;
 }
-
 .exitus-tiptap-editor .tiptap table .selectedCell:after {
   z-index: 2;
   position: absolute;
-  content: "";
+  content: '';
   left: 0;
   right: 0;
   top: 0;
@@ -564,7 +549,6 @@ figcaption {
   background: rgba(200, 200, 255, 0.4);
   pointer-events: none;
 }
-
 .exitus-tiptap-editor .tiptap table .column-resize-handle {
   position: absolute;
   right: -2px;
@@ -574,61 +558,17 @@ figcaption {
   background-color: #adf;
   pointer-events: none;
 }
-
 .exitus-tiptap-editor .tiptap table p {
   margin: 0;
 }
-
 .exitus-tiptap-editor .tableWrapper {
   display: table;
   margin: 0.9em auto;
-  /* Styles for Insert Paragraph Buttons */
 }
-
-.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background-color: #ffc83d;
-  color: white;
-  border-radius: 50%;
-  display: none;
-  z-index: 30;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s;
-  align-items: center;
-  justify-content: center;
-}
-
 .exitus-tiptap-editor .tableWrapper.ex-selected .insert-paragraph-btn,
 .exitus-tiptap-editor .tableWrapper:hover .insert-paragraph-btn {
   display: flex;
 }
-
-.exitus-tiptap-editor .tableWrapper .ex-selected .insert-paragraph-btn {
-  background-color: #3b82f6;
-}
-
-.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn:hover {
-  background-color: #3b82f6;
-}
-
-.exitus-tiptap-editor .tableWrapper .insert-paragraph-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.exitus-tiptap-editor .tableWrapper .insert-paragraph-before {
-  top: -12px;
-  left: 20px;
-}
-
-.exitus-tiptap-editor .tableWrapper .insert-paragraph-after {
-  bottom: -12px;
-  right: 20px;
-}
-
 .exitus-tiptap-editor .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
@@ -637,30 +577,25 @@ figcaption {
 .preview-paper table[data-no-borders] {
   border-style: none !important;
 }
-
 .preview-paper table[data-no-borders] td,
 .preview-paper table[data-no-borders] th {
   border-style: none !important;
 }
 
 .ex-answer-box {
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   /* padding: 10px; */
   margin: 10px 0;
   /* border-radius: 4px; */
   position: relative;
-  background-color: #fff;
 }
-
 .ex-answer-box.ex-answer-box-no-border {
   border: 1px dashed #eee;
   border-color: transparent;
 }
-
 .ex-answer-box.ex-answer-box-no-border:hover {
   border-color: #eee;
 }
-
 .ex-answer-box .ex-answer-box-header {
   font-weight: bold;
   /* margin-bottom: 8px; */
@@ -670,85 +605,46 @@ figcaption {
   text-align: center;
   padding: 3px 0px 3px 0px;
 }
-
 .ex-answer-box .ex-answer-box-header:empty::before {
-  content: "Header...";
+  content: 'Header...';
   color: #999;
   font-style: italic;
 }
-
 .ex-answer-box .ex-answer-box-visuals {
   display: block;
 }
-
 .ex-answer-box .ex-answer-line {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #000;
   height: 30px;
   width: 100%;
   position: relative;
   display: flex;
   align-items: center;
 }
-
 .ex-answer-box .ex-answer-line .ex-answer-number {
   margin-left: 10px;
   color: #666;
   font-size: 0.9em;
   user-select: none;
 }
-
+.ex-answer-box .ex-answer-line .ex-answer-number.ex-answer-number-bold {
+  color: black;
+  font-weight: bold;
+}
 .ex-answer-box:not(.ex-answer-box-no-border) .ex-answer-line:last-child {
   border-bottom: none;
 }
-
-.ex-answer-box[data-style=box] .ex-answer-box-visuals {
+.ex-answer-box.ex-answer-box-no-border .ex-answer-line:first-child {
+  border-top: 1px solid #000;
+}
+.ex-answer-box[data-style='box'] .ex-answer-box-visuals {
   height: auto;
   border: 1px solid #eee;
   background: #fafafa;
 }
-
-.ex-answer-box .insert-paragraph-btn {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background-color: #ffc83d;
-  color: white;
-  border-radius: 50%;
-  display: none;
-  z-index: 30;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s;
-  align-items: center;
-  justify-content: center;
-}
-
-.ex-answer-box .insert-paragraph-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.ex-answer-box .insert-paragraph-btn:hover {
-  background-color: #3b82f6;
-}
-
 .ex-answer-box.ex-selected .insert-paragraph-btn,
 .ex-answer-box:hover .insert-paragraph-btn {
   display: flex;
-}
-
-.ex-answer-box.ex-selected .insert-paragraph-btn {
-  background-color: #3b82f6;
-}
-
-.ex-answer-box .insert-paragraph-before {
-  top: -12px;
-  left: 20px;
-}
-
-.ex-answer-box .insert-paragraph-after {
-  bottom: -12px;
-  right: 20px;
 }
 
 :root {
@@ -768,17 +664,15 @@ figcaption {
 }
 
 .tiptap {
-  font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+  font-family: sans-serif, Arial, Verdana, 'Trebuchet MS';
   color: var(--color-base-text) !important;
-
+  font-size: 14px;
   line-height: 1.3em;
 }
-
 .tiptap blockquote {
   border-left: 3px solid rgba(13, 13, 13, 0.1);
   padding-left: 1rem;
 }
-
 .tiptap p {
   margin: 0 0 9px;
 }
