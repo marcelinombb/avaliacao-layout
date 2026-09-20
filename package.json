@@ -1,26 +1,77 @@
 {
   "name": "avaliacao-layout",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "Engine de diagramação, colunização e paginação de avaliações com Paged.js",
   "main": "dist/avaliacao-layout.cjs",
   "module": "dist/avaliacao-layout.esm.js",
   "types": "dist/index.d.ts",
+  "style": "dist/avaliacao-layout.css",
   "type": "module",
   "files": [
     "dist/**/*",
     "types/**/*",
-    "public/**/*",
-    "pdf.html"
+    "pdf.html",
+    "README.md"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/avaliacao-layout.esm.js",
+      "require": "./dist/avaliacao-layout.cjs",
+      "default": "./dist/avaliacao-layout.esm.js"
+    },
+    "./styles": "./dist/avaliacao-layout.css",
+    "./styles.css": "./dist/avaliacao-layout.css",
+    "./pdf.html": "./dist/pdf.html",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "rollup -c && echo \"export * from './avaliacao-layout';\" > dist/index.d.ts && echo \"export * from './avaliacao-layout';\" > dist/LayoutAvaliacaoBuilder.d.ts",
+    "build:bundle": "node scripts/build-bundle.mjs",
+    "build": "rollup -c && echo \"export * from './avaliacao-layout';\" > dist/index.d.ts && echo \"export * from './avaliacao-layout';\" > dist/LayoutAvaliacaoBuilder.d.ts && npm run build:bundle",
     "dev": "rollup -c -w",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "layout": "cd layout-builder && npm run dev",
+    "commit": "cz",
+    "prepare": "husky",
+    "prepublishOnly": "npm run build",
+    "publish:npm": "npm run build && npm publish",
+    "release": "standard-version",
+    "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:dry-run": "standard-version --dry-run",
+    "format": "prettier --write \"**/*.{ts,js,json,md,html,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md,html,css}\""
   },
-  "keywords": [],
-  "author": "",
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md,html,css}": "prettier --write"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true
+  },
+  "keywords": [
+    "pagedjs",
+    "assessment",
+    "exam",
+    "pagination",
+    "layout",
+    "pdf"
+  ],
+  "author": "marcelinombb",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^10.0.1",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-json": "^6.1.0",
@@ -29,11 +80,17 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/handlebars": "^4.0.40",
     "@types/node": "^25.2.3",
+    "commitizen": "^4.3.2",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^10.4.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.8",
     "rollup": "^4.49.0",
     "rollup-plugin-dts": "^6.2.3",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
+    "standard-version": "^9.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.1"
@@ -42,6 +99,7 @@
     "entities": "^6.0.1",
     "handlebars": "^4.7.8",
     "katex": "^0.16.22",
+    "ngx-exitus-tiptap-editor": "^1.1.0",
     "pagedjs": "^0.4.3"
   }
 }
