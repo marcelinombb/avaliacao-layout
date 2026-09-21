@@ -1,6 +1,6 @@
 {
   "name": "avaliacao-layout",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Engine de diagramação, colunização e paginação de avaliações com Paged.js",
   "main": "dist/avaliacao-layout.cjs",
   "module": "dist/avaliacao-layout.esm.js",
